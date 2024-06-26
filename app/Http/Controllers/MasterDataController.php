@@ -11,8 +11,9 @@ class MasterDataController extends Controller
      */
     public function index()
     {
-        //
+        return view('masterdata.index');
     }
+
 
     /**
      * Show the form for creating a new resource.
