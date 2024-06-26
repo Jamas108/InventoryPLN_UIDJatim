@@ -11,8 +11,9 @@ class BarangRusakController extends Controller
      */
     public function index()
     {
-        //
+        return view('barangrusak.index');
     }
+
 
     /**
      * Show the form for creating a new resource.

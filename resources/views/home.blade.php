@@ -16,7 +16,7 @@
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
-            <a class="nav-link" href="">
+            <a class="nav-link" href="{{ route('home') }}">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
                 <span>Dashboard</span></a>
         </li>
@@ -31,27 +31,27 @@
 
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item active">
-            <a class="nav-link" href="">
-                <i class="fas fa-fw fa-th-large"></i>
+            <a class="nav-link" href="{{ route('masterdata') }}">
+                <i class="fas fa-database"></i>
                 <span>Master Data</span></a>
         </li>
         <li class="nav-item active">
-            <a class="nav-link" href="">
-                <i class="fas fa-fw fa-th-large"></i>
+            <a class="nav-link"  href="{{ route('barangmasuk') }}">
+                <i class="fas fa-home"></i>
                 <span>Barang Masuk</span></a>
         </li>
         <li class="nav-item active">
-            <a class="nav-link" href="">
-                <i class="fas fa-fw fa-box"></i>
+            <a class="nav-link" href="{{ route('barangkeluar') }}">
+                <i class="fas fa-dolly-flatbed"></i>
                 <span>Barang Keluar</span></a>
         </li>
         <li class="nav-item active">
-            <a class="nav-link" href="">
-                <i class="fas fa-fw fa-box"></i>
+            <a class="nav-link" href="{{ route('barangrusak') }}">
+                <i class="fas fa-house-damage"></i>
                 <span>Barang Rusak</span></a>
         <li class="nav-item active">
-            <a class="nav-link" href="">
-                <i class="fas fa-fw fa-box"></i>
+            <a class="nav-link" href="{{ route('stokbarang') }}">
+                <i class="fas fa-box-open"></i>
                 <span>Stok Barang</span></a>
         </li>
 
@@ -63,18 +63,18 @@
             Operasional
         </div>
         <li class="nav-item active">
-            <a class="nav-link" href="">
-                <i class="fas fa-fw fa-th-large"></i>
+            <a class="nav-link" href="{{ route('suratjalan') }}">
+                <i class="fas fa-envelope-open-text"></i>
                 <span>Surat Jalan</span></a>
         </li>
         <li class="nav-item active">
-            <a class="nav-link" href="">
-                <i class="fas fa-fw fa-th-large"></i>
+            <a class="nav-link" href="{{ route('retur') }}">
+                <i class="fas fa-shipping-fast"></i>
                 <span>Retur</span></a>
         </li>
         <li class="nav-item active">
-            <a class="nav-link" href="">
-                <i class="fas fa-fw fa-th-large"></i>
+            <a class="nav-link" href="{{ route('reports') }}">
+                <i class="fas fa-chart-bar"></i>
                 <span>Reports</span></a>
         </li>
 
@@ -86,13 +86,13 @@
             Lainya
         </div>
         <li class="nav-item active">
-            <a class="nav-link" href="">
-                <i class="fas fa-fw fa-th-large"></i>
+            <a class="nav-link" href="{{ route('notifikasi') }}">
+                <i class="fas fa-bell"></i>
                 <span>Notifikasi</span></a>
         </li>
         <li class="nav-item active">
-            <a class="nav-link" href="">
-                <i class="fas fa-fw fa-th-large"></i>
+            <a class="nav-link" href="{{ route('user') }}">
+                <i class="fas fa-user"></i>
                 <span>User</span></a>
         </li>
 
@@ -147,8 +147,9 @@
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin Ekky</span>
-                            <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin PLN</span>
+
+                            <img src="{{ Vite::asset('../resources/assets/logo.png') }}" class="img-profile rounded-circle" alt="Autumn Logo" height="50px" width="50px">
                         </a>
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -196,7 +197,7 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                            Total Pendapatan</div>
+                                            Barang Masuk</div>
                                         <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
                                     </div>
                                     <div class="col-auto">
@@ -214,7 +215,7 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                            Transaksi Pending</div>
+                                            Barang Keluar</div>
                                         <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
                                     </div>
                                     <div class="col-auto">
@@ -232,7 +233,7 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                            Barang Dikirim</div>
+                                            Barang Rusak </div>
                                         <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
                                     </div>
                                     <div class="col-auto">
@@ -250,7 +251,7 @@
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                            Transaksi Berhasil</div>
+                                            Stok Tersedia </div>
                                         <div class="h5 mb-0 font-weight-bold text-gray-800">
                                         </div>
                                     </div>
