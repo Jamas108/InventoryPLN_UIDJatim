@@ -116,42 +116,61 @@
                 <ul class="navbar-nav ml-auto">
                     <!-- User Information -->
                     <li class="nav-item dropdown no-arrow">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin PLN</span>
-                            <img src="{{ Vite::asset('../resources/assets/logo.png') }}" class="img-profile rounded-circle" alt="Autumn Logo" height="50px" width="50px">
+                            <img src="{{ Vite::asset('../resources/assets/logo.png') }}" class="img-profile rounded-circle"
+                                alt="Autumn Logo" height="50px" width="50px">
                         </a>
                     </li>
                 </ul>
             </nav>
             <!-- End of Topbar -->
 
-            <section id="contact" class="contact">
-                <div class="container" data-aos="fade-up">
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Reports</h1>
-                    </div>
-                    <div class="row text-center justify-content-between">
-                        <div class="col-md-2 mb-4 " style="background-color: white; padding: 30px; border-radius: 10px;">
-                            <i class="fas fa-box-open fa-3x" style="color: blue;"></i>
-                            <p class="mt-3">Barang Masuk</p>
+            <div class="container-fluid">
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Barang Keluar</h1>
+                </div>
+
+                <div class="container-fluid pt-2 px-2">
+                    <div class="row">
+                        <div class="col-md-3 mb-4">
+                            <div class="card shadow-sm">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-box-open fa-3x" style="color: blue;"></i>
+                                    <p class="mt-3">Barang Masuk</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-2 mb-3 " style="background-color: white; padding: 30px; border-radius: 10px;">
-                            <i class="fas fa-dolly fa-3x " style="color: teal;"></i>
-                            <p class="mt-3">Barang Keluar</p>
+                        <div class="col-md-3 mb-4">
+                            <div class="card shadow-sm">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-dolly fa-3x" style="color: teal;"></i>
+                                    <p class="mt-3">Barang Keluar</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-2 mb-4 " style="background-color: white; padding: 30px; border-radius: 10px;">
-                            <i class="fas fa-exclamation-triangle fa-3x" style="color: red;"></i>
-                            <p class="mt-3">Barang Rusak</p>
+                        <div class="col-md-3 mb-4">
+                            <div class="card shadow-sm">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-exclamation-triangle fa-3x" style="color: red;"></i>
+                                    <p class="mt-3">Barang Rusak</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-2 mb-4 " style="background-color: white; padding: 30px; border-radius: 10px;">
-                            <i class="fas fa-clipboard-list fa-3x" style="color: orange;"></i>
-                            <p class="mt-3">Requested Item</p>
+                        <div class="col-md-3 mb-4">
+                            <div class="card shadow-sm">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-clipboard-list fa-3x" style="color: orange;"></i>
+                                    <p class="mt-3">Requested Item</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-            </section>
             </div>
+
         </div>
+    </div>
     </div>
 @endsection

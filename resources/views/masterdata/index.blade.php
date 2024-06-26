@@ -141,10 +141,12 @@
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin PLN</span>
-                            <img src="{{ Vite::asset('../resources/assets/logo.png') }}" class="img-profile rounded-circle" alt="Autumn Logo" height="50px" width="50px">
+                            <img src="{{ Vite::asset('../resources/assets/logo.png') }}"
+                                class="img-profile rounded-circle" alt="Autumn Logo" height="50px" width="50px">
                         </a>
                         <!-- Dropdown - User Information -->
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                            aria-labelledby="userDropdown">
                             <a class="dropdown-item" href="#">
                                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Profile
@@ -168,40 +170,59 @@
             </nav>
             <!-- End of Topbar -->
 
-            <section id="contact" class="contact">
-                <div class="container" data-aos="fade-up">
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Master Data</h1>
-                        <ul class="list-inline mb-0 float-end">
-                            <li class="list-inline-item">
-                                <a href="" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i> Add List</a>
-                            </li>
-                        </ul>
-                    </div>
+            <div class="container-fluid">
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Master Data</h1>
+                    {{-- <ul class="list-inline mb-0 float-end">
+                        <li class="list-inline-item">
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><i
+                                    class="fas fa-download fa-sm text-white-50"></i> Download PDF</a>
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
+                                    class="fas fa-download fa-sm text-white-50"></i> Download Excel</a>
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                    class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Product</a>
+                        </li>
+                    </ul> --}}
+                </div>
 
-                    <div class="row">
-                        <div class="d-flex">
-                            <div class="php-email-form">
-                                <div class="col-lg-12 mt-lg-0 d-flex align-items-stretch mx-auto" data-aos="fade-up"
-                                data-aos-delay="200" style=" background-color: rgb(1, 1, 95)">
-                                    <table id="BarangmasukTable" class="table table-striped datatable">
-                                        <thead>
-                                            <tr style="color: rgb(255, 255, 255)">
-                                                <th scope="col" style="width: 500px;">ITEM NAME</th>
-                                                <th scope="col" style="width: 500px;"></th>
-                                                <th scope="col" style="width: 200px;">DATE ADDED</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Add your table rows here -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                <div class="container-fluid pt-2 px-2">
+                    <div class="bg-white justify-content-between rounded shadow p-4">
+                        <div class="table-responsive">
+                            <table class="table text-start align-middle table-bordered table-hover mb-0 datatable"
+                                id="ProductTable" style="90%">
+                                <thead style="background-color:  rgb(1, 1, 95);">
+                                    <tr style="color: white">
+                                        <th scope="col" style="width: 500px;">ITEM NAME</th>
+                                        <th scope="col" style="width: 200px;">DATE ADDED</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <td>aa</td>
+                                    <td>aa</td>
+                                </tbody>
+                                <tbody>
+                                    <td>aa</td>
+                                    <td>aa</td>
+                                </tbody>
+                                <tbody>
+                                    <td>aa</td>
+                                    <td>aa</td>
+                                </tbody>
+                                <tbody>
+                                    <td>aa</td>
+                                    <td>aa</td>
+                                </tbody>
+                                <tbody>
+                                    <td>aa</td>
+                                    <td>aa</td>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
+
         </div>
+    </div>
     </div>
 @endsection

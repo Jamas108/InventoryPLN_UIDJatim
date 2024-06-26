@@ -177,8 +177,8 @@
                 </ul>
             </nav>
             <!-- End of Topbar -->
-            <div class="container-fluid">
 
+            <div class="container-fluid">
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Barang Masuk</h1>
                     <ul class="list-inline mb-0 float-end">
@@ -198,8 +198,8 @@
                         <div class="table-responsive">
                             <table class="table text-start align-middle table-bordered table-hover mb-0 datatable"
                                 id="ProductTable" style="90%">
-                                <thead>
-                                    <tr>
+                                <thead style="background-color:  rgb(1, 1, 95);">
+                                    <tr style="color: white">
                                         <th scope="col" style="width: 300px;">No. Surat Jalan</th>
                                         <th scope="col" style="width: 300px;">Nama PT</th>
                                         <th scope="col" style="width: 300px;">Total Barang</th>
