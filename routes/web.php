@@ -24,9 +24,10 @@ use App\Http\Controllers\BarangKeluarController;
 |
 */
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('welcome');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/barangmasuk', [BarangMasukController::class, 'index'])->name('barangmasuk');
+Route::resource('barangmasuk', BarangMasukController::class);
 Route::get('/barangkeluar', [BarangKeluarController::class, 'index'])->name('barangkeluar');
 Route::get('/barangrusak', [BarangRusakController::class, 'index'])->name('barangrusak');
 Route::get('/stokbarang', [StokBarangController::class, 'index'])->name('stokbarang');

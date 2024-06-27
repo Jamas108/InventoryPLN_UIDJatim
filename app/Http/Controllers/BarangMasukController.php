@@ -19,7 +19,12 @@ class BarangMasukController extends Controller
      */
     public function create()
     {
-        //
+        $pageTitle = 'Tambahkan Product';
+
+        return view('barangmasuk.create', [
+            'pageTitle' => $pageTitle,
+        ]);
+
     }
 
     /**
