@@ -1,45 +1,51 @@
 @extends('layouts.app')
 @section('content')
-<div id="content-wrapper" class="d-flex flex-column">
-    <div id="content">
-        @include('layouts.navbar')
-            <section id="contact" class="contact">
-                <div class="container" data-aos="fade-up">
-                    <div class="section-title mt-5">
-                        <h1>Stok Barang</h1>
-                    </div>
-                    <div class="container mt-4">
-                        <ul class="list-inline text-center">
-                            <li class="list-inline-item mr-5" style="width: 400px;">
-                                <div class="card text-bg-dark">
-                                    <img src="{{ Vite::asset('../resources/assets/hardware.jpg') }}" class="rounded" alt="Autumn1 Logo" width="400" height="200" style="object-fit: cover;">
-                                    <div class="card-img-overlay d-flex justify-content-between">
-                                        <div>
-                                            <h6 class="card-text">CATALOG</h6>
-                                            <h3 class="card-title" style="font-weight: 800">Hardware</h3>
-                                        </div>
-                                        <a href="#" class="btn btn-primary" style="align-self: flex-end;">See Details</a>
-                                    </div>
-                                </div>
-                            </li>
+    @include('layouts.sidebar')
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            @include('layouts.navbar')
 
-                            <li class="list-inline-item ml-5" style="width: 400px;">
-                                <div class="card text-bg-dark">
-                                    <img src="{{ Vite::asset('../resources/assets/network.jpg') }}" class="rounded" alt="Autumn Logo" width="400" height="200" style="object-fit: cover;">
-                                    <div class="card-img-overlay d-flex justify-content-between">
-                                        <div>
-                                            <h6 class="card-text">CATALOG</h6>
-                                            <h3 class="card-title" style="font-weight: 800">Networking</h3>
-                                        </div>
-                                        <a href="#" class="btn btn-primary" style="align-self: flex-end;">See Details</a>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-
+            <div class="container-fluid">
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Stok Barang</h1>
+                    <ul class="list-inline mb-0 float-end">
+                        {{-- <li class="list-inline-item">
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Download PDF</a>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Download Excel</a>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Product</a>
+                    </li> --}}
+                    </ul>
                 </div>
+
+                <div class="container-fluid pt-2 px-2 vh-50 d-grid" style="grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+
+                    <div class="card p-0" style="background-color: transparent; border: none;">
+                        <img src="{{ Vite::asset('../resources/assets/hardware.jpg') }}" class="rounded" alt="Autumn Logo"
+                            style="object-fit: cover; width: 100%; height: 50vh;">
+                        <div class="card-img-overlay d-flex justify-content-between flex-column">
+                            <div style="align-self: flex-start; color:white">
+                                <h6 class="card-text">CATALOG</h6>
+                                <h3 class="card-title" style="font-weight: 800">Hardware</h3>
+                            </div>
+                            <a href="#" class="btn btn-primary" style="align-self: flex-end;">See Details</a>
+                        </div>
+                    </div>
+
+                    <div class="card p-0" style="background-color: transparent; border: none;">
+                        <img src="{{ Vite::asset('../resources/assets/network.jpg') }}" class="rounded" alt="Autumn Logo"
+                            style="object-fit: cover; width: 100%; height: 50vh;">
+                        <div class="card-img-overlay d-flex justify-content-between flex-column">
+                            <div style="align-self: flex-start; color:white">
+                                <h6 class="card-text">CATALOG</h6>
+                                <h3 class="card-title" style="font-weight: 800">Networking</h3>
+                            </div>
+                            <a href="#" class="btn btn-primary" style="align-self: flex-end;">See Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        </section>
     @endsection
