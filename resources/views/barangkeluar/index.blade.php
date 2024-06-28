@@ -13,7 +13,8 @@
                                     class="fas fa-download fa-sm text-white-50"></i> Download PDF</a>
                             <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
                                     class="fas fa-download fa-sm text-white-50"></i> Download Excel</a>
-                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                            <a href="{{ route('barangkeluar.create') }}"
+                                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                     class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Product</a>
                         </li>
                     </ul>

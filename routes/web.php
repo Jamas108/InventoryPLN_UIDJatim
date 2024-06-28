@@ -28,27 +28,15 @@ Route::get('/', [HomeController::class, 'index'])->name('welcome');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::resource('barangmasuk', BarangMasukController::class);
-Route::get('/barangkeluar', [BarangKeluarController::class, 'index'])->name('barangkeluar');
-Route::get('/barangrusak', [BarangRusakController::class, 'index'])->name('barangrusak');
-Route::get('/stokbarang', [StokBarangController::class, 'index'])->name('stokbarang');
-Route::get('/masterdata', [MasterDataController::class, 'index'])->name('masterdata');
-Route::get('/suratjalan', [SuratJalanController::class, 'index'])->name('suratjalan');
-Route::get('/retur', [ReturController::class, 'index'])->name('retur');
-Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
+Route::resource('/barangkeluar', BarangKeluarController::class);
+Route::resource('/barangrusak', BarangRusakController::class);
+Route::resource('/stokbarang', StokBarangController::class);
+Route::resource('/masterdata', MasterDataController::class);
+Route::resource('/suratjalan', SuratJalanController::class);
+Route::resource('/retur', ReturController::class);
+Route::resource('/reports', ReportsController::class);
 Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');
-Route::get('/user', [UserController::class, 'index'])->name('user');
+Route::resource('/user', UserController::class);
 
- // Routing untuk fitur barang keluar
-//  Route::prefix('barangkeluar')->group(function () {
-//     Route::get('/create-keluar', [BarangkeluarController::class, 'create'])->name('create-keluar');
-//     Route::post('/store-keluar', [BarangkeluarController::class, 'store'])->name('store-keluar');
-//     Route::get('/edit-keluar/{id}', [BarangkeluarController::class, 'edit'])->name('edit-keluar');
-//     Route::post('/update-keluar/{id}', [BarangkeluarController::class, 'update'])->name('update-keluar');
-//     Route::get('/show-keluar/{id}', [BarangkeluarController::class, 'show'])->name('show-keluar');
-//     Route::delete('/delete-keluar/{id}', [BarangkeluarController::class, 'destroy'])->name('barangkeluar.destroy');
-//     // Route::get('/delete-keluar/{id}', [BarangkeluarController::class, 'destroy'])->name('delete-keluar');
-//     Route::get('exportExcel', [BarangkeluarController::class, 'exportExcel'])->name('barangkeluar.exportExcel');
-//     Route::get('exportPdf', [BarangkeluarController::class, 'exportPdf'])->name('barangkeluar.exportPdf');
-//     Route::get('/barangkeluar/getData', [BarangkeluarController::class, 'getData'])->name('barangkeluar.getData');
-
-// });
+Route::get('/stokbarang/hardware', [StokBarangController::class, 'hardwareIndex'])->name('stokbarang.hardware.index');
+Route::get('/stokbarang/networking', [StokBarangController::class, 'networkingIndex'])->name('stokbarang.networking.index');

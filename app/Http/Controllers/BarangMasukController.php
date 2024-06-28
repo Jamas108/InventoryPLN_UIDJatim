@@ -19,7 +19,7 @@ class BarangMasukController extends Controller
      */
     public function create()
     {
-        $pageTitle = 'Tambahkan Product';
+        $pageTitle = 'Tambahkan Barang Masuk';
 
         return view('barangmasuk.create', [
             'pageTitle' => $pageTitle,
@@ -40,7 +40,11 @@ class BarangMasukController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $pageTitle = 'Detail Barang Masuk';
+
+        return view('barangmasuk.show', [
+            'pageTitle' => $pageTitle,
+        ]);
     }
 
     /**
