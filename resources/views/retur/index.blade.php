@@ -19,7 +19,6 @@
                         </li>
                     </ul>
                 </div>
-
                 <div class="container-fluid pt-2 px-2">
                     <div class="bg-white justify-content-between rounded shadow p-4">
                         <div class="table-responsive">

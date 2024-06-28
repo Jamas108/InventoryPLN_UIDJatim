@@ -19,6 +19,7 @@
                                     <p class="mt-3">Barang Masuk</p>
                                 </div>
                             </div>
+
                         </div>
                         <div class="col-md-3 mb-4">
                             <div class="card shadow-sm">
@@ -46,9 +47,9 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
         </div>
+    </div>
     </div>
 @endsection

@@ -4,8 +4,6 @@
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
             @include('layouts.navbar')
-
-
             <div class="container-fluid">
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Master Data</h1>
@@ -20,7 +18,6 @@
                     </li>
                 </ul> --}}
                 </div>
-
                 <div class="container-fluid pt-2 px-2">
                     <div class="bg-white justify-content-between rounded shadow p-4">
                         <div class="table-responsive">
@@ -57,7 +54,7 @@
                     </div>
                 </div>
             </div>
-
         </div>
+    </div>
     </div>
 @endsection

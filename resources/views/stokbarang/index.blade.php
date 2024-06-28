@@ -4,7 +4,6 @@
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
             @include('layouts.navbar')
-
             <div class="container-fluid">
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Stok Barang</h1>
@@ -19,9 +18,7 @@
                     </li> --}}
                     </ul>
                 </div>
-
                 <div class="container-fluid pt-2 px-2 vh-50 d-grid" style="grid-template-columns: repeat(2, 1fr); gap: 1rem;">
-
                     <div class="card p-0" style="background-color: transparent; border: none;">
                         <img src="{{ Vite::asset('../resources/assets/hardware.jpg') }}" class="rounded" alt="Autumn Logo"
                             style="object-fit: cover; width: 100%; height: 50vh;">
