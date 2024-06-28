@@ -61,4 +61,15 @@ class StokBarangController extends Controller
     {
         //
     }
+
+    public function hardwareIndex()
+    {
+        return view('stokbarang.hardware.index'); // Ensure this view exists
+    }
+
+    public function networkingIndex()
+    {
+        return view('stokbarang.networking.index'); // Ensure this view exists
+    }
+
 }

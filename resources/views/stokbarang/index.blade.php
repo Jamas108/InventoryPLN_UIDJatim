@@ -8,14 +8,14 @@
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Stok Barang</h1>
                     <ul class="list-inline mb-0 float-end">
-                        {{-- <li class="list-inline-item">
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> Download PDF</a>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> Download Excel</a>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Product</a>
-                    </li> --}}
+                        <li class="list-inline-item">
+                            {{-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><i
+                                    class="fas fa-download fa-sm text-white-50"></i> Download PDF</a>
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
+                                    class="fas fa-download fa-sm text-white-50"></i> Download Excel</a>
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                    class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Product</a> --}}
+                        </li>
                     </ul>
                 </div>
                 <div class="container-fluid pt-2 px-2 vh-50 d-grid" style="grid-template-columns: repeat(2, 1fr); gap: 1rem;">
@@ -27,7 +27,7 @@
                                 <h6 class="card-text">CATALOG</h6>
                                 <h3 class="card-title" style="font-weight: 800">Hardware</h3>
                             </div>
-                            <a href="#" class="btn btn-primary" style="align-self: flex-end;">See Details</a>
+                            <a href="{{ route('stokbarang.hardware.index') }}" class="btn btn-primary" style="align-self: flex-end;">See Details</a>
                         </div>
                     </div>
 
@@ -39,10 +39,11 @@
                                 <h6 class="card-text">CATALOG</h6>
                                 <h3 class="card-title" style="font-weight: 800">Networking</h3>
                             </div>
-                            <a href="#" class="btn btn-primary" style="align-self: flex-end;">See Details</a>
+                            <a href="{{ route('stokbarang.networking.index') }}" class="btn btn-primary" style="align-self: flex-end;">See Details</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    @endsection
+    </div>
+@endsection

@@ -20,9 +20,13 @@ class BarangKeluarController extends Controller
      */
     public function create()
     {
-        //
-    }
+        $pageTitle = 'Tambahkan Barang Keluar';
 
+        return view('barangkeluar.create1', [
+            'pageTitle' => $pageTitle,
+        ]);
+
+    }
     /**
      * Store a newly created resource in storage.
      */

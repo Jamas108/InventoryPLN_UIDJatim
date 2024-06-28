@@ -32,7 +32,7 @@
 
     <!-- Nav Item - Master Data -->
     <li class="nav-item {{ $currentRouteName == 'masterdata' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('masterdata') }}">
+        <a class="nav-link" href="{{ route('masterdata.index') }}">
             <i class="fas fa-database"></i>
             <span>Master Data</span>
         </a>
@@ -48,7 +48,7 @@
 
     <!-- Nav Item - Barang Keluar -->
     <li class="nav-item {{ $currentRouteName == 'barangkeluar' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('barangkeluar') }}">
+        <a class="nav-link" href="{{ route('barangkeluar.index') }}">
             <i class="fas fa-dolly-flatbed"></i>
             <span>Barang Keluar</span>
         </a>
@@ -56,7 +56,7 @@
 
     <!-- Nav Item - Barang Rusak -->
     <li class="nav-item {{ $currentRouteName == 'barangrusak' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('barangrusak') }}">
+        <a class="nav-link" href="{{ route('barangrusak.index') }}">
             <i class="fas fa-house-damage"></i>
             <span>Barang Rusak</span>
         </a>
@@ -64,7 +64,7 @@
 
     <!-- Nav Item - Stok Barang -->
     <li class="nav-item {{ $currentRouteName == 'stokbarang' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('stokbarang') }}">
+        <a class="nav-link" href="{{ route('stokbarang.index') }}">
             <i class="fas fa-box-open"></i>
             <span>Stok Barang</span>
         </a>
@@ -80,7 +80,7 @@
 
     <!-- Nav Item - Surat Jalan -->
     <li class="nav-item {{ $currentRouteName == 'suratjalan' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('suratjalan') }}">
+        <a class="nav-link" href="{{ route('suratjalan.index') }}">
             <i class="fas fa-envelope-open-text"></i>
             <span>Surat Jalan</span>
         </a>
@@ -88,7 +88,7 @@
 
     <!-- Nav Item - Retur -->
     <li class="nav-item {{ $currentRouteName == 'retur' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('retur') }}">
+        <a class="nav-link" href="{{ route('retur.index') }}">
             <i class="fas fa-shipping-fast"></i>
             <span>Retur</span>
         </a>
@@ -96,7 +96,7 @@
 
     <!-- Nav Item - Reports -->
     <li class="nav-item {{ $currentRouteName == 'reports' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('reports') }}">
+        <a class="nav-link" href="{{ route('reports.index') }}">
             <i class="fas fa-chart-bar"></i>
             <span>Reports</span>
         </a>
@@ -120,7 +120,7 @@
 
     <!-- Nav Item - User -->
     <li class="nav-item {{ $currentRouteName == 'user' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('user') }}">
+        <a class="nav-link" href="{{ route('user.index') }}">
             <i class="fas fa-user"></i>
             <span>User</span>
         </a>
