@@ -27,7 +27,7 @@
                                         <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        <i class="fas fa-dollar-sign fa-2x" style="color:rgb(0, 38, 255)"></i>
                                     </div>
                                 </div>
                             </div>
@@ -45,7 +45,7 @@
                                         <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fas fa-ban fa-2x text-gray-300"></i>
+                                        <i class="fas fa-ban fa-2x " style="color:rgb(0, 255, 55)"></i>
                                     </div>
                                 </div>
                             </div>
@@ -63,7 +63,7 @@
                                         <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fas fa-truck fa-2x text-gray-300"></i>
+                                        <i class="fas fa-truck fa-2x" style="color:rgb(76, 163, 255)"></i>
                                     </div>
                                 </div>
                             </div>
@@ -82,7 +82,7 @@
                                         </div>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="fas fa-gift fa-2x text-gray-300"></i>
+                                        <i class="fas fa-gift fa-2x" style="color:rgb(255, 153, 0)"></i>
                                     </div>
                                 </div>
                             </div>

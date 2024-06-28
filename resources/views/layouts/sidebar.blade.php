@@ -1,7 +1,8 @@
 @php
     $currentRouteName = Route::currentRouteName();
 @endphp
-<ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar" style="background-color: rgb(1, 1, 95)">
+<ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar" style="background-color: rgb(1, 1, 95);
+    position: sticky; top: 0; height: 100vh; overflow-y: auto; cursor: grab; flex-shrink: 0; scrollbar-width: none; width: 200px;">
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
         <div class="sidebar-brand-icon" id="logopln">

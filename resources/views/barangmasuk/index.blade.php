@@ -84,7 +84,7 @@
                             <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
                                     class="fas fa-download fa-sm text-white-50"></i> Download Excel</a>
                             <a href="{{ route('barangmasuk.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                    class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Barang Masuk</a>
+                                    class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Barang </a>
                         </li>
                     </ul>
                 </div>
@@ -94,7 +94,7 @@
                         <div class="table-responsive">
                             <table class="table text-start align-middle table-bordered table-hover mb-0 datatable"
                                 id="ProductTable" style="90%">
-                                <thead style="background-color:  rgb(1, 1, 95);">
+                                <thead style=" background-color: rgb(1, 1, 95);">
                                     <tr style="color: white">
                                         <th scope="col" style="width: 300px;">No. Surat Jalan</th>
                                         <th scope="col" style="width: 300px;">Nama PT</th>
