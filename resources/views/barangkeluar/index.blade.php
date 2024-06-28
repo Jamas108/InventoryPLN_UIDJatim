@@ -186,7 +186,27 @@
                         </li>
                     </ul>
                 </div>
+=======
+@include('layouts.sidebar')
+<div id="content-wrapper" class="d-flex flex-column">
+    <div id="content">
+        @include('layouts.navbar')
+            <section id="contact" class="contact">
+                <div class="container" data-aos="fade-up">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Barang Keluar</h1>
+                        <ul class="list-inline mb-0 float-end">
+                            <li class="list-inline-item">
+                                <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><i
+                                        class="fas fa-download fa-sm text-white-50"></i> Download PDF</a>
+                                <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
+                                        class="fas fa-download fa-sm text-white-50"></i> Download Excel</a>
+                                <a href="" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                        class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Barang</a>
+                            </li>
+                        </ul>
 
+                    </div>
                 <div class="container-fluid pt-2 px-2">
                     <div class="bg-white justify-content-between rounded shadow p-4">
                         <div class="table-responsive">
