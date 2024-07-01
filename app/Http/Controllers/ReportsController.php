@@ -13,6 +13,22 @@ class ReportsController extends Controller
     {
         return view('reports.index');
     }
+    public function indexBarangMasuk()
+    {
+        return view('reports.barangmasuk.index');
+    }
+    public function indexBarangKeluar()
+    {
+        return view('reports.barangkeluar.index');
+    }
+    public function indexBarangRusak()
+    {
+        return view('reports.barangrusak.index');
+    }
+    public function indexRequestedItem()
+    {
+        return view('reports.requesteditem.index');
+    }
     /**
      * Show the form for creating a new resource.
      */
