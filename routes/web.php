@@ -27,13 +27,7 @@ use App\Http\Controllers\BarangKeluarController;
 Route::get('/', [HomeController::class, 'index'])->name('welcome');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-
 Route::resource('barangmasuk', BarangMasukController::class);
-Route::get('/barangmasuk/create', [BarangMasukController::class, 'create'])->name('barangmasuk.create');
-Route::post('/barangmasuk/addItem', [BarangMasukController::class, 'addItem'])->name('barangmasuk.addItem');
-Route::post('/barangmasuk/store', [BarangMasukController::class, 'store'])->name('barangmasuk.store');
-Route::get('/barangmasuk/{noSurat}/barang', [BarangMasukController::class, 'loadBarang']);
-Route::get('/barangmasuk/{noSurat}/edit', [BarangMasukController::class, 'editByNoSurat'])->name('barangmasuk.edit_by_no_surat');
 
 
 Route::resource('/barangkeluar', BarangKeluarController::class);
@@ -41,11 +35,14 @@ Route::resource('/barangkeluar', BarangKeluarController::class);
 
 Route::resource('/barangrusak', BarangRusakController::class);
 
-
+//Route Stok Barang
 Route::resource('/stokbarang', StokBarangController::class);
+Route::get('/stokbarang/hardware/index', [StokBarangController::class, 'hardwareIndex'])->name('stokbarang.hardware.index');
+Route::get('/stokbarang/networking/index', [StokBarangController::class, 'networkingIndex'])->name('stokbarang.networking.index');
 
 
 Route::resource('/masterdata', MasterDataController::class);
+Route::get('/masterdata/{id}', [MasterDataController::class, 'show'])->name('masterdata.show');
 
 
 Route::resource('/suratjalan', SuratJalanController::class);
@@ -60,13 +57,8 @@ Route::get('/reports/barangmasuk/index', [ReportsController::class, 'indexbarang
 Route::get('/reports/barangrusak/index', [ReportsController::class, 'indexbarangrusak'])->name('indexbarangrusak');
 Route::get('/reports/requesteditem/index', [ReportsController::class, 'indexrequesteditem'])->name('indexrequesteditem');
 
-
-// Route::get('/suratjalan/create', [BarangMasukController::class, 'createSuratJalan'])->name('createsuratjalan');
-
 Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');
 
 
 Route::resource('/user', UserController::class);
 
-Route::get('/stokbarang/hardware', [StokBarangController::class, 'hardwareIndex'])->name('stokbarang.hardware.index');
-Route::get('/stokbarang/networking', [StokBarangController::class, 'networkingIndex'])->name('stokbarang.networking.index');

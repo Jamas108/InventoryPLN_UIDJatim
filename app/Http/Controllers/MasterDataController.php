@@ -6,60 +6,71 @@ use Illuminate\Http\Request;
 
 class MasterDataController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return view('masterdata.index');
-    }
+        $items = collect([
+            (object)[
+                'name' => 'Roll Cable',
+               'image' => 'logo.png',
+                'merk' => 'Merk A',
+                'kode' => 'Kode123',
+                'satuan_ukuran' => '1 m',
+                'location' => 'Rak/Kolom',
+                'jenis_barang' => 'Networking',
+                'category' => 'Cable',
+                'date_added' => now()->subDays(1)
+            ],
+            (object)[
+                'name' => 'Roll Cable',
+               'image' => 'logo.png',
+                'kode' => 'Kode123',
+                'location' => 'Rak/Kolom',
+                'category' => 'Cable',
+                'date_added' => now()->subDays(2)
+            ],
+            (object)[
+                'name' => 'Roll Cable',
+               'image' => 'logo.png',
+                'kode' => 'Kode123',
+                'location' => 'Rak/Kolom',
+                'category' => 'Cable',
+                'date_added' => now()->subDays(3)
+            ],
+            (object)[
+                'name' => 'Roll Cable',
+               'image' => 'logo.png',
+                'kode' => 'Kode123',
+                'location' => 'Rak/Kolom',
+                'category' => 'Cable',
+                'date_added' => now()->subDays(4)
+            ],
+            (object)[
+                'name' => 'Roll Cable',
+               'image' => 'logo.png',
+                'kode' => 'Kode123',
+                'location' => 'Rak/Kolom',
+                'category' => 'Cable',
+                'date_added' => now()->subDays(5)
+            ],
+            (object)[
+                'name' => 'Roll Cable',
+               'image' => 'logo.png',
+                'kode' => 'Kode123',
+                'location' => 'Rak/Kolom',
+                'category' => 'Cable',
+                'date_added' => now()->subDays(6)
+            ],
+            (object)[
+                'name' => 'Roll Cable',
+               'image' => 'logo.png',
+                'kode' => 'Kode123',
+                'location' => 'Rak/Kolom',
+                'category' => 'Cable',
+                'date_added' => now()->subDays(7)
+            ],
+            // Tambahkan item dummy lainnya di sini
+        ]);
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return view('masterdata.index', compact('items'));
     }
 }
