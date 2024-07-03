@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReturController;
@@ -23,8 +25,10 @@ use App\Http\Controllers\BarangKeluarController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Auth::routes();
+Route:: redirect('/', '/login');
+Route::post('/login', [LoginController::class, 'authenticate']);
 
-Route::get('/', [HomeController::class, 'index'])->name('welcome');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::resource('barangmasuk', BarangMasukController::class);
@@ -62,3 +66,5 @@ Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifik
 
 Route::resource('/user', UserController::class);
 
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
