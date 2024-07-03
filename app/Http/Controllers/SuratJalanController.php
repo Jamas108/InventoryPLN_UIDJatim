@@ -6,9 +6,10 @@ use Illuminate\Http\Request;
 
 class SuratJalanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function index()
     {
         return view('suratjalan.index');
