@@ -14,19 +14,27 @@ class BarangKeluarController extends Controller
         return view('barangkeluar.index');
     }
 
-
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
+        $type = $request->query('type');
         $pageTitle = 'Tambahkan Barang Keluar';
 
-        return view('barangkeluar.create1', [
-            'pageTitle' => $pageTitle,
-        ]);
-
+        if ($type == 'insidentil') {
+            return view('barangkeluar.create2', [
+                'pageTitle' => $pageTitle,
+            ]);
+        } elseif ($type == 'reguler') {
+            return view('barangkeluar.create1', [
+                'pageTitle' => $pageTitle,
+            ]);
+        } else {
+            return redirect()->route('barangkeluar.index')->with('error', 'Jenis produk tidak valid.');
+        }
     }
+
     /**
      * Store a newly created resource in storage.
      */
