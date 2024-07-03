@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('staff_gudang', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->string('Nama_Petugas', 255);
+            $table->smallInteger('JenisKelamin_Petugas');
+            $table->date('TanggalLahir_petugas');
+            $table->char('NoTelepon_petugas', 12);
+            $table->string('Alamat_Petugas', 256);
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('staff_gudang');
     }
 };

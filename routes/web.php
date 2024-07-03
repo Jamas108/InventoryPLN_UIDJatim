@@ -27,7 +27,13 @@ use App\Http\Controllers\BarangKeluarController;
 Route::get('/', [HomeController::class, 'index'])->name('welcome');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+
 Route::resource('barangmasuk', BarangMasukController::class);
+Route::get('/barangmasuk/create', [BarangMasukController::class, 'create'])->name('barangmasuk.create');
+Route::post('/barangmasuk/addItem', [BarangMasukController::class, 'addItem'])->name('barangmasuk.addItem');
+Route::post('/barangmasuk/store', [BarangMasukController::class, 'store'])->name('barangmasuk.store');
+Route::get('/barangmasuk/{noSurat}/barang', [BarangMasukController::class, 'loadBarang']);
+Route::get('/barangmasuk/{noSurat}/edit', [BarangMasukController::class, 'editByNoSurat'])->name('barangmasuk.edit_by_no_surat');
 
 
 Route::resource('/barangkeluar', BarangKeluarController::class);
