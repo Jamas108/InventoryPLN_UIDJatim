@@ -114,12 +114,12 @@
                                 {{-- BUTTON --}}
                                 <div class="col-md-12 d-flex justify-content-end">
                                     <a href="{{ route('barangkeluar.index') }}"
-                                        class="mt-3 mr-3 btn btn-secondary btn-icon-split" style="width: 15%">
+                                        class="mt-3 mr-3 btn btn-danger btn-icon-split" style="width: 15%">
                                         <span class="text">Batal</span>
                                     </a>
                                     <button type="submit" class="mt-3 mr-3 btn btn-primary btn-icon-split"
                                         style="width: 15%;">
-                                        <span class="text">Next</span>
+                                        <span class="text">Save</span>
                                     </button>
                                 </div>
                             </div>
