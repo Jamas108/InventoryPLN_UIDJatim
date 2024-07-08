@@ -23,7 +23,8 @@
                     <div class="bg-white justify-content-between rounded shadow p-4">
                         <div class="col-lg-12 mt-lg-0 d-flex align-items-stretch mx-auto" data-aos="fade-up"
                             data-aos-delay="200">
-                            <table class="table text-start align-middle table-bordered table-hover mb-0 datatable"
+                            <!-- Update table in resources/views/barang_rusak.blade.php -->
+                            <table class="table text-center align-middle table-bordered table-hover mb-0 datatable"
                                 id="ProductTable" style="90%">
                                 <thead style=" background-color: rgb(1, 1, 95);">
                                     <tr style="color: white">
@@ -36,21 +37,24 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <td>aa</td>
-                                    <td>aa</td>
-                                    <td>aa</td>
-                                    <td>aa</td>
-                                    <td>aa</td>
-                                    <td>aa</td>
-                                </tbody>
-                                <tbody>
-                                    <td>aa</td>
-                                    <td>aa</td>
-                                    <td>aa</td>
-                                    <td>aa</td>
-                                    <td>aa</td>
-                                    <td>aa</td>
+                                    @foreach ($barangrusaks as $barangrusak)
+                                        <tr>
+                                            <td>{{ $barangrusak->nama }}</td>
+                                            <td>{{ $barangrusak->no_seri }}</td>
+                                            <td>{{ $barangrusak->tipe }}</td>
+                                            <td>{{ $barangrusak->merk }}</td>
+                                            <td>{{ $barangrusak->keterangan }}</td>
+                                            <td><a href="{{ route('barangrusak.show', $barangrusak->id) }}"
+                                                    class="btn btn-info">See
+                                                    Details</a></td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection

@@ -17,6 +17,7 @@ class BarangMasukController extends Controller
     {
         $this->middleware('auth');
     }
+    
     public function index()
     {
         $barangMasuks = BarangMasuk::with('kategoriBarang', 'statusBarang')->orderBy('No_Surat')->get();

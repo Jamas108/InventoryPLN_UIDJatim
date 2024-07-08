@@ -38,6 +38,8 @@ Route::resource('/barangkeluar', BarangKeluarController::class);
 
 
 Route::resource('/barangrusak', BarangRusakController::class);
+Route::get('/barangrusak/{id}', [BarangRusakController::class, 'show'])->name('barangrusak.show');
+
 
 //Route Stok Barang
 Route::resource('/stokbarang', StokBarangController::class);
@@ -54,6 +56,7 @@ Route::resource('/suratjalan', SuratJalanController::class);
 
 Route::resource('/retur', ReturController::class);
 
+
 // Rute untuk reports
 Route::resource('/reports', ReportsController::class);
 Route::get('/reports/barangkeluar/index', [ReportsController::class, 'indexbarangkeluar'])->name('indexbarangkeluar');
@@ -61,10 +64,11 @@ Route::get('/reports/barangmasuk/index', [ReportsController::class, 'indexbarang
 Route::get('/reports/barangrusak/index', [ReportsController::class, 'indexbarangrusak'])->name('indexbarangrusak');
 Route::get('/reports/requesteditem/index', [ReportsController::class, 'indexrequesteditem'])->name('indexrequesteditem');
 
+
+
+
 Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');
 
 
 Route::resource('/user', UserController::class);
 
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
