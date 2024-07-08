@@ -14,10 +14,15 @@ class ReportsController extends Controller
     {
         return view('reports.index');
     }
-    public function indexBarangMasuk()
-    {
-        return view('reports.barangmasuk.index');
-    }
+
+    // public function indexBarangMasuk()
+    // {
+    //     $groupedBarangMasuks = BarangMasuk::all()->groupBy('No_Surat_Jalan');
+    //     $statusBarangs = StatusBarang::all();
+
+    //     return view('reports.barangmasuk.index', compact('groupedBarangMasuks', 'statusBarangs'));
+    // }
+
     public function indexBarangKeluar()
     {
         return view('reports.barangkeluar.index');

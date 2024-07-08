@@ -13,7 +13,7 @@
                 <div class="container-fluid pt-2 px-2">
                     <div class="row">
                         <div class="col-md-3 mb-4">
-                            <a href="{{ route('indexbarangmasuk') }}" style="text-decoration: none">
+                            <a href="{{ route('reports.barangmasuk.index') }}" style="text-decoration: none">
                                 <div class="card shadow-sm">
                                     <div class="card-body text-center">
                                         <i class="fas fa-box-open fa-3x" style="color: blue;"></i>
