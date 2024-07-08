@@ -38,6 +38,9 @@ Route::resource('/barangkeluar', BarangKeluarController::class);
 
 
 Route::resource('/barangrusak', BarangRusakController::class);
+// routes/web.php
+Route::get('/barangrusak/{id}', [BarangRusakController::class, 'show'])->name('barangrusak.show');
+
 
 //Route Stok Barang
 Route::resource('/stokbarang', StokBarangController::class);
