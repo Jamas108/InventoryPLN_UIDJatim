@@ -54,6 +54,7 @@ Route::get('/masterdata/{id}', [MasterDataController::class, 'show'])->name('mas
 Route::resource('/suratjalan', SuratJalanController::class);
 
 
+
 Route::resource('/retur', ReturController::class);
 
 

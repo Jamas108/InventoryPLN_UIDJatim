@@ -44,8 +44,6 @@ class ReportsController extends Controller
 
         // Kirim filter ke view untuk ditampilkan di form filter
         return view('reports.barangmasuk.index', compact('groupedBarangMasuks', 'statusBarangs', 'filterYear', 'filterCondition'));
-
-        return view('reports.barangmasuk.index', compact('groupedBarangMasuks', 'statusBarangs'));
     }
 
     public function indexBarangKeluar()
