@@ -60,10 +60,11 @@ Route::resource('/retur', ReturController::class);
 // Rute untuk reports
 Route::resource('/reports', ReportsController::class);
 Route::get('/reports/barangkeluar/index', [ReportsController::class, 'indexbarangkeluar'])->name('indexbarangkeluar');
-// Route::get('/reports/barangmasuk/index', [ReportsController::class, 'indexbarangmasuk'])->name('indexbarangmasuk');
+Route::get('/reports/barangmasuk/index', [ReportsController::class, 'indexbarangmasuk'])->name('indexbarangmasuk');
 Route::get('/reports/barangrusak/index', [ReportsController::class, 'indexbarangrusak'])->name('indexbarangrusak');
 Route::get('/reports/requesteditem/index', [ReportsController::class, 'indexrequesteditem'])->name('indexrequesteditem');
-Route::get('/reports/barangmasuk/index', [BarangMasukController::class, 'reportIndex'])->name('reports.barangmasuk.index');
+
+
 
 
 Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');

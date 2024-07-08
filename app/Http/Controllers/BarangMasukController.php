@@ -17,6 +17,7 @@ class BarangMasukController extends Controller
     {
         $this->middleware('auth');
     }
+    
     public function index()
     {
         $barangMasuks = BarangMasuk::with('kategoriBarang', 'statusBarang')->orderBy('No_Surat')->get();
@@ -27,38 +28,6 @@ class BarangMasukController extends Controller
 
         return view('barangmasuk.index', compact('groupedBarangMasuks', 'statusBarangs'));
     }
-
-
-    public function reportIndex(Request $request)
-    {
-        // Ambil semua barang masuk dengan relasinya dan urutkan berdasarkan Tanggal_Masuk secara descending
-        $barangMasuks = BarangMasuk::with('kategoriBarang', 'statusBarang')
-                                   ->orderBy('Tanggal_Masuk', 'desc'); // Tambahkan orderBy disini
-
-        // Ambil filter dari request
-        $filterYear = $request->input('year');
-        $filterCondition = $request->input('condition');
-
-        // Terapkan filter jika ada
-        if ($filterYear) {
-            $barangMasuks->whereYear('Tanggal_Masuk', $filterYear);
-        }
-
-        if ($filterCondition) {
-            $barangMasuks->where('Kondisi_Barang', $filterCondition);
-        }
-
-        // Kelompokkan barang masuk berdasarkan nomor surat
-        $groupedBarangMasuks = $barangMasuks->get()->groupBy('No_Surat');
-
-        $statusBarangs = StatusBarang::all();
-
-        // Kirim filter ke view untuk ditampilkan di form filter
-        return view('reports.barangmasuk.index', compact('groupedBarangMasuks', 'statusBarangs', 'filterYear', 'filterCondition'));
-    }
-
-
-
 
     /**
      * Show the form for creating a new resource.

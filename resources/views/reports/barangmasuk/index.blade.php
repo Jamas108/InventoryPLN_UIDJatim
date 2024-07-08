@@ -23,7 +23,7 @@
                 <div class="container-fluid pt-2 px-2">
                     <div class="bg-white rounded shadow p-4">
 
-                        <form method="GET" action="{{ route('reports.barangmasuk.index') }}" class="mb-4">
+                        <form method="GET" action="{{ route('indexbarangmasuk') }}" class="mb-4">
                             <div class="row mb-3">
                                 <div class="col-md-5 mb-2">
                                     <label for="year" class="form-label">Filter by Year</label>

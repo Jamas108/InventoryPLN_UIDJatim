@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\BarangMasuk;
+use App\Models\StatusBarang;
 
 class ReportsController extends Controller
 {
@@ -15,13 +17,36 @@ class ReportsController extends Controller
         return view('reports.index');
     }
 
-    // public function indexBarangMasuk()
-    // {
-    //     $groupedBarangMasuks = BarangMasuk::all()->groupBy('No_Surat_Jalan');
-    //     $statusBarangs = StatusBarang::all();
+    public function indexBarangMasuk(Request $request)
+    {
+        // $groupedBarangMasuks = BarangMasuk::all()->groupBy('No_Surat_Jalan');
+        // $statusBarangs = StatusBarang::all();
+        $barangMasuks = BarangMasuk::with('kategoriBarang', 'statusBarang')
+            ->orderBy('Tanggal_Masuk', 'desc'); // Tambahkan orderBy disini
 
-    //     return view('reports.barangmasuk.index', compact('groupedBarangMasuks', 'statusBarangs'));
-    // }
+        // Ambil filter dari request
+        $filterYear = $request->input('year');
+        $filterCondition = $request->input('condition');
+
+        // Terapkan filter jika ada
+        if ($filterYear) {
+            $barangMasuks->whereYear('Tanggal_Masuk', $filterYear);
+        }
+
+        if ($filterCondition) {
+            $barangMasuks->where('Kondisi_Barang', $filterCondition);
+        }
+
+        // Kelompokkan barang masuk berdasarkan nomor surat
+        $groupedBarangMasuks = $barangMasuks->get()->groupBy('No_Surat');
+
+        $statusBarangs = StatusBarang::all();
+
+        // Kirim filter ke view untuk ditampilkan di form filter
+        return view('reports.barangmasuk.index', compact('groupedBarangMasuks', 'statusBarangs', 'filterYear', 'filterCondition'));
+
+        return view('reports.barangmasuk.index', compact('groupedBarangMasuks', 'statusBarangs'));
+    }
 
     public function indexBarangKeluar()
     {
