@@ -4,7 +4,7 @@
 <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar" style="background-color: rgb(1, 1, 95);
     position: sticky; top: 0; height: 100vh; overflow-y: auto; cursor: grab; flex-shrink: 0; scrollbar-width: none; width: 200px;">
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('home') }}">
         <div class="sidebar-brand-icon" id="logopln">
             <img src="{{ Vite::asset('../resources/assets/logo.png') }}" alt="Autumn Logo" height="50px" width="50px">
         </div>
@@ -111,8 +111,8 @@
     </div>
 
     <!-- Nav Item - Notifikasi -->
-    <li class="nav-item {{ $currentRouteName == 'notifikasi' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('notifikasi') }}">
+    <li class="nav-item {{ $currentRouteName == 'notifications' ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('notifications.index') }}">
             <i class="fas fa-bell"></i>
             <span>Notifikasi</span>
         </a>

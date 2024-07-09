@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\BarangMasuk;
+use App\Models\Notification;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Ramsey\Uuid\Uuid;
 use App\Models\StaffGudang;
 use App\Models\KategoriBarang;
 use App\Models\StatusBarang;
+
 
 class BarangMasukController extends Controller
 {
@@ -17,7 +16,7 @@ class BarangMasukController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     public function index()
     {
         $barangMasuks = BarangMasuk::with('kategoriBarang', 'statusBarang')->orderBy('No_Surat')->get();
@@ -70,9 +69,9 @@ class BarangMasukController extends Controller
         $fileSuratJalanPath = $request->file('File_SuratJalan') ? $request->file('File_SuratJalan')->store('file_surat_jalan') : null;
 
         // Iterate through the items and save each one
-        for ($i = 0; $i < count($request->JumlahBarang_Masuk); $i++) {
+        foreach ($request->JumlahBarang_Masuk as $i => $jumlah) {
             // Upload Gambar_Barang if present
-            $gambarBarangPath = $request->file('Gambar_Barang')[$i] ? $request->file('Gambar_Barang')[$i]->store('gambar_barang') : null;
+            $gambarBarangPath = isset($request->file('Gambar_Barang')[$i]) ? $request->file('Gambar_Barang')[$i]->store('gambar_barang') : null;
 
             // Create the BarangMasuk record
             $barangMasuk = new BarangMasuk([
@@ -97,9 +96,23 @@ class BarangMasukController extends Controller
             $barangMasuk->save();
         }
 
+        // Check if a notification for the No_Surat already exists
+        $existingNotification = Notification::where('message', 'LIKE', '%' . $request->No_Surat . '%')->first();
+
+        if (!$existingNotification) {
+            // Create a single notification for the No_Surat
+            Notification::create([
+                'title' => 'Approval Barang Masuk',
+                'message' => 'Surat jalan butuh persetujuan dengan No. Surat: ' . $request->No_Surat,
+                'status' => 'unread',
+            ]);
+        }
+
         // Redirect to a success page or return a response as needed
         return redirect()->route('barangmasuk.index')->with('success', 'Barang Masuk berhasil ditambahkan.');
     }
+
+
 
 
     /**

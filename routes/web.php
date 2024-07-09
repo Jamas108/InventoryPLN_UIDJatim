@@ -1,19 +1,20 @@
 <?php
 
-use App\Http\Controllers\Auth\LoginController;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReturController;
 use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MasterDataController;
-use App\Http\Controllers\NotifikasiController;
+// use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\StokBarangController;
 use App\Http\Controllers\SuratJalanController;
 use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\BarangRusakController;
 use App\Http\Controllers\BarangKeluarController;
+use App\Http\Controllers\NotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,8 +68,12 @@ Route::get('/reports/requesteditem/index', [ReportsController::class, 'indexrequ
 
 
 
-
-Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');
+//Rute Notification
+Route::middleware('auth')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+});;
 
 
 Route::resource('/user', UserController::class);
