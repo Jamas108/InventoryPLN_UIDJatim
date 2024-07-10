@@ -1,8 +1,9 @@
 @php
     $currentRouteName = Route::currentRouteName();
+    $unreadNotificationsCount = \App\Models\Notification::unread()->count();
 @endphp
-<ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar" style="background-color: rgb(1, 1, 95);
-    position: sticky; top: 0; height: 100vh; overflow-y: auto; cursor: grab; flex-shrink: 0; scrollbar-width: none; width: 200px;">
+
+<ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar" style="background-color: rgb(1, 1, 95); position: sticky; top: 0; height: 100vh; overflow-y: auto; cursor: grab; flex-shrink: 0; scrollbar-width: none; width: 200px;">
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('home') }}">
         <div class="sidebar-brand-icon" id="logopln">
@@ -115,6 +116,9 @@
         <a class="nav-link" href="{{ route('notifications.index') }}">
             <i class="fas fa-bell"></i>
             <span>Notifikasi</span>
+            @if($unreadNotificationsCount > 0)
+                <span class="badge badge-danger">{{ $unreadNotificationsCount }}</span>
+            @endif
         </a>
     </li>
 

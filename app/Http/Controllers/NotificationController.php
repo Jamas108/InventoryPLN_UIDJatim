@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Notification;
@@ -17,16 +18,24 @@ class NotificationController extends Controller
         $notifications = Notification::orderBy('created_at', 'desc')->get();
         return view('notifications.index', compact('notifications'));
     }
+    
+    public function markAllAsRead()
+    {
+        Notification::where('status', 'unread')->update(['status' => 'read']);
+        return redirect()->back()->with('success', 'All notifications marked as read.');
+    }
 
-    // Mark a notification as read
     public function markAsRead($id)
     {
-        $notification = Notification::findOrFail($id);
-        $notification->status = 'read';  // Ensure this line sets the notification status to 'read'
-        $notification->save();
-
+        $notification = Notification::find($id);
+        if ($notification && $notification->status == 'unread') {
+            $notification->status = 'read';
+            $notification->save();
+        }
         return redirect()->back()->with('success', 'Notification marked as read.');
     }
+
+
 
     // Delete a notification
     public function destroy($id)
