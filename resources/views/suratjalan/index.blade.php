@@ -7,57 +7,42 @@
             <div class="container-fluid">
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Surat Jalan</h1>
-                    {{-- <ul class="list-inline mb-0 float-end">
-                                <li class="list-inline-item">
-                                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><i
-                                            class="fas fa-download fa-sm text-white-50"></i> Download PDF</a>
-                                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
-                                            class="fas fa-download fa-sm text-white-50"></i> Download Excel</a>
-                                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                            class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Product</a>
-                                </li>
-                            </ul> --}}
                 </div>
 
                 <div class="container-fluid pt-2 px-2">
-                    <div class="bg-white justify-content-between rounded shadow p-4">
-                        <div class="table-responsive">
-                            <table class="table text-start align-middle table-bordered table-hover mb-0 datatable"
-                                id="ProductTable" style="90%">
-                                <thead style="background-color:  rgb(1, 1, 95);">
+                    <div class="bg-white rounded shadow p-4 d-flex justify-content-center">
+                        <div class="table-responsive" style="width: 100%;">
+                            <table class="table text-center align-middle table-bordered table-hover mb-0 datatable"
+                                id="ProductTable">
+                                <thead style="background-color: rgb(1, 1, 95);">
                                     <tr style="color: white">
-                                        <th scope="col" style="width: 450px;">Surat Jalan</th>
+                                        <th scope="col" style="width: 450px;">Nama Perusahaan Pengirim</th>
                                         <th scope="col" style="width: 450px;">No Surat Jalan</th>
-                                        <th scope="col" style="width: 450px;">Detail</th>
+                                        <th scope="col" style="width: 450px;">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <td>aa</td>
-                                    <td>aa</td>
-                                    <td>aa</td>
-                                </tbody>
-                                <tbody>
-                                    <td>aa</td>
-                                    <td>aa</td>
-                                    <td>aa</td>
-                                </tbody>
-                                <tbody>
-                                    <td>aa</td>
-                                    <td>aa</td>
-                                    <td>aa</td>
-                                </tbody>
-                                <tbody>
-                                    <td>aa</td>
-                                    <td>aa</td>
-                                    <td>aa</td>
-                                </tbody>
-                                <tbody>
-                                    <td>aa</td>
-                                    <td>aa</td>
-                                    <td>aa</td>
+                                    @foreach ($barangMasuks as $barangMasuk)
+                                        <tr>
+                                            <td>{{ $barangMasuk->NamaPerusahaan_Pengirim }}</td>
+                                            <td>{{ $barangMasuk->No_Surat }}</td>
+                                            <td>
+                                                <a href="{{ Vite::asset('storage/app/' . $barangMasuk->File_SuratJalan) }}"
+                                                    target="_blank" class="btn btn-primary">
+                                                    Lihat Detail
+                                                </a>
+                                                <a href="{{asset('storage/app/' . $barangMasuk->File_SuratJalan) }}"
+                                                    download class="btn btn-secondary">
+                                                    Download
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-            @endsection
+            </div>
+        </div>
+    @endsection

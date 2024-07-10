@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\BarangMasuk;
 
 use Illuminate\Http\Request;
 
@@ -12,8 +13,11 @@ class SuratJalanController extends Controller
     }
     public function index()
     {
-        return view('suratjalan.index');
+
+    $barangMasuks = BarangMasuk::select('No_Surat', 'File_SuratJalan', 'NamaPerusahaan_Pengirim')->distinct()->get();
+    return view('suratjalan.index', compact('barangMasuks'));
     }
+
 
     /**
      * Show the form for creating a new resource.
