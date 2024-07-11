@@ -22,4 +22,12 @@ class Notification extends Model
     {
         $this->update(['status' => 'read']);
     }
+
+    /**
+     * Scope a query to only include unread notifications.
+     */
+    public function scopeUnread($query)
+    {
+        return $query->where('status', 'unread');
+    }
 }

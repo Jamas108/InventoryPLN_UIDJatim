@@ -10,8 +10,10 @@
                     <h1 class="h3 mb-0 text-gray-800">Notifications</h1>
                     <ul class="list-inline mb-0 mr-5 float-end">
                         <li class="list-inline-item">
-                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                    class="fas fa-bell"></i></a>
+                            <form action="{{ route('notifications.markAllAsRead') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Mark All as Read</button>
+                            </form>
                         </li>
                     </ul>
                 </div>
@@ -36,14 +38,16 @@
                                 </div>
                                 <div class="notification-footer"
                                     style="display: flex; justify-content: flex-end; margin-top: 15px;">
-                                    <button class="btn btn-primary"
-                                        onclick="location.href='{{ route('notifications.markAsRead', $notification->id) }}'">Mark
-                                        as Read</button>
-                                    <form action="{{ route('notifications.destroy', $notification->id) }}" method="POST"
-                                        style="display:inline;">
+                                    @if($notification->status == 'unread')
+                                        <form action="{{ route('notifications.markAsRead', $notification->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            <button type="submit" class="btn btn-primary">Mark as Read</button>
+                                        </form>
+                                    @endif
+                                    <form action="{{ route('notifications.destroy', $notification->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="btn btn-danger ml-2">Delete</button>
+                                        <button type="submit" class="btn btn-danger ml-2">Delete</button>
                                     </form>
                                 </div>
                             </div>

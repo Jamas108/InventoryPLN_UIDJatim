@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\BarangMasuk;
-use App\Models\Notification;
-use Illuminate\Http\Request;
 use App\Models\StaffGudang;
-use App\Models\KategoriBarang;
+use App\Models\Notification;
 use App\Models\StatusBarang;
+use Illuminate\Http\Request;
+use App\Models\KategoriBarang;
+use App\Events\NewNotification;
 
 
 class BarangMasukController extends Controller
@@ -101,11 +102,14 @@ class BarangMasukController extends Controller
 
         if (!$existingNotification) {
             // Create a single notification for the No_Surat
-            Notification::create([
+            $notification = Notification::create([
                 'title' => 'Approval Barang Masuk',
                 'message' => 'Surat jalan butuh persetujuan dengan No. Surat: ' . $request->No_Surat,
                 'status' => 'unread',
             ]);
+
+            // Fire the NewNotification event
+            event(new NewNotification($notification));
         }
 
         // Redirect to a success page or return a response as needed
