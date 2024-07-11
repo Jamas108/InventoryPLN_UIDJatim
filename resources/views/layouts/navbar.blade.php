@@ -1,5 +1,6 @@
 @php
     $currentRouteName = Route::currentRouteName();
+    $unreadNotificationsCount = \App\Models\Notification::unread()->count();
 @endphp
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
     <!-- Topbar Navbar -->
@@ -29,6 +30,17 @@
         </li>
 
         <div class="topbar-divider d-none d-sm-block"></div>
+
+
+        <!-- Nav Item - Notifikasi -->
+        <li class="nav-item {{ $currentRouteName == 'notifications' ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('notifications.index') }}">
+                <i class="fas fa-bell" style="color: #0075FF"></i>
+                @if ($unreadNotificationsCount > 0)
+                    <span class="badge badge-danger">{{ $unreadNotificationsCount }}</span>
+                @endif
+            </a>
+        </li>
 
         <!-- Nav Item - User Information -->
         <li class="nav-item dropdown no-arrow">

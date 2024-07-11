@@ -25,13 +25,15 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-     <!-- Set the notification route in a JavaScript variable -->
-     <script>
+    <!-- Set the notification route in a JavaScript variable -->
+    <script>
         window.notificationRoute = "{{ route('notifications.index') }}";
     </script>
 
     <!-- Include compiled app.js -->
     <script src="{{ mix('resources/js/app.js') }}"></script>
+
+    
 
 
     {{-- CSS --}}
@@ -59,6 +61,7 @@
         });
     </script>
 </head>
+
 <body id="page-top">
     <div id="wrapper">
         @yield('content')
@@ -67,4 +70,5 @@
         @stack('scripts')
     </div>
 </body>
+
 </html>

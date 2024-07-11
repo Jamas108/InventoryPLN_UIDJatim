@@ -18,19 +18,19 @@
                                 class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                     class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Barang </a>
                         </li>
-                    </ul> 
+                    </ul>
                 </div>
                 <div class="container-fluid pt-2 px-2">
                     <div class="bg-white justify-content-between rounded shadow p-4">
                         <div class="table-responsive">
-                            <table class="table text-center align-middle table-bordered table-hover mb-0 datatable" id="ProductTable" style="width: 100%">
-                                <thead style="background-color: rgb(1, 1, 95);">
-                                    <tr style="color: white">
-                                        <th scope="col" style="width: 300px;">No. Surat Jalan</th>
-                                        <th scope="col" style="width: 300px;">Nama PT</th>
-                                        <th scope="col" style="width: 300px;">Total Barang</th>
-                                        <th scope="col" style="width: 300px;">Approval Status</th>
-                                        <th scope="col" style="width: 250px;">Detail</th>
+                            <table class="table text-center align-middle table-hover mb-0" id="ProductTable" style="width: 100%">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 300px; color:white">No. Surat Jalan</th>
+                                        <th scope="col" style="width: 300px;  color:white">Nama PT</th>
+                                        <th scope="col" style="width: 300px;  color:white">Total Barang</th>
+                                        <th scope="col" style="width: 300px;  color:white">Approval Status</th>
+                                        <th scope="col" style="width: 250px;  color:white">Detail</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -38,7 +38,7 @@
                                         <tr>
                                             <td>{{ $noSurat }}</td>
                                             <td>{{ $barangMasuks->first()->NamaPerusahaan_Pengirim }}</td>
-                                            <td>{{ $barangMasuks->sum('Jumlah_barang') }}</td>
+                                            <td>{{ $barangMasuks->Jumlah_barang }}</td>
                                             <td>Approved</td>
                                             <td>
                                                 <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ $noSurat }}" aria-expanded="false" aria-controls="collapse-{{ $noSurat }}">
@@ -49,7 +49,7 @@
                                         <tr id="collapse-{{ $noSurat }}" class="collapse" data-bs-parent="#ProductTable">
                                             <td colspan="5">
                                                 <div class="accordion-body">
-                                                    <table class="table">
+                                                    <table class="table inner-table">
                                                         <thead>
                                                             <tr>
                                                                 <th>Kode Barang</th>
@@ -100,9 +100,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
             </div>
         </div>
     </div>
