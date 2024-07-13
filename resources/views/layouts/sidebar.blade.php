@@ -116,9 +116,6 @@
         <a class="nav-link" href="{{ route('notifications.index') }}">
             <i class="fas fa-bell"></i>
             <span>Notifikasi</span>
-            @if($unreadNotificationsCount > 0)
-                <span class="badge badge-danger">{{ $unreadNotificationsCount }}</span>
-            @endif
         </a>
     </li>
 

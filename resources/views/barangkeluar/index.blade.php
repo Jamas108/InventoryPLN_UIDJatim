@@ -23,7 +23,7 @@
                     <div class="bg-white justify-content-between rounded shadow p-4">
                         <div class="table-responsive">
                             <table class="table text-start align-middle table-bordered table-hover mb-0 datatable"
-                                id="ProductTable" style="90%">
+                                id="ProductTable" style="100%">
                                 <thead style="background-color: rgb(1, 1, 95);">
                                     <tr style="color: white">
                                         <th scope="col">Kode</th>
@@ -84,7 +84,7 @@
             </div>
         </div>
     </div>
- 
+
     <script>
         document.getElementById('insidentilBtn').addEventListener('click', function() {
             window.location.href = "{{ route('barangkeluar.create', ['type' => 'insidentil']) }}";

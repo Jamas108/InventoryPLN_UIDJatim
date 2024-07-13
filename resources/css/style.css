@@ -9,7 +9,7 @@
  * Copyright 2011-2021 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
- :root {
+:root {
     --blue: #4e73df;
     --indigo: #6610f2;
     --purple: #6f42c1;
@@ -1784,17 +1784,41 @@ pre code {
 .table th {
     padding: .75rem;
     vertical-align: top;
-    border-top: 1px solid #e3e6f0
+    border-top: 1px solid #e3e6f0;
 }
 
 .table thead th {
     vertical-align: bottom;
-    border-bottom: 2px solid #e3e6f0
+    border-bottom: 2px solid #e3e6f0;
+    background-color: rgb(1, 1, 95);
 }
 
 .table tbody+tbody {
-    border-top: 2px solid #e3e6f0
+    border-top: 2px solid #ffffff
 }
+
+/* Custom styles for the inner table */
+table.inner-table {
+    background-color: #f8f9fa;
+    /* Light grey background for the inner table */
+}
+
+table.inner-table th,
+table.inner-table td {
+    background-color: #f8f9fa;
+    /* Ensure table headers and cells match the inner table background */
+    color: black;
+    /* Set text color for better contrast */
+}
+
+/* Optional: Adjust inner table header colors if needed */
+table.inner-table thead {
+    background-color: #6c757d;
+    /* Darker grey for the header */
+    color: white;
+    /* White text for the header */
+}
+
 
 .table-sm td,
 .table-sm th {
@@ -10951,6 +10975,8 @@ a.text-dark:hover {
         background-color: #fff !important
     }
 
+
+
     .table-bordered td,
     .table-bordered th {
         border: 1px solid #dddfeb !important
@@ -11847,7 +11873,7 @@ a:focus {
     .sidebar.toggled .sidebar-brand .sidebar-brand-text {
         display: none
     }
-    
+
 
     .sidebar.toggled .sidebar-heading {
         text-align: center

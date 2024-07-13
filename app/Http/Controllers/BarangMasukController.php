@@ -19,16 +19,22 @@ class BarangMasukController extends Controller
     }
 
     public function index()
-    {
-        $barangMasuks = BarangMasuk::with('kategoriBarang', 'statusBarang')->orderBy('No_Surat')->get();
+{
+    $barangMasuks = BarangMasuk::with('kategoriBarang', 'statusBarang')->orderBy('No_Surat')->get();
 
-        // Kelompokkan barang masuk berdasarkan nomor surat
-        $groupedBarangMasuks = $barangMasuks->groupBy('No_Surat');
-        $statusBarangs = StatusBarang::all();
+    // Kelompokkan barang masuk berdasarkan nomor surat
+    $groupedBarangMasuks = $barangMasuks->groupBy('No_Surat');
 
-        return view('barangmasuk.index', compact('groupedBarangMasuks', 'statusBarangs'));
-    }
+    // Hitung total barang untuk setiap grup
+    $groupedBarangMasuks = $groupedBarangMasuks->map(function ($items) {
+        $items->Jumlah_barang = $items->sum('JumlahBarang_Masuk');
+        return $items;
+    });
 
+    $statusBarangs = StatusBarang::all();
+
+    return view('barangmasuk.index', compact('groupedBarangMasuks', 'statusBarangs'));
+}
     /**
      * Show the form for creating a new resource.
      */
@@ -104,7 +110,7 @@ class BarangMasukController extends Controller
             // Create a single notification for the No_Surat
             $notification = Notification::create([
                 'title' => 'Approval Barang Masuk',
-                'message' => 'Surat jalan butuh persetujuan dengan No. Surat: ' . $request->No_Surat,
+                'message' => 'Barang berhasil ditambahkan dengan No. Surat: ' . $request->No_Surat,
                 'status' => 'unread',
             ]);
 
