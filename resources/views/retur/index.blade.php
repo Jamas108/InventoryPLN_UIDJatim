@@ -23,13 +23,13 @@
                         <div class="table-responsive">
                             <table class="table text-start align-middle table-bordered table-hover mb-3 datatable"
                                 id="ProductTable" style="width: 100%;">
-                                <thead style="background-color: rgb(1, 1, 95);">
-                                    <tr style="color: white">
-                                        <th scope="col" style="width: 250px;">Jenis Retur</th>
-                                        <th scope="col" style="width: 250px;">Perusahaan Pemohon</th>
-                                        <th scope="col" style="width: 250px;">Pemohon</th>
-                                        <th scope="col" style="width: 250px;">Approval Status</th>
-                                        <th scope="col" style="width: 200px;">Detail</th>
+                                <thead>
+                                    <tr >
+                                        <th scope="col" style="width: 250px; color:white">Jenis Retur</th>
+                                        <th scope="col" style="width: 250px; color:white">Perusahaan Pemohon</th>
+                                        <th scope="col" style="width: 250px; color:white">Pemohon</th>
+                                        <th scope="col" style="width: 250px; color:white">Approval Status</th>
+                                        <th scope="col" style="width: 200px; color:white">Detail</th>
                                     </tr>
                                 </thead>
                                 <tbody>

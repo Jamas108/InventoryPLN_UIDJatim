@@ -28,12 +28,12 @@
                                 id="ProductTable" style="90%">
                                 <thead style=" background-color: rgb(1, 1, 95);">
                                     <tr style="color: white">
-                                        <th scope="col" style="width: 150px;">Nama</th>
-                                        <th scope="col" style="width: 200px;">No. Seri</th>
-                                        <th scope="col" style="width: 150px;">Tipe</th>
-                                        <th scope="col" style="width: 150px;">Merk</th>
-                                        <th scope="col" style="width: 250px;">Keterangan</th>
-                                        <th scope="col" style="width: 150px;">Detail</th>
+                                        <th scope="col" style="width: 150px; color:white">Nama</th>
+                                        <th scope="col" style="width: 200px; color:white">No. Seri</th>
+                                        <th scope="col" style="width: 150px; color:white">Tipe</th>
+                                        <th scope="col" style="width: 150px; color:white">Merk</th>
+                                        <th scope="col" style="width: 250px; color:white">Keterangan</th>
+                                        <th scope="col" style="width: 150px; color:white">Detail</th>
                                     </tr>
                                 </thead>
                                 <tbody>

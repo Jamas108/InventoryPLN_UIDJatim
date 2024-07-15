@@ -291,14 +291,14 @@
                 const container = document.getElementById('items-container');
                 const itemCount = container.getElementsByClassName('barang-item').length;
 
-                if (itemCount < 3) {
+                if (itemCount < 6) {
                     const newItem = container.firstElementChild.cloneNode(true);
                     newItem.querySelector('h5').textContent = 'Barang ' + (itemCount + 1);
                     newItem.querySelectorAll('input').forEach(input => input.value = '');
                     newItem.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
                     container.appendChild(newItem);
                 } else {
-                    alert('Anda hanya dapat menambahkan hingga 3 barang.');
+                    alert('Anda hanya dapat menambahkan hingga 6 barang.');
                 }
             });
 

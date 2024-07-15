@@ -25,14 +25,14 @@
                             <table class="table text-start align-middle table-bordered table-hover mb-0 datatable"
                                 id="ProductTable" style="100%">
                                 <thead style="background-color: rgb(1, 1, 95);">
-                                    <tr style="color: white">
-                                        <th scope="col">Kode</th>
-                                        <th scope="col">Kategori</th>
-                                        <th scope="col">Durasi</th>
-                                        <th scope="col">Penanggung Jawab</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Keterangan</th>
-                                        <th scope="col">Action</th>
+                                    <tr>
+                                        <th scope="col" style="color:white">Kode</th>
+                                        <th scope="col" style="color:white">Kategori</th>
+                                        <th scope="col" style="color:white">Durasi</th>
+                                        <th scope="col" style="color:white">Penanggung Jawab</th>
+                                        <th scope="col" style="color:white">Status</th>
+                                        <th scope="col" style="color:white">Keterangan</th>
+                                        <th scope="col" style="color:white">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>

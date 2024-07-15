@@ -33,7 +33,7 @@
     <!-- Include compiled app.js -->
     <script src="{{ mix('resources/js/app.js') }}"></script>
 
-    
+
 
 
     {{-- CSS --}}

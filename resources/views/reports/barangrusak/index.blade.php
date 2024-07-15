@@ -24,12 +24,12 @@
                         <div class="table-responsive">
                             <table class="table text-start align-middle table-bordered table-hover mb-0 datatable"
                                 id="ProductTable" style="90%">
-                                <thead style="background-color:  rgb(1, 1, 95);">
-                                    <tr style="color: white">
-                                        <th scope="col" style="width: 450px;">Nama Barang</th>
-                                        <th scope="col" style="width: 450px;">Tanggal</th>
-                                        <th scope="col" style="width: 450px;">Tahun</th>
-                                        <th scope="col" style="width: 450px;">Total Barang</th>
+                                <thead>
+                                    <tr >
+                                        <th scope="col" style="width: 450px; color:white">Nama Barang</th>
+                                        <th scope="col" style="width: 450px; color:white">Tanggal</th>
+                                        <th scope="col" style="width: 450px; color:white">Tahun</th>
+                                        <th scope="col" style="width: 450px; color:white">Total Barang</th>
                                     </tr>
                                 </thead>
                                 <tbody>

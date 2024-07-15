@@ -33,11 +33,11 @@
                         <div class="table-responsive">
                             <table class="table text-center align-middle  mb-0 datatable"
                                 id="ProductTable" style="width: 100%;">
-                                <thead style="background-color: rgb(1, 1, 95);">
-                                    <tr style="color: white">
-                                        <th scope="col" width="400px">ITEM NAME</th>
-                                        <th scope="col">QUANTITY</th>
-                                        <th scope="col">DATE ADDED</th>
+                                <thead >
+                                    <tr >
+                                        <th scope="col" style="width:400px; color:white">ITEM NAME</th>
+                                        <th scope="col" style="color:white">QUANTITY</th>
+                                        <th scope="col" style="color:white">DATE ADDED</th>
                                     </tr>
                                 </thead>
                                 <tbody>

@@ -14,11 +14,11 @@
                         <div class="table-responsive">
                             <table class="table text-start align-middle table-bordered table-hover mb-0 datatable"
                                 id="ProductTable" style="width: 100%;">
-                                <thead style="background-color: rgb(1, 1, 95);">
-                                    <tr style="color: white">
-                                        <th scope="col" style="width: 200px;">ITEM NAME</th>
-                                        <th scope="col" style="width: 500px;"></th>
-                                        <th scope="col" style="width: 150px;">DATE ADDED</th>
+                                <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 200px; color:white">ITEM NAME</th>
+                                        <th scope="col" style="width: 500px; color:white"></th>
+                                        <th scope="col" style="width: 150px; color:white">DATE ADDED</th>
 
                                     </tr>
                                 </thead>

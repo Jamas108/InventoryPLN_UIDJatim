@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use App\Models\KategoriBarang;
 use App\Events\NewNotification;
 
-
 class BarangMasukController extends Controller
 {
     public function __construct()
@@ -19,25 +18,23 @@ class BarangMasukController extends Controller
     }
 
     public function index()
-{
-    $barangMasuks = BarangMasuk::with('kategoriBarang', 'statusBarang')->orderBy('No_Surat')->get();
+    {
+        $barangMasuks = BarangMasuk::with('kategoriBarang', 'statusBarang')->orderBy('No_Surat')->get();
 
-    // Kelompokkan barang masuk berdasarkan nomor surat
-    $groupedBarangMasuks = $barangMasuks->groupBy('No_Surat');
+        // Kelompokkan barang masuk berdasarkan nomor surat
+        $groupedBarangMasuks = $barangMasuks->groupBy('No_Surat');
 
-    // Hitung total barang untuk setiap grup
-    $groupedBarangMasuks = $groupedBarangMasuks->map(function ($items) {
-        $items->Jumlah_barang = $items->sum('JumlahBarang_Masuk');
-        return $items;
-    });
+        // Hitung total barang untuk setiap grup
+        $groupedBarangMasuks = $groupedBarangMasuks->map(function ($items) {
+            $items->Jumlah_barang = $items->sum('JumlahBarang_Masuk');
+            return $items;
+        });
 
-    $statusBarangs = StatusBarang::all();
+        $statusBarangs = StatusBarang::all();
 
-    return view('barangmasuk.index', compact('groupedBarangMasuks', 'statusBarangs'));
-}
-    /**
-     * Show the form for creating a new resource.
-     */
+        return view('barangmasuk.index', compact('groupedBarangMasuks', 'statusBarangs'));
+    }
+
     public function create()
     {
         $staffGudangs = StaffGudang::all();
@@ -47,12 +44,8 @@ class BarangMasukController extends Controller
         return view('barangmasuk.create', compact('staffGudangs', 'kategoriBarangs', 'statusBarangs'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        // Validate the incoming request
         $request->validate([
             'Id_Petugas' => 'required|exists:staff_gudang,id',
             'No_Surat' => 'required|string|max:70',
@@ -72,16 +65,12 @@ class BarangMasukController extends Controller
             'Id_Status_Barang.*' => 'required|exists:status_barang,id',
         ]);
 
-        // Upload File_SuratJalan if present
         $fileSuratJalanPath = $request->file('File_SuratJalan') ? $request->file('File_SuratJalan')->store('file_surat_jalan') : null;
 
-        // Iterate through the items and save each one
         foreach ($request->JumlahBarang_Masuk as $i => $jumlah) {
-            // Upload Gambar_Barang if present
             $gambarBarangPath = isset($request->file('Gambar_Barang')[$i]) ? $request->file('Gambar_Barang')[$i]->store('gambar_barang') : null;
 
-            // Create the BarangMasuk record
-            $barangMasuk = new BarangMasuk([
+            BarangMasuk::create([
                 'Id_Petugas' => $request->Id_Petugas,
                 'No_Surat' => $request->No_Surat,
                 'NamaPerusahaan_Pengirim' => $request->NamaPerusahaan_Pengirim,
@@ -99,122 +88,89 @@ class BarangMasukController extends Controller
                 'Gambar_Barang' => $gambarBarangPath,
                 'Id_Status_Barang' => $request->Id_Status_Barang[$i],
             ]);
-
-            $barangMasuk->save();
         }
 
-        // Check if a notification for the No_Surat already exists
         $existingNotification = Notification::where('message', 'LIKE', '%' . $request->No_Surat . '%')->first();
 
         if (!$existingNotification) {
-            // Create a single notification for the No_Surat
             $notification = Notification::create([
                 'title' => 'Approval Barang Masuk',
                 'message' => 'Barang berhasil ditambahkan dengan No. Surat: ' . $request->No_Surat,
                 'status' => 'unread',
             ]);
 
-            // Fire the NewNotification event
             event(new NewNotification($notification));
         }
 
-        // Redirect to a success page or return a response as needed
         return redirect()->route('barangmasuk.index')->with('success', 'Barang Masuk berhasil ditambahkan.');
     }
 
-
-
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit($noSurat)
     {
-        $pageTitle = 'Detail Barang Masuk';
-
-        return view('barangmasuk.show', [
-            'pageTitle' => $pageTitle,
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'Id_Status_Barang' => 'required|exists:status_barang,id',
-        ]);
-
-        $barangMasuk = BarangMasuk::findOrFail($id);
-        $barangMasuk->update([
-            'Id_Status_Barang' => $request->Id_Status_Barang,
-        ]);
-
-        return redirect()->back()->with('success', 'Status barang berhasil diperbarui.');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
-
-    public function loadBarang($noSurat)
-    {
-        $barangMasuks = BarangMasuk::where('No_Surat', $noSurat)->get();
-
-        return view('barangmasuk.load_barang', compact('barangMasuks'));
-    }
-    public function editByNoSurat($noSurat)
-    {
-        // Ambil barang-barang berdasarkan nomor surat
         $barangMasuks = BarangMasuk::where('No_Surat', $noSurat)->get();
         $staffGudangs = StaffGudang::all();
         $kategoriBarangs = KategoriBarang::all();
         $statusBarangs = StatusBarang::all();
 
-        // Tampilkan halaman edit dengan membawa data barang-barang
-        return view('barangmasuk.edit_by_no_surat', compact('barangMasuks', 'staffGudangs', 'kategoriBarangs', 'statusBarangs'));
+        return view('barangmasuk.edit', compact('barangMasuks', 'staffGudangs', 'kategoriBarangs', 'statusBarangs'));
     }
 
 
-    public function updateByNoSurat(Request $request, $noSurat)
+
+    public function update(Request $request, $noSurat)
     {
-        // Validasi request
         $request->validate([
+            'Id_Petugas' => 'required|exists:staff_gudang,id',
+            'No_Surat' => 'required|string|max:70',
+            'NamaPerusahaan_Pengirim' => 'required|string|max:200',
+            'TanggalPengiriman_Barang' => 'required|date',
+            'Jumlah_barang' => 'required|integer',
+            'File_SuratJalan' => 'nullable|file|max:2048',
             'Kode_Barang.*' => 'required|string|max:200',
             'Nama_Barang.*' => 'required|string|max:200',
+            'Jenis_Barang.*' => 'required|string|max:50',
             'Id_Kategori_Barang.*' => 'required|exists:kategori_barang,id',
             'JumlahBarang_Masuk.*' => 'required|integer',
-            // Tambahkan validasi untuk input lainnya
+            'Garansi_Barang.*' => 'nullable|integer',
+            'Kondisi_Barang.*' => 'required|string|max:200',
+            'Tanggal_Masuk.*' => 'required|date',
+            'Gambar_Barang.*' => 'nullable|file|image|max:2048',
+            'Id_Status_Barang.*' => 'required|exists:status_barang,id',
         ]);
 
-        // Ambil barang-barang berdasarkan nomor surat
         $barangMasuks = BarangMasuk::where('No_Surat', $noSurat)->get();
 
-        // Iterasi dan perbarui setiap barang
         foreach ($barangMasuks as $index => $barangMasuk) {
+            $fileSuratJalanPath = $request->file('File_SuratJalan') ? $request->file('File_SuratJalan')->store('file_surat_jalan') : $barangMasuk->File_SuratJalan;
+
             $barangMasuk->update([
+                'Id_Petugas' => $request->Id_Petugas,
+                'No_Surat' => $request->No_Surat,
+                'NamaPerusahaan_Pengirim' => $request->NamaPerusahaan_Pengirim,
+                'TanggalPengiriman_Barang' => $request->TanggalPengiriman_Barang,
+                'Jumlah_barang' => $request->Jumlah_barang,
+                'File_SuratJalan' => $fileSuratJalanPath,
                 'Kode_Barang' => $request->Kode_Barang[$index],
                 'Nama_Barang' => $request->Nama_Barang[$index],
+                'Jenis_Barang' => $request->Jenis_Barang[$index],
                 'Id_Kategori_Barang' => $request->Id_Kategori_Barang[$index],
                 'JumlahBarang_Masuk' => $request->JumlahBarang_Masuk[$index],
-                // Tambahkan perubahan untuk input lainnya
+                'Garansi_Barang' => $request->Garansi_Barang[$index],
+                'Kondisi_Barang' => $request->Kondisi_Barang[$index],
+                'Tanggal_Masuk' => $request->Tanggal_Masuk[$index],
+                'Gambar_Barang' => $request->file('Gambar_Barang')[$index] ? $request->file('Gambar_Barang')[$index]->store('gambar_barang') : $barangMasuk->Gambar_Barang,
+                'Id_Status_Barang' => $request->Id_Status_Barang[$index],
             ]);
         }
 
-        // Redirect atau kirim respons sukses sesuai kebutuhan
         return redirect()->route('barangmasuk.index')->with('success', 'Barang Masuk berhasil diperbarui.');
+    }
+
+    public function destroy($id)
+    {
+        $barangmasuk = BarangMasuk::findOrFail($id);
+        $barangmasuk->delete();
+
+        return redirect()->route('barangmasuk.index')->with('success', 'Barang Masuk berhasil dihapus.');
     }
 }

@@ -24,14 +24,14 @@
                 <div class="bg-white justify-content-between rounded shadow p-4">
                     <div class="table-responsive">
                         <table class="table text-start align-middle table-bordered table-hover mb-0 datatable"
-                            id="ProductTable" style="90%">
-                            <thead style="background-color:  rgb(1, 1, 95);">
-                                <tr style="color: white">
-                                    <th scope="col" style="width: 300px;">Username</th>
-                                    <th scope="col" style="width: 200px;">Name</th>
-                                    <th scope="col" style="width: 250px;">Email</th>
-                                    <th scope="col" style="width: 250px;">Role</th>
-                                    <th scope="col" style="width: 250px;">Log Activity</th>
+                            id="ProductTable" style="100%">
+                            <thead >
+                                <tr>
+                                    <th scope="col" style="width: 300px; color:white">Username</th>
+                                    <th scope="col" style="width: 200px; color:white">Name</th>
+                                    <th scope="col" style="width: 250px; color:white">Email</th>
+                                    <th scope="col" style="width: 250px; color:white">Role</th>
+                                    <th scope="col" style="width: 250px; color:white">Log Activity</th>
                                 </tr>
                             </thead>
                             <tbody>
