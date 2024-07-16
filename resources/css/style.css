@@ -1794,8 +1794,16 @@ pre code {
 }
 
 .table tbody+tbody {
-    border-top: 2px solid #ffffff
+    border-top: 2px solid #ffffff;
+
+
 }
+
+.highlight {
+    background-color: #f8f9fa !important;
+}
+
+
 
 /* Custom styles for the inner table */
 table.inner-table {
@@ -1803,7 +1811,12 @@ table.inner-table {
     /* Light grey background for the inner table */
 }
 
-table.inner-table th,
+table.inner-table th {
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    /* Set text color for better contrast */
+}
+
 table.inner-table td {
     background-color: #f8f9fa;
     /* Ensure table headers and cells match the inner table background */

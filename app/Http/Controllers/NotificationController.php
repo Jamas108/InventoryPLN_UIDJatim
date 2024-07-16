@@ -18,7 +18,7 @@ class NotificationController extends Controller
         $notifications = Notification::orderBy('created_at', 'desc')->get();
         return view('notifications.index', compact('notifications'));
     }
-    
+
     public function markAllAsRead()
     {
         Notification::where('status', 'unread')->update(['status' => 'read']);
@@ -35,8 +35,6 @@ class NotificationController extends Controller
         return redirect()->back()->with('success', 'Notification marked as read.');
     }
 
-
-
     // Delete a notification
     public function destroy($id)
     {
@@ -44,5 +42,27 @@ class NotificationController extends Controller
         $notification->delete();
 
         return redirect()->back()->with('success', 'Notification deleted successfully.');
+    }
+
+    public function destroyAll()
+    {
+        Notification::truncate(); // Menghapus semua data notifikasi
+        return redirect()->route('notifications.index')->with('success', 'All notifications have been deleted.');
+    }
+
+    public function bulkMarkAsRead(Request $request)
+    {
+        $notificationIds = explode(',', $request->input('notification_ids'));
+        Notification::whereIn('id', $notificationIds)->update(['status' => 'read']);
+
+        return redirect()->back()->with('success', 'Selected notifications marked as read.');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $notificationIds = explode(',', $request->input('notification_ids'));
+        Notification::whereIn('id', $notificationIds)->delete();
+
+        return redirect()->back()->with('success', 'Selected notifications deleted.');
     }
 }

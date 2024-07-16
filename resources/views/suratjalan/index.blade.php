@@ -14,11 +14,11 @@
                         <div class="table-responsive" style="width: 100%;">
                             <table class="table text-center align-middle table-bordered table-hover mb-0 datatable"
                                 id="ProductTable">
-                                <thead style="background-color: rgb(1, 1, 95);">
-                                    <tr style="color: white">
-                                        <th scope="col" style="width: 450px;">Nama Perusahaan Pengirim</th>
-                                        <th scope="col" style="width: 450px;">No Surat Jalan</th>
-                                        <th scope="col" style="width: 450px;">Action</th>
+                                <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 450px; color:white">Nama Perusahaan Pengirim</th>
+                                        <th scope="col" style="width: 450px; color:white">No Surat Jalan</th>
+                                        <th scope="col" style="width: 450px; color:white">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>

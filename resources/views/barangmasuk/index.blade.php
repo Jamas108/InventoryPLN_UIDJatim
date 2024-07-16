@@ -44,6 +44,7 @@
                                                 <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ $noSurat }}" aria-expanded="false" aria-controls="collapse-{{ $noSurat }}">
                                                     +
                                                 </button>
+                                                <a href="{{ route('barangmasuk.edit', $noSurat) }}" class="btn btn-primary btn-sm">Edit Barang Masuk</a>
                                             </td>
                                         </tr>
                                         <tr id="collapse-{{ $noSurat }}" class="collapse" data-bs-parent="#ProductTable">
@@ -57,7 +58,6 @@
                                                                 <th>Kuantitas</th>
                                                                 <th>Kategori Barang</th>
                                                                 <th>Status Barang</th>
-                                                                <th>Actions</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -79,9 +79,6 @@
                                                                             </select>
                                                                             <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-save"></i></button>
                                                                         </form>
-                                                                    </td>
-                                                                    <td>
-                                                                        <a href="" class="btn btn-primary btn-sm">Edit Barang Masuk</a>
                                                                     </td>
                                                                 </tr>
                                                             @endforeach
