@@ -15,6 +15,19 @@ class BarangKeluarController extends Controller
         return view('barangkeluar.index');
     }
 
+    public function regulerIndex()
+    {
+        return view('barangkeluar.reguler.index');
+    }
+    public function insidentilIndex()
+    {
+        return view('barangkeluar.insidentil.index');
+    }
+    public function allIndex()
+    {
+        return view('barangkeluar.all.index');
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -24,11 +37,11 @@ class BarangKeluarController extends Controller
         $pageTitle = 'Tambahkan Barang Keluar';
 
         if ($type == 'insidentil') {
-            return view('barangkeluar.create2', [
+            return view('barangkeluar.insidentil.create', [
                 'pageTitle' => $pageTitle,
             ]);
         } elseif ($type == 'reguler') {
-            return view('barangkeluar.create1', [
+            return view('barangkeluar.reguler.create', [
                 'pageTitle' => $pageTitle,
             ]);
         } else {
