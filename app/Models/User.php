@@ -13,10 +13,15 @@ class User extends Authenticatable
 
 
     protected $fillable = [
-        'Id_Petugas', 'email', 'username', 'password',
+        'Id_Role', 'Nama', 'Jenis_Kelamin', 'Tanggal_Lahir', 'No_Telepon', 'Alamat', 'Instansi', 'email', 'password',
     ];
 
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function UsersRole()
+    {
+        return $this->hasMany(UserRole::class, 'Id_Role');
+    }
 }
