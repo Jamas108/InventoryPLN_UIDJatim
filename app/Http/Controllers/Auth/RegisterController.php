@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\StaffGudang;
 use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -43,8 +44,8 @@ class RegisterController extends Controller
 
     public function showRegistrationForm()
     {
-        $staffs = StaffGudang::all();
-        return view('auth.register', compact('staffs'));
+        $roles = UserRole::all();
+        return view('auth.register', compact('roles'));
     }
 
     /**
@@ -56,10 +57,8 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'Id_Petugas' => ['required', 'exists:staff_gudang,id'],
-            'username' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'email' => ['required'],
+            'password' => ['required'],
         ]);
     }
 
@@ -72,8 +71,13 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         return User::create([
-            'Id_Petugas' => $data['Id_Petugas'],
-            'username' => $data['username'],
+            'Id_Role' => 3,
+            'Nama' => $data['Nama'],
+            'Jenis_Kelamin' => $data['Jenis_Kelamin'],
+            'Tanggal_Lahir' => $data['Tanggal_Lahir'],
+            'No_Telepon' => $data['No_Telepon'],
+            'Alamat' => $data['Alamat'],
+            'Instansi' => $data['Instansi'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
