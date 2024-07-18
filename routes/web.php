@@ -37,6 +37,14 @@ Route::resource('barangmasuk', BarangMasukController::class);
 
 
 Route::resource('/barangkeluar', BarangKeluarController::class);
+Route::get('/barangkeluar/all/index', [BarangKeluarController::class, 'allIndex'])->name('barangkeluar.all.index');
+Route::get('/barangkeluar/reguler/index', [BarangKeluarController::class, 'regulerIndex'])->name('barangkeluar.reguler.index');
+Route::get('/barangkeluar/insidentil/index', [BarangKeluarController::class, 'insidentilIndex'])->name('barangkeluar.insidentil.index');
+
+
+
+
+
 
 
 Route::resource('/barangrusak', BarangRusakController::class);

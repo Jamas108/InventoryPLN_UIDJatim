@@ -24,7 +24,7 @@
                             style="object-fit: cover; width: 100%; height: 50vh;">
                         <div class="card-img-overlay d-flex justify-content-between flex-column">
                             <div style="align-self: flex-start; color:white">
-                                <h6 class="card-text">CATALOG</h6>
+                                <h6 class="card-text">CATALOG</h6> 
                                 <h3 class="card-title" style="font-weight: 800">Hardware</h3>
                             </div>
                             <a href="{{ route('stokbarang.hardware.index') }}" class="btn btn-primary" style="align-self: flex-end;">See Details</a>
