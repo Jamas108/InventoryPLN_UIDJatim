@@ -35,14 +35,19 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::resource('barangmasuk', BarangMasukController::class);
 
-
+//BARANG KELUAR ROUTE
 Route::resource('/barangkeluar', BarangKeluarController::class);
 Route::get('/barangkeluar/all/index', [BarangKeluarController::class, 'allIndex'])->name('barangkeluar.all.index');
+//BARANG KELUAR REGULER
 Route::get('/barangkeluar/reguler/index', [BarangKeluarController::class, 'regulerIndex'])->name('barangkeluar.reguler.index');
+Route::get('/barangkeluar/reguler/create', [BarangKeluarController::class, 'createReguler'])->name('barangkeluar.reguler.create');
+Route::post('/barangkeluar/reguler/store', [BarangKeluarController::class, 'storeReguler'])->name('barangkeluar.reguler.store');
+//BARANG KELUAR INSIDENTIL
 Route::get('/barangkeluar/insidentil/index', [BarangKeluarController::class, 'insidentilIndex'])->name('barangkeluar.insidentil.index');
-
-
-
+Route::get('/barangkeluar/insidentil/create', [BarangKeluarController::class, 'createInsidentil'])->name('barangkeluar.insidentil.create');
+Route::post('/barangkeluar/insidentil/store', [BarangKeluarController::class, 'storeInsidentil'])->name('barangkeluar.insidentil.store');
+Route::get('/barangkeluar/{Kode_BarangKeluar}/buat-berita-acara-insidentil', [BarangKeluarController::class, 'buatBeritaAcaraInsidentil'])->name('barangkeluar.buat-berita-acara-insidentil');
+Route::post('barangkeluar/store-berita-acara', [BarangKeluarController::class, 'storeBeritaAcara'])->name('barangkeluar.storeBeritaAcara');
 
 
 

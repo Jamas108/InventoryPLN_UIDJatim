@@ -65,7 +65,7 @@
                                         <select class="form-control @error('Id_Petugas') is-invalid @enderror"
                                             id="Id_Petugas" name="Id_Petugas">
                                             @foreach ($staffGudangs as $staffGudang)
-                                                <option value="{{ $staffGudang->id }}">{{ $staffGudang->Nama_Petugas }}
+                                                <option value="{{ $staffGudang->id }}">{{ $staffGudang->Nama }}
                                                 </option>
                                             @endforeach
                                         </select>
