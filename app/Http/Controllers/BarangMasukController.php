@@ -9,6 +9,7 @@ use App\Models\StatusBarang;
 use Illuminate\Http\Request;
 use App\Models\KategoriBarang;
 use App\Events\NewNotification;
+use App\Models\User;
 
 class BarangMasukController extends Controller
 {
@@ -37,7 +38,7 @@ class BarangMasukController extends Controller
 
     public function create()
     {
-        $staffGudangs = StaffGudang::all();
+        $staffGudangs = User::all();
         $kategoriBarangs = KategoriBarang::all();
         $statusBarangs = StatusBarang::all();
 
@@ -47,7 +48,7 @@ class BarangMasukController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'Id_Petugas' => 'required|exists:staff_gudang,id',
+            'Id_Petugas' => 'required|exists:users,id',
             'No_Surat' => 'required|string|max:70',
             'NamaPerusahaan_Pengirim' => 'required|string|max:200',
             'TanggalPengiriman_Barang' => 'required|date',
@@ -108,7 +109,7 @@ class BarangMasukController extends Controller
     public function edit($noSurat)
     {
         $barangMasuks = BarangMasuk::where('No_Surat', $noSurat)->get();
-        $staffGudangs = StaffGudang::all();
+        $staffGudangs = User::all();
         $kategoriBarangs = KategoriBarang::all();
         $statusBarangs = StatusBarang::all();
 
@@ -120,7 +121,7 @@ class BarangMasukController extends Controller
     public function update(Request $request, $noSurat)
     {
         $request->validate([
-            'Id_Petugas' => 'required|exists:staff_gudang,id',
+            'Id_Petugas' => 'required|exists:users,id',
             'No_Surat' => 'required|string|max:70',
             'NamaPerusahaan_Pengirim' => 'required|string|max:200',
             'TanggalPengiriman_Barang' => 'required|date',
