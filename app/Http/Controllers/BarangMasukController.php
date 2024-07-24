@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\BarangMasuk;
 use App\Models\StaffGudang;
 use App\Models\Notification;
@@ -9,7 +10,7 @@ use App\Models\StatusBarang;
 use Illuminate\Http\Request;
 use App\Models\KategoriBarang;
 use App\Events\NewNotification;
-use App\Models\User;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class BarangMasukController extends Controller
 {
@@ -32,6 +33,8 @@ class BarangMasukController extends Controller
         });
 
         $statusBarangs = StatusBarang::all();
+
+        confirmDelete();
 
         return view('barangmasuk.index', compact('groupedBarangMasuks', 'statusBarangs'));
     }
@@ -103,6 +106,10 @@ class BarangMasukController extends Controller
             event(new NewNotification($notification));
         }
 
+
+    Alert::success('Berhasil', 'Barang Berhasil Ditambahkan.');
+
+
         return redirect()->route('barangmasuk.index')->with('success', 'Barang Masuk berhasil ditambahkan.');
     }
 
@@ -164,14 +171,20 @@ class BarangMasukController extends Controller
             ]);
         }
 
+        Alert::success('Berhasil Diubah', 'Barang Berhasil Diubah.');
+
+
         return redirect()->route('barangmasuk.index')->with('success', 'Barang Masuk berhasil diperbarui.');
     }
 
     public function destroy($id)
-    {
-        $barangmasuk = BarangMasuk::findOrFail($id);
-        $barangmasuk->delete();
+{
+    $barangmasuk = BarangMasuk::findOrFail($id);
+    $barangmasuk->delete();
 
-        return redirect()->route('barangmasuk.index')->with('success', 'Barang Masuk berhasil dihapus.');
-    }
+    Alert::success('Berhasil Dihapus', 'Barang Berhasil Dihapus.');
+
+    return redirect()->route('barangmasuk.index')->with('success', 'Barang Masuk berhasil dihapus.');
+}
+
 }

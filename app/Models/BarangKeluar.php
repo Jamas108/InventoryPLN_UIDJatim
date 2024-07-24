@@ -10,11 +10,12 @@ class BarangKeluar extends Model
     use HasFactory;
 
     protected $table = 'barang_keluar';
-    
+
     protected $fillable = [
         'Id_User',
         'Id_Kategori_Peminjaman',
         'Id_barangKeluar',
+        'Id_BeritaAcara',
         'Id_StatusBarangKeluar',
         'Kode_BarangKeluar',
         'Kode_Barang',
@@ -45,5 +46,9 @@ class BarangKeluar extends Model
     public function barangMasuk()
     {
         return $this->belongsTo(BarangMasuk::class, 'Nama_Barang');
+    }
+    public function beritaAcara()
+    {
+        return $this->belongsTo(BeritaAcara::class, 'Id_BeritaAcara');
     }
 }
