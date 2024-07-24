@@ -14,6 +14,7 @@
             Schema::create('berita_acara', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('Id_BarangKeluar')->constrained('barang_keluar');
+                $table->foreign('Id_BarangKeluar')->references('Id')->on('barang_keluar')->onDelete('cascade');
                 $table->foreignId('Id_User')->constrained('users_role');
                 $table->string('Nama_PihakPeminjam');
                 $table->string('Total_BarangDipinjam');

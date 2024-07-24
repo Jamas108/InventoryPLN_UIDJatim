@@ -1,5 +1,36 @@
 @extends('layouts.app')
 
+@push('scripts')
+    <script type="module">
+        $(document).ready(function() {
+
+              $('#employeeTable').DataTable();
+        });
+
+
+            $(".datatable").on("click", ".btn-delete", function(e) {
+                e.preventDefault();
+
+                var form = $(this).closest("form");
+                var name = $(this).data("name");
+
+                Swal.fire({
+                    title: "Apakah yakin menghapus barang?",
+                    text: "Data yang dihapus tidak dapat kembali!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "bg-primary",
+                    confirmButtonText: "Ya, hapus barang",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+    </script>
+@endpush
+
+
 @section('content')
     @include('layouts.sidebar')
     <div id="content-wrapper" class="d-flex flex-column">
@@ -23,7 +54,8 @@
                 <div class="container-fluid pt-2 px-2">
                     <div class="bg-white justify-content-between rounded shadow p-4">
                         <div class="table-responsive">
-                            <table class="table text-center align-middle table-hover mb-0" id="ProductTable" style="width: 100%">
+                            <table class="table text-center align-middle table-hover mb-0 datatable" id="ProductTable"
+                                style="width: 100%">
                                 <thead>
                                     <tr>
                                         <th scope="col" style="width: 300px; color:white">No. Surat Jalan</th>
@@ -41,13 +73,30 @@
                                             <td>{{ $barangMasuks->Jumlah_barang }}</td>
                                             <td>Approved</td>
                                             <td>
-                                                <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ $noSurat }}" aria-expanded="false" aria-controls="collapse-{{ $noSurat }}">
+                                                <button class="btn btn-primary btn-sm" type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="#collapse-{{ $noSurat }}"
+                                                    aria-expanded="false" aria-controls="collapse-{{ $noSurat }}">
                                                     +
                                                 </button>
-                                                <a href="{{ route('barangmasuk.edit', $noSurat) }}" class="btn btn-primary btn-sm">Edit Barang Masuk</a>
+                                                <a href="{{ route('barangmasuk.edit', $noSurat) }}"
+                                                    class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <form
+                                                    action="{{ route('barangmasuk.destroy', $barangMasuks->first()->id) }}"
+                                                    method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm btn-delete"
+                                                        >
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
                                             </td>
                                         </tr>
-                                        <tr id="collapse-{{ $noSurat }}" class="collapse" data-bs-parent="#ProductTable">
+
+                                        <tr id="collapse-{{ $noSurat }}" class="collapse"
+                                            data-bs-parent="#ProductTable">
                                             <td colspan="5">
                                                 <div class="accordion-body">
                                                     <table class="table inner-table">
@@ -66,18 +115,28 @@
                                                                     <td>{{ $barangMasuk->Kode_Barang }}</td>
                                                                     <td>{{ $barangMasuk->Nama_Barang }}</td>
                                                                     <td>{{ $barangMasuk->JumlahBarang_Masuk }}</td>
-                                                                    <td>{{ $barangMasuk->kategoriBarang->Nama_Kategori_Barang }}</td>
+                                                                    <td>{{ $barangMasuk->kategoriBarang->Nama_Kategori_Barang }}
+                                                                    </td>
                                                                     <td>
-                                                                        <form action="{{ route('barangmasuk.update', $barangMasuk->id) }}" method="POST" class="d-flex align-items-center">
+                                                                        <form
+                                                                            action="{{ route('barangmasuk.update', $barangMasuk->id) }}"
+                                                                            method="POST"
+                                                                            class="d-flex align-items-center">
                                                                             @csrf
                                                                             @method('PUT')
-                                                                            <select name="Id_Status_Barang" class="form-select form-select-sm me-1" aria-label="Ubah Status">
-                                                                                @foreach($statusBarangs as $statusBarang)
-                                                                                <option value="{{ $statusBarang->id }}" {{ $barangMasuk->Id_Status_Barang == $statusBarang->id ? 'selected' : '' }}>
-                                                                                    {{ $statusBarang->Nama_Status }}</option>
+                                                                            <select name="Id_Status_Barang"
+                                                                                class="form-select form-select-sm me-1"
+                                                                                aria-label="Ubah Status">
+                                                                                @foreach ($statusBarangs as $statusBarang)
+                                                                                    <option value="{{ $statusBarang->id }}"
+                                                                                        {{ $barangMasuk->Id_Status_Barang == $statusBarang->id ? 'selected' : '' }}>
+                                                                                        {{ $statusBarang->Nama_Status }}
+                                                                                    </option>
                                                                                 @endforeach
                                                                             </select>
-                                                                            <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-save"></i></button>
+                                                                            <button type="submit"
+                                                                                class="btn btn-sm btn-primary"><i
+                                                                                    class="fas fa-save"></i></button>
                                                                         </form>
                                                                     </td>
                                                                 </tr>
