@@ -13,8 +13,8 @@
                             style="background-color: rgb(1, 1, 95);">
                             <h1 class="h3 mb-0 text-white"><strong>Masuk</strong></h1>
                         </div>
-                        <div class="bg-white justify-content-between rounded-bottom shadow p-4">
 
+                        <div class="bg-white justify-content-between rounded-bottom shadow p-4">
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -282,7 +282,7 @@
             </div>
         </div>
     </div>
-    </div>
+
 
 
     @push('scripts')

@@ -30,33 +30,44 @@
                                         <th scope="col" style="width: 300px; color:white">No. Surat Jalan</th>
                                         <th scope="col" style="width: 300px;  color:white">Berita Acara</th>
                                         <th scope="col" style="width: 300px;  color:white">Pihak Peminjam</th>
-                                        <th scope="col" style="width: 300px;  color:white">Total Barang</th>
-                                        <th scope="col" style="width: 300px;  color:white">Approval Status</th>
-                                        <th scope="col" style="width: 300px;  color:white">Action</th>
+                                        <th scope="col" style="width: 300px;  color:white">Tanggal Peminjaman</th>
+                                        <th scope="col" style="width: 200px;  color:white">Total Barang</th>
+                                        <th scope="col" style="width: 250px;  color:white">Approval Status</th>
+                                        <th scope="col" style="width: 350px;  color:white">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($groupedBarangKeluars as $Kode_GrupBarangKeluar => $barangKeluars)
                                         <tr>
-                                            <td>-</td>
-                                            <td>-</td>
-                                            <td>-</td>
+                                            <td>{{ $barangKeluars->No_SuratJalanBK }}</td>
+                                            <td>
+                                                @if (!empty($barangKeluars->File_BeritaAcara))
+                                                    <a href="{{ asset('storage/' . $barangKeluars->File_BeritaAcara) }}" class="btn btn-sm btn-info" target="_blank">Lihat Berita Acara</a>
+                                                @else
+                                                    <span>Tidak Ada</span>
+                                                @endif
+                                            </td>
+
+
+                                            <td>{{ $barangKeluars->Nama_PihakPeminjam }}</td>
                                             <td>{{ $barangKeluars->first()->Tanggal_BarangKeluar }}</td>
-                                            {{-- <td>{{ $barangKeluars->Total_BarangKeluar }}</td> --}}
+                                            <td>{{ $barangKeluars->Jumlah_Barang }}</td>
                                             <td>Approved</td>
                                             <td>
                                                 <button class="btn btn-primary btn-sm" type="button"
-                                                    data-bs-toggle="collapse" data-bs-target="#collapse-{{ $Kode_GrupBarangKeluar }}"
-                                                    aria-expanded="false" aria-controls="collapse-{{ $Kode_GrupBarangKeluar }}">
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#collapse-{{ $Kode_GrupBarangKeluar }}"
+                                                    aria-expanded="false"
+                                                    aria-controls="collapse-{{ $Kode_GrupBarangKeluar }}">
                                                     +
                                                 </button>
-                                                <a href="{{ route('barangmasuk.edit', $Kode_GrupBarangKeluar) }}"
+                                                <a href="{{ route('barangkeluar.buat-berita-acara-reguler', $Kode_GrupBarangKeluar) }}"
                                                     class="btn btn-primary btn-sm">Buat Berita Acara</a>
                                             </td>
                                         </tr>
                                         <tr id="collapse-{{ $Kode_GrupBarangKeluar }}" class="collapse"
                                             data-bs-parent="#ProductTable">
-                                            <td colspan="6">
+                                            <td colspan="7">
                                                 <div class="accordion-body">
                                                     <table class="table inner-table">
                                                         <thead>
@@ -77,7 +88,7 @@
                                                                     <td>{{ $barangKeluar->Kategori_Barang }}
                                                                     </td>
                                                                     <td>
-                                                                        <form
+                                                                        {{-- <form
                                                                             action="{{ route('barangmasuk.update', $barangKeluar->id) }}"
                                                                             method="POST"
                                                                             class="d-flex align-items-center">
@@ -86,17 +97,12 @@
                                                                             <select name="Id_Status_Barang"
                                                                                 class="form-select form-select-sm me-1"
                                                                                 aria-label="Ubah Status">
-                                                                                {{-- @foreach ($statusBarangs as $statusBarang)
-                                                                                    <option value="{{ $statusBarang->id }}"
-                                                                                        {{ $barangMasuk->Id_Status_Barang == $statusBarang->id ? 'selected' : '' }}>
-                                                                                        {{ $statusBarang->Nama_Status }}
-                                                                                    </option>
-                                                                                @endforeach --}}
                                                                             </select>
                                                                             <button type="submit"
                                                                                 class="btn btn-sm btn-primary"><i
                                                                                     class="fas fa-save"></i></button>
-                                                                        </form>
+                                                                        </form> --}}
+                                                                        -
                                                                     </td>
                                                                 </tr>
                                                             @endforeach
@@ -107,7 +113,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="5">Tidak ada barang masuk.</td>
+                                            <td colspan="10">Tidak ada barang masuk.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>

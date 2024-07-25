@@ -40,24 +40,29 @@
                                     @forelse ($groupedBarangKeluars as $Kode_GrupBarangKeluar => $barangKeluars)
                                         <tr>
                                             <td>{{ $barangKeluars->No_SuratJalanBK }}</td>
-                                                <td>
-                                                    @if (!empty($barangKeluars->File_BeritaAcara))
-                                                        <a href="{{ Vite::asset('storage/app/' . $barangKeluars->File_BeritaAcara) }}" class="btn btn-sm btn-info" target="_blank">Lihat Berita Acara</a>
-                                                    @else
-                                                        <span>Tidak Ada</span>
-                                                    @endif
-                                                </td>
+                                            <td>
+                                                @if (!empty($barangKeluars->File_BeritaAcara))
+                                                    <a href="{{ asset('storage/' . $barangKeluars->File_BeritaAcara) }}" class="btn btn-sm btn-info" target="_blank">Lihat Berita Acara</a>
+                                                @else
+                                                    <span>Tidak Ada</span>
+                                                @endif
+                                            </td>
+
+
                                             <td>{{ $barangKeluars->Nama_PihakPeminjam }}</td>
                                             <td>{{ $barangKeluars->first()->Tanggal_BarangKeluar }}</td>
                                             <td>{{ $barangKeluars->Jumlah_Barang }}</td>
                                             <td>Approved</td>
                                             <td>
                                                 <button class="btn btn-primary btn-sm" type="button"
-                                                    data-bs-toggle="collapse" data-bs-target="#collapse-{{ $Kode_GrupBarangKeluar }}"
-                                                    aria-expanded="false" aria-controls="collapse-{{ $Kode_GrupBarangKeluar }}">
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#collapse-{{ $Kode_GrupBarangKeluar }}"
+                                                    aria-expanded="false"
+                                                    aria-controls="collapse-{{ $Kode_GrupBarangKeluar }}">
                                                     +
                                                 </button>
-                                                <a href="{{ route('barangkeluar.buat-berita-acara-insidentil', $Kode_GrupBarangKeluar) }}" class="btn btn-primary btn-sm">Buat Berita Acara</a>
+                                                <a href="{{ route('barangkeluar.buat-berita-acara-insidentil', $Kode_GrupBarangKeluar) }}"
+                                                    class="btn btn-primary btn-sm">Buat Berita Acara</a>
                                             </td>
                                         </tr>
                                         <tr id="collapse-{{ $Kode_GrupBarangKeluar }}" class="collapse"
@@ -72,7 +77,6 @@
                                                                 <th>Kuantitas</th>
                                                                 <th>Kategori Barang</th>
                                                                 <th>Status Barang</th>
-
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -100,7 +104,6 @@
                                                                         </form> --}}
                                                                         -
                                                                     </td>
-
                                                                 </tr>
                                                             @endforeach
                                                         </tbody>
