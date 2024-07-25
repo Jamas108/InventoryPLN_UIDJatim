@@ -10,13 +10,13 @@
                     <h1 class="h3 mb-0 text-gray-800">Barang Keluar</h1>
                     <ul class="list-inline mb-0 float-end">
                         <li class="list-inline-item">
-                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><i
-                                    class="fas fa-download fa-sm text-white-50"></i> Download PDF</a>
-                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
-                                    class="fas fa-download fa-sm text-white-50"></i> Download Excel</a>
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
+                                <i class="fas fa-download fa-sm text-white-50"></i> Download PDF</a>
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">
+                                <i class="fas fa-download fa-sm text-white-50"></i> Download Excel</a>
                             <a href="{{ route('barangkeluar.insidentil.create') }}"
-                                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                    class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Barang Keluar </a>
+                               class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                                <i class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Barang Keluar </a>
                         </li>
                     </ul>
                 </div>
@@ -24,16 +24,16 @@
                     <div class="bg-white justify-content-between rounded shadow p-4">
                         <div class="table-responsive">
                             <table class="table text-center align-middle table-hover mb-0" id="ProductTable"
-                                style="width: 100%">
+                                   style="width: 100%">
                                 <thead>
                                     <tr>
-                                        <th scope="col" style="width: 300px; color:white">No. Surat Jalan</th>
-                                        <th scope="col" style="width: 300px;  color:white">Berita Acara</th>
-                                        <th scope="col" style="width: 300px;  color:white">Pihak Peminjam</th>
-                                        <th scope="col" style="width: 300px;  color:white">Tanggal Peminjaman</th>
-                                        <th scope="col" style="width: 200px;  color:white">Total Barang</th>
-                                        <th scope="col" style="width: 250px;  color:white">Approval Status</th>
-                                        <th scope="col" style="width: 350px;  color:white">Action</th>
+                                        <th>No. Surat Jalan</th>
+                                        <th>Berita Acara</th>
+                                        <th>Pihak Peminjam</th>
+                                        <th>Tanggal Peminjaman</th>
+                                        <th>Total Barang</th>
+                                        <th>Approval Status</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -47,8 +47,6 @@
                                                     <span>Tidak Ada</span>
                                                 @endif
                                             </td>
-
-
                                             <td>{{ $barangKeluars->Nama_PihakPeminjam }}</td>
                                             <td>{{ $barangKeluars->first()->Tanggal_BarangKeluar }}</td>
                                             <td>{{ $barangKeluars->Jumlah_Barang }}</td>
@@ -76,7 +74,7 @@
                                                                 <th>Nama Barang</th>
                                                                 <th>Kuantitas</th>
                                                                 <th>Kategori Barang</th>
-                                                                <th>Status Barang</th>
+                                                                <th>Action</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -85,24 +83,10 @@
                                                                     <td>{{ $barangKeluar->Kode_Barang }}</td>
                                                                     <td>{{ $barangKeluar->barangMasuk->Nama_Barang }}</td>
                                                                     <td>{{ $barangKeluar->Jumlah_Barang }}</td>
-                                                                    <td>{{ $barangKeluar->Kategori_Barang }}
-                                                                    </td>
+                                                                    <td>{{ $barangKeluar->Kategori_Barang }}</td>
                                                                     <td>
-                                                                        {{-- <form
-                                                                            action="{{ route('barangmasuk.update', $barangKeluar->id) }}"
-                                                                            method="POST"
-                                                                            class="d-flex align-items-center">
-                                                                            @csrf
-                                                                            @method('PUT')
-                                                                            <select name="Id_Status_Barang"
-                                                                                class="form-select form-select-sm me-1"
-                                                                                aria-label="Ubah Status">
-                                                                            </select>
-                                                                            <button type="submit"
-                                                                                class="btn btn-sm btn-primary"><i
-                                                                                    class="fas fa-save"></i></button>
-                                                                        </form> --}}
-                                                                        -
+                                                                        <a href="{{ route('retur.create', ['id' => $barangKeluar->id, 'kode_barang' => $barangKeluar->Kode_Barang, 'nama_barang' => $barangKeluar->barangMasuk->Nama_Barang, 'pihak_peminjam' => $barangKeluars->Nama_PihakPeminjam, 'kategori_barang' => $barangKeluar->Kategori_Barang]) }}"
+                                                                            class="btn btn-warning btn-sm">Retur Barang</a>
                                                                     </td>
                                                                 </tr>
                                                             @endforeach
