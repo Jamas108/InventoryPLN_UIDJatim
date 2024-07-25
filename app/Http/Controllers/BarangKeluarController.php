@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BarangKeluar;
 use App\Models\BarangMasuk;
 use App\Models\BeritaAcara;
-use App\Models\KategoriBarang;
-use App\Models\KategoriPeminjaman;
+use Illuminate\Support\Str;
+use App\Models\BarangKeluar;
 use App\Models\StatusBarang;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use App\Models\KategoriBarang;
+use App\Models\KategoriPeminjaman;
 use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class BarangKeluarController extends Controller
 {
@@ -45,6 +46,8 @@ class BarangKeluarController extends Controller
             return $items;
         });
 
+        confirmDelete();
+
 
         return view('barangkeluar.reguler.index', compact('groupedBarangKeluars', 'barangKeluars'));
     }
@@ -57,21 +60,32 @@ class BarangKeluarController extends Controller
             return redirect()->route('barangkeluar.index')->with('error', 'Kategori Reguler tidak ditemukan.');
         }
 
-        $barangKeluars = BarangKeluar::with('kategoriBarang')
+        // Adjust the query to include No_SuratJalanBK
+
+
+        $barangKeluars = BarangKeluar::with(['kategoriBarang', 'barangMasuk'])
             ->where('Id_Kategori_Peminjaman', $insidentilKategori->id)
             ->orderBy('Kode_BarangKeluar')
             ->get();
 
-        $groupedBarangKeluars = $barangKeluars->groupBy('Kode_BarangKeluar');
 
-        $groupedBarangKeluars = $groupedBarangKeluars->map(function ($items) {
+
+        // Group by Kode_BarangKeluar and include the sum of Jumlah_Barang and No_SuratJalanBK
+        $groupedBarangKeluars = $barangKeluars->groupBy('Kode_BarangKeluar')->map(function ($items) {
             $items->Jumlah_Barang = $items->sum('Jumlah_Barang');
+            $items->No_SuratJalanBK = $items->first()->No_SuratJalanBK;
+            $items->Tanggal_BarangKeluar = $items->first()->Tanggal_BarangKeluar;
+            $items->Nama_PihakPeminjam = $items->first()->Nama_PihakPeminjam;
+            $items->File_BeritaAcara = $items->first()->File_BeritaAcara;
             return $items;
         });
+
+        confirmDelete();
 
 
         return view('barangkeluar.insidentil.index', compact('groupedBarangKeluars', 'barangKeluars'));
     }
+
     public function allIndex()
     {
         return view('barangkeluar.all.index');
@@ -124,7 +138,9 @@ class BarangKeluarController extends Controller
             ]);
         }
 
-        return redirect()->route('barangkeluar.index')->with('success', 'Barang Keluar berhasil disimpan.');
+        Alert::success('Berhasil', 'Barang Berhasil Ditambahkan.');
+
+        return redirect()->route('barangkeluar.insidentil.index')->with('success', 'Barang Keluar berhasil disimpan.');
     }
 
     public function buatBeritaAcaraInsidentil(Request $request, $Kode_BarangKeluar)
@@ -135,6 +151,8 @@ class BarangKeluarController extends Controller
         return view('barangkeluar.insidentil.createba', compact('barangKeluars', 'Kode_BarangKeluar'));
     }
 
+
+    //untuk insidentil
     public function storeBeritaAcara(Request $request)
     {
         // Validasi data yang masuk
@@ -178,7 +196,7 @@ class BarangKeluarController extends Controller
         }
 
         // Redirect dengan pesan sukses
-        return redirect()->route('barangkeluar.index')->with('success', 'Berita Acara berhasil disimpan.');
+        return redirect()->route('barangkeluar.insidentil.index')->with('success', 'Berita Acara berhasil disimpan.');
     }
 
 
@@ -222,7 +240,7 @@ class BarangKeluarController extends Controller
             ]);
         }
 
-        return redirect()->route('barangkeluar.index')->with('success', 'Barang Keluar berhasil disimpan.');
+        return redirect()->route('barangkeluar.reguler.index')->with('success', 'Barang Keluar berhasil disimpan.');
     }
 
     /**
