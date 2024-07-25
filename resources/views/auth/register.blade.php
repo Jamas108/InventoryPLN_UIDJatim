@@ -38,15 +38,6 @@
 
 
                             <div class="row mb-3">
-                                <label for="Tanggal_Lahir"
-                                    class="col-md-4 col-form-label text-md-end">{{ __('Tanggal_Lahir') }}</label>
-                                <div class="col-md-6">
-                                    <input id="Tanggal_Lahir" type="date" class="form-control" name="Tanggal_Lahir"
-                                        value="{{ old('Tanggal_Lahir') }}" required autocomplete="Tanggal_Lahir">
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
                                 <label for="Alamat"
                                     class="col-md-4 col-form-label text-md-end">{{ __('Alamat') }}</label>
                                 <div class="col-md-6">

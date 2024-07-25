@@ -11,7 +11,11 @@
                 <form action="{{ route('barangkeluar.storeBeritaAcara') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="text" name="Kode_BarangKeluar" value="{{ $Kode_BarangKeluar }}">
-                    <input type="text" name="Total_BarangDipinjam" value="{{ $totalBarangDipinjam }}">
+
+                    <div class="mb-3">
+                        <label for="No_SuratJalanBK" class="form-label">Nomor Surat Jalan</label>
+                        <input type="text" class="form-control" id="No_SuratJalanBK" name="No_SuratJalanBK" required>
+                    </div>
 
                     <div class="mb-3">
                         <label for="Nama_PihakPeminjam" class="form-label">Nama Pihak Peminjam</label>
@@ -40,7 +44,7 @@
 
                     <div class="mb-3">
                         <label for="Tanggal_Kembali" class="form-label">Tanggal Kembali</label>
-                        <input type="date" class="form-control" id="Tanggal_Kembali" name="Tanggal_Kembali">
+                        <input type="date" class="form-control" id="Tanggal_Kembali" name="Tanggal_PengembalianBarang">
                     </div>
 
                     <button type="submit" class="btn btn-primary">Simpan</button>

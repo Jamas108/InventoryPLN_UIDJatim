@@ -129,44 +129,58 @@ class BarangKeluarController extends Controller
 
     public function buatBeritaAcaraInsidentil(Request $request, $Kode_BarangKeluar)
     {
-        // Dapatkan data Barang Keluar berdasarkan Kode_BarangKeluar
         $barangKeluars = BarangKeluar::where('Kode_BarangKeluar', $Kode_BarangKeluar)->get();
-        $totalBarangDipinjam = BarangKeluar::where('Kode_BarangKeluar', $request->Kode_BarangKeluar)->sum('Jumlah_Barang');
 
-        // Anda dapat menambahkan logika lain jika diperlukan
-
-        return view('barangkeluar.insidentil.createba', compact('barangKeluars', 'Kode_BarangKeluar','totalBarangDipinjam',));
+        // Mengarahkan ke form pembuatan Berita Acara
+        return view('barangkeluar.insidentil.createba', compact('barangKeluars', 'Kode_BarangKeluar'));
     }
 
     public function storeBeritaAcara(Request $request)
     {
+        // Validasi data yang masuk
+        $request->validate([
+            'No_SuratJalanBK' => 'nullable|string',
+            'Kode_BarangKeluar' => 'required|exists:barang_keluar,Kode_BarangKeluar',
+            'Nama_PihakPeminjam' => 'required|string|max:255',
+            'Catatan' => 'nullable|string',
+            'Tanggal_Keluar' => 'required|date',
+            'Tanggal_Kembali' => 'nullable|date|after_or_equal:Tanggal_Keluar',
+            'File_BeritaAcara' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+            'File_SuratJalan' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+        ]);
 
+        // Dapatkan data Barang Keluar berdasarkan Kode_BarangKeluar
+        $barangKeluars = BarangKeluar::where('Kode_BarangKeluar', $request->Kode_BarangKeluar)->get();
 
-        $user = Auth::user();
-        $totalBarangDipinjam = BarangKeluar::where('Kode_BarangKeluar', $request->Kode_BarangKeluar)->sum('Jumlah_Barang');
+        // Update data BarangKeluar dengan informasi Berita Acara
+        foreach ($barangKeluars as $barangKeluar) {
+            $barangKeluar->update([
+                'No_SuratJalanBK' => $request->No_SuratJalanBK,
+                'Nama_PihakPeminjam' => $request->Nama_PihakPeminjam,
+                'Total_BarangKeluar' => $request->Total_BarangKeluar,
+                'Catatan' => $request->Catatan,
+                'Tanggal_Keluar' => $request->Tanggal_Keluar,
+                'Tanggal_PengembalianBarang' => $request->Tanggal_PengembalianBarang,
+            ]);
 
+            // Mengunggah file Berita Acara jika ada
+            if ($request->hasFile('File_BeritaAcara')) {
+                $barangKeluar->File_BeritaAcara = $request->file('File_BeritaAcara')->store('berita_acara_files', 'public');
+            }
 
-        $beritaAcara = new BeritaAcara();
-        $beritaAcara->Id_BarangKeluar = $request->Kode_BarangKeluar;
-        $beritaAcara->Id_User = $user->id;
-        $beritaAcara->Nama_PihakPeminjam = $request->Nama_PihakPeminjam;
-        $beritaAcara->Total_BarangDipinjam = $totalBarangDipinjam;
-        $beritaAcara->Catatan = $request->Catatan;
+            // Mengunggah file Surat Jalan jika ada
+            if ($request->hasFile('File_SuratJalan')) {
+                $barangKeluar->File_SuratJalan = $request->file('File_SuratJalan')->store('surat_jalan_files', 'public');
+            }
 
-        if ($request->hasFile('File_BeritaAcara')) {
-            $beritaAcara->File_BeritaAcara = $request->file('File_BeritaAcara')->store('berita_acara_files');
+            // Simpan data BarangKeluar yang telah diperbarui
+            $barangKeluar->save();
         }
 
-        if ($request->hasFile('File_SuratJalan')) {
-            $beritaAcara->File_SuratJalan = $request->file('File_SuratJalan')->store('surat_jalan_files');
-        }
-
-        $beritaAcara->Tanggal_Keluar = $request->Tanggal_Keluar;
-        $beritaAcara->Tanggal_Kembali = $request->Tanggal_Kembali;
-        $beritaAcara->save();
-
+        // Redirect dengan pesan sukses
         return redirect()->route('barangkeluar.index')->with('success', 'Berita Acara berhasil disimpan.');
     }
+
 
     public function createReguler(Request $request)
     {

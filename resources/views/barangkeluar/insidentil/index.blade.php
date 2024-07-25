@@ -39,7 +39,7 @@
                                 <tbody>
                                     @forelse ($groupedBarangKeluars as $Kode_GrupBarangKeluar => $barangKeluars)
                                         <tr>
-                                            <td>-</td>
+                                            <td>{{ $barangKeluars->No_SuratJalanBK }}</td>
                                             <td>-</td>
                                             <td>-</td>
                                             <td>{{ $barangKeluars->first()->Tanggal_BarangKeluar }}</td>

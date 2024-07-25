@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('Kategori_Barang');
             $table->string('Jumlah_Barang');
             $table->string('Nama_PihakPeminjam');
-            $table->string('Total_BarangDipinjam');
             $table->string('Catatan');
+            $table->string('No_SuratJalanBK');
             $table->string('File_BeritaAcara');
             $table->string('File_SuratJalan');
             $table->string('Tanggal_BarangKeluar');
