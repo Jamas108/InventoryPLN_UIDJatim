@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\BarangMasuk;
 use App\Models\BeritaAcara;
-use Illuminate\Support\Str;
 use App\Models\BarangKeluar;
 use App\Models\StatusBarang;
-use Illuminate\Http\Request;
 use App\Models\KategoriBarang;
 use App\Models\KategoriPeminjaman;
+use App\Models\Notification;
+use App\Events\NewNotification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class BarangKeluarController extends Controller
@@ -19,6 +20,7 @@ class BarangKeluarController extends Controller
     {
         $this->middleware('auth');
     }
+
     public function index()
     {
         return view('barangkeluar.index');
@@ -34,41 +36,40 @@ class BarangKeluarController extends Controller
             return redirect()->route('barangkeluar.index')->with('error', 'Kategori Reguler tidak ditemukan.');
         }
 
-        $barangKeluars = BarangKeluar::with('kategoriBarang')
+        $barangKeluars = BarangKeluar::with('kategoriBarang', 'barangMasuk')
             ->where('Id_Kategori_Peminjaman', $regulerKategori->id)
             ->orderBy('Kode_BarangKeluar')
             ->get();
 
-        $groupedBarangKeluars = $barangKeluars->groupBy('Kode_BarangKeluar');
-
-        $groupedBarangKeluars = $groupedBarangKeluars->map(function ($items) {
-            $items->Jumlah_Barang = $items->sum('Jumlah_Barang');
-            return $items;
-        });
+       // Group by Kode_BarangKeluar and include the sum of Jumlah_Barang and No_SuratJalanBK
+       $groupedBarangKeluars = $barangKeluars->groupBy('Kode_BarangKeluar')->map(function ($items) {
+        $items->Jumlah_Barang = $items->sum('Jumlah_Barang');
+        $items->No_SuratJalanBK = $items->first()->No_SuratJalanBK;
+        $items->Tanggal_BarangKeluar = $items->first()->Tanggal_BarangKeluar;
+        $items->Nama_PihakPeminjam = $items->first()->Nama_PihakPeminjam;
+        $items->File_BeritaAcara = $items->first()->File_BeritaAcara;
+        return $items;
+    });
 
         confirmDelete();
 
-
         return view('barangkeluar.reguler.index', compact('groupedBarangKeluars', 'barangKeluars'));
     }
+
     public function insidentilIndex()
     {
         $insidentilKategori = KategoriPeminjaman::where('Nama_Kategori_Peminjaman', 'Insidentil')->first();
 
         if (!$insidentilKategori) {
             // Tangani kasus di mana kategori reguler tidak ditemukan
-            return redirect()->route('barangkeluar.index')->with('error', 'Kategori Reguler tidak ditemukan.');
+            return redirect()->route('barangkeluar.index')->with('error', 'Kategori Insidentil tidak ditemukan.');
         }
 
         // Adjust the query to include No_SuratJalanBK
-
-
         $barangKeluars = BarangKeluar::with(['kategoriBarang', 'barangMasuk'])
             ->where('Id_Kategori_Peminjaman', $insidentilKategori->id)
             ->orderBy('Kode_BarangKeluar')
             ->get();
-
-
 
         // Group by Kode_BarangKeluar and include the sum of Jumlah_Barang and No_SuratJalanBK
         $groupedBarangKeluars = $barangKeluars->groupBy('Kode_BarangKeluar')->map(function ($items) {
@@ -81,7 +82,6 @@ class BarangKeluarController extends Controller
         });
 
         confirmDelete();
-
 
         return view('barangkeluar.insidentil.index', compact('groupedBarangKeluars', 'barangKeluars'));
     }
@@ -101,10 +101,8 @@ class BarangKeluarController extends Controller
         $kategoriPeminjamans = KategoriPeminjaman::where('Nama_Kategori_Peminjaman', $kategori)->get();
         $Barangs = BarangMasuk::with('kategoriBarang')->get();
 
-
         return view('barangkeluar.insidentil.create', compact('pageTitle', 'kategori', 'kategoriPeminjamans', 'Barangs'))->with('error', 'Jenis produk tidak valid.');
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -138,6 +136,14 @@ class BarangKeluarController extends Controller
             ]);
         }
 
+        $notification = Notification::create([
+            'title' => 'Approval Barang Keluar Insidentil',
+            'message' => 'Barang berhasil ditambahkan dengan Kode Barang Keluar: ' . $Kode_BarangKeluar,
+            'status' => 'unread',
+        ]);
+
+        event(new NewNotification($notification));
+
         Alert::success('Berhasil', 'Barang Berhasil Ditambahkan.');
 
         return redirect()->route('barangkeluar.insidentil.index')->with('success', 'Barang Keluar berhasil disimpan.');
@@ -151,11 +157,67 @@ class BarangKeluarController extends Controller
         return view('barangkeluar.insidentil.createba', compact('barangKeluars', 'Kode_BarangKeluar'));
     }
 
+    public function buatBeritaAcaraReguler(Request $request, $Kode_BarangKeluar)
+    {
+        $barangKeluars = BarangKeluar::where('Kode_BarangKeluar', $Kode_BarangKeluar)->get();
 
-    //untuk insidentil
+        // Mengarahkan ke form pembuatan Berita Acara
+        return view('barangkeluar.reguler.createba', compact('barangKeluars', 'Kode_BarangKeluar'));
+    }
+
+    public function storeBeritaAcaraReguler(Request $request)
+    {
+        $request->validate([
+            'No_SuratJalanBK' => 'nullable|string',
+            'Kode_BarangKeluar' => 'required|exists:barang_keluar,Kode_BarangKeluar',
+            'Nama_PihakPeminjam' => 'required|string|max:255',
+            'Catatan' => 'nullable|string',
+            'Tanggal_Keluar' => 'required|date',
+            'File_BeritaAcara' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+            'File_SuratJalan' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+        ]);
+
+        $barangKeluars = BarangKeluar::where('Kode_BarangKeluar', $request->Kode_BarangKeluar)->get();
+
+        foreach ($barangKeluars as $barangKeluar) {
+            $barangKeluar->update([
+                'No_SuratJalanBK' => $request->No_SuratJalanBK,
+                'Nama_PihakPeminjam' => $request->Nama_PihakPeminjam,
+                'Catatan' => $request->Catatan,
+                'Tanggal_Keluar' => $request->Tanggal_Keluar,
+            ]);
+
+            if ($request->hasFile('File_BeritaAcara')) {
+                $filePath = $request->file('File_BeritaAcara')->store('public/berita_acara_files');
+                $barangKeluar->File_BeritaAcara = str_replace('public/', '', $filePath);
+            }
+
+            if ($request->hasFile('File_SuratJalan')) {
+                $filePath = $request->file('File_SuratJalan')->store('public/surat_jalan_files');
+                $barangKeluar->File_SuratJalan = str_replace('public/', '', $filePath);
+            }
+
+            $barangKeluar->save();
+        }
+
+        $notification = Notification::create([
+            'title' => 'Approval Berita Acara',
+            'message' => 'Berita Acara berhasil dibuat dengan Kode Barang Keluar: ' . $request->Kode_BarangKeluar,
+            'status' => 'unread',
+        ]);
+
+        event(new NewNotification($notification));
+
+        Alert::success('Berhasil', 'Berita Acara Berhasil Ditambahkan.');
+
+        return redirect()->route('barangkeluar.reguler.index')->with('success', 'Berita Acara berhasil disimpan.');
+    }
+
+
+
+
     public function storeBeritaAcara(Request $request)
     {
-        // Validasi data yang masuk
         $request->validate([
             'No_SuratJalanBK' => 'nullable|string',
             'Kode_BarangKeluar' => 'required|exists:barang_keluar,Kode_BarangKeluar',
@@ -167,38 +229,42 @@ class BarangKeluarController extends Controller
             'File_SuratJalan' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
         ]);
 
-        // Dapatkan data Barang Keluar berdasarkan Kode_BarangKeluar
         $barangKeluars = BarangKeluar::where('Kode_BarangKeluar', $request->Kode_BarangKeluar)->get();
 
-        // Update data BarangKeluar dengan informasi Berita Acara
         foreach ($barangKeluars as $barangKeluar) {
             $barangKeluar->update([
                 'No_SuratJalanBK' => $request->No_SuratJalanBK,
                 'Nama_PihakPeminjam' => $request->Nama_PihakPeminjam,
-                'Total_BarangKeluar' => $request->Total_BarangKeluar,
                 'Catatan' => $request->Catatan,
                 'Tanggal_Keluar' => $request->Tanggal_Keluar,
-                'Tanggal_PengembalianBarang' => $request->Tanggal_PengembalianBarang,
+                'Tanggal_PengembalianBarang' => $request->Tanggal_Kembali,
             ]);
 
-            // Mengunggah file Berita Acara jika ada
             if ($request->hasFile('File_BeritaAcara')) {
-                $barangKeluar->File_BeritaAcara = $request->file('File_BeritaAcara')->store('berita_acara_files', 'public');
+                $filePath = $request->file('File_BeritaAcara')->store('public/berita_acara_files');
+                $barangKeluar->File_BeritaAcara = str_replace('public/', '', $filePath);
             }
 
-            // Mengunggah file Surat Jalan jika ada
             if ($request->hasFile('File_SuratJalan')) {
-                $barangKeluar->File_SuratJalan = $request->file('File_SuratJalan')->store('surat_jalan_files', 'public');
+                $filePath = $request->file('File_SuratJalan')->store('public/surat_jalan_files');
+                $barangKeluar->File_SuratJalan = str_replace('public/', '', $filePath);
             }
 
-            // Simpan data BarangKeluar yang telah diperbarui
             $barangKeluar->save();
         }
 
-        // Redirect dengan pesan sukses
+        $notification = Notification::create([
+            'title' => 'Approval Berita Acara',
+            'message' => 'Berita Acara berhasil dibuat dengan Kode Barang Keluar: ' . $request->Kode_BarangKeluar,
+            'status' => 'unread',
+        ]);
+
+        event(new NewNotification($notification));
+
+        Alert::success('Berhasil', 'Berita Acara Berhasil Ditambahkan.');
+
         return redirect()->route('barangkeluar.insidentil.index')->with('success', 'Berita Acara berhasil disimpan.');
     }
-
 
     public function createReguler(Request $request)
     {
@@ -206,7 +272,6 @@ class BarangKeluarController extends Controller
         $kategori = 'Reguler';
         $kategoriPeminjamans = KategoriPeminjaman::where('Nama_Kategori_Peminjaman', $kategori)->get();
         $Barangs = BarangMasuk::with('kategoriBarang')->get();
-
 
         return view('barangkeluar.reguler.create', compact('pageTitle', 'kategori', 'kategoriPeminjamans', 'Barangs'))->with('error', 'Jenis produk tidak valid.');
     }
@@ -239,6 +304,16 @@ class BarangKeluarController extends Controller
                 'Tanggal_BarangKeluar' => $validatedData['tanggal_peminjamanbarang'],
             ]);
         }
+
+        $notification = Notification::create([
+            'title' => 'Approval Barang Keluar Reguler',
+            'message' => 'Barang berhasil ditambahkan dengan Kode Barang Keluar: ' . $Kode_BarangKeluar,
+            'status' => 'unread',
+        ]);
+
+        event(new NewNotification($notification));
+
+        Alert::success('Berhasil', 'Barang Berhasil Ditambahkan.');
 
         return redirect()->route('barangkeluar.reguler.index')->with('success', 'Barang Keluar berhasil disimpan.');
     }

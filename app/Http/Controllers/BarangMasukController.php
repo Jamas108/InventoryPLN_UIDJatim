@@ -150,7 +150,7 @@ class BarangMasukController extends Controller
 
         foreach ($barangMasuks as $index => $barangMasuk) {
             $fileSuratJalanPath = $request->file('File_SuratJalan') ? $request->file('File_SuratJalan')->store('file_surat_jalan') : $barangMasuk->File_SuratJalan;
-
+ 
             $barangMasuk->update([
                 'Id_Petugas' => $request->Id_Petugas,
                 'No_Surat' => $request->No_Surat,

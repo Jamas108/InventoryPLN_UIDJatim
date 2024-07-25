@@ -8,7 +8,7 @@
             @include('layouts.navbar')
             <div class="container-fluid p-2">
 
-                <form action="{{ route('barangkeluar.storeBeritaAcara') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('barangkeluar.storeBeritaAcaraReguler') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="container-fluid">
                         <div class="d-sm-flex align-items-center justify-content-center rounded-top" style="background-color: rgb(1, 1, 95);">
@@ -68,13 +68,6 @@
                                     <div class="form-group">
                                         <label for="Tanggal_Keluar" class="form-label">Tanggal Keluar</label>
                                         <input type="date" class="form-control" id="Tanggal_Keluar" name="Tanggal_Keluar" required>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="Tanggal_Kembali" class="form-label">Tanggal Kembali</label>
-                                        <input type="date" class="form-control" id="Tanggal_Kembali" name="Tanggal_Kembali">
                                     </div>
                                 </div>
                             </div>

@@ -42,6 +42,8 @@ Route::get('/barangkeluar/all/index', [BarangKeluarController::class, 'allIndex'
 Route::get('/barangkeluar/reguler/index', [BarangKeluarController::class, 'regulerIndex'])->name('barangkeluar.reguler.index');
 Route::get('/barangkeluar/reguler/create', [BarangKeluarController::class, 'createReguler'])->name('barangkeluar.reguler.create');
 Route::post('/barangkeluar/reguler/store', [BarangKeluarController::class, 'storeReguler'])->name('barangkeluar.reguler.store');
+Route::get('/barangkeluar/{Kode_BarangKeluar}/buat-berita-acara-reguler', [BarangKeluarController::class, 'buatBeritaAcaraReguler'])->name('barangkeluar.buat-berita-acara-reguler');
+Route::post('barangkeluar/store-berita-acara-reguler', [BarangKeluarController::class, 'storeBeritaAcaraReguler'])->name('barangkeluar.storeBeritaAcaraReguler');
 //BARANG KELUAR INSIDENTIL
 Route::get('/barangkeluar/insidentil/index', [BarangKeluarController::class, 'insidentilIndex'])->name('barangkeluar.insidentil.index');
 Route::get('/barangkeluar/insidentil/create', [BarangKeluarController::class, 'createInsidentil'])->name('barangkeluar.insidentil.create');
