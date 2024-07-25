@@ -37,7 +37,6 @@ class BarangKeluar extends Model
         return $this->belongsTo(User::class, 'Id_User');
     }
 
-
     // Relationship with KategoriPeminjaman model
     public function kategoriPeminjaman()
     {
@@ -50,7 +49,7 @@ class BarangKeluar extends Model
     }
     public function barangMasuk()
     {
-        return $this->belongsTo(BarangMasuk::class, 'Nama_Barang');
+        return $this->belongsTo(BarangMasuk::class, 'Kode_Barang', 'Kode_Barang');
     }
     public function beritaAcara()
     {

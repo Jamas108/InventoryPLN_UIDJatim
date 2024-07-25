@@ -31,17 +31,23 @@
                                         <th scope="col" style="width: 300px;  color:white">Berita Acara</th>
                                         <th scope="col" style="width: 300px;  color:white">Pihak Peminjam</th>
                                         <th scope="col" style="width: 300px;  color:white">Tanggal Peminjaman</th>
-                                        <th scope="col" style="width: 300px;  color:white">Total Barang</th>
-                                        <th scope="col" style="width: 300px;  color:white">Approval Status</th>
-                                        <th scope="col" style="width: 300px;  color:white">Action</th>
+                                        <th scope="col" style="width: 200px;  color:white">Total Barang</th>
+                                        <th scope="col" style="width: 250px;  color:white">Approval Status</th>
+                                        <th scope="col" style="width: 350px;  color:white">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($groupedBarangKeluars as $Kode_GrupBarangKeluar => $barangKeluars)
                                         <tr>
                                             <td>{{ $barangKeluars->No_SuratJalanBK }}</td>
-                                            <td>-</td>
-                                            <td>-</td>
+                                                <td>
+                                                    @if (!empty($barangKeluars->File_BeritaAcara))
+                                                        <a href="{{ Vite::asset('storage/app/' . $barangKeluars->File_BeritaAcara) }}" class="btn btn-sm btn-info" target="_blank">Lihat Berita Acara</a>
+                                                    @else
+                                                        <span>Tidak Ada</span>
+                                                    @endif
+                                                </td>
+                                            <td>{{ $barangKeluars->Nama_PihakPeminjam }}</td>
                                             <td>{{ $barangKeluars->first()->Tanggal_BarangKeluar }}</td>
                                             <td>{{ $barangKeluars->Jumlah_Barang }}</td>
                                             <td>Approved</td>
@@ -92,6 +98,7 @@
                                                                                 class="btn btn-sm btn-primary"><i
                                                                                     class="fas fa-save"></i></button>
                                                                         </form> --}}
+                                                                        -
                                                                     </td>
 
                                                                 </tr>
@@ -103,7 +110,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="5">Tidak ada barang masuk.</td>
+                                            <td colspan="10">Tidak ada barang masuk.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>

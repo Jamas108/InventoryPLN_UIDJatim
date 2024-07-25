@@ -45,4 +45,7 @@ class BarangMasuk extends Model
     {
         return $this->belongsTo(StatusBarang::class, 'Id_Status_Barang');
     }
+
+
+
 }
