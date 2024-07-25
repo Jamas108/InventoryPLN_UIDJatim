@@ -74,7 +74,6 @@ class RegisterController extends Controller
             'Id_Role' => 3,
             'Nama' => $data['Nama'],
             'Jenis_Kelamin' => $data['Jenis_Kelamin'],
-            'Tanggal_Lahir' => $data['Tanggal_Lahir'],
             'No_Telepon' => $data['No_Telepon'],
             'Alamat' => $data['Alamat'],
             'Instansi' => $data['Instansi'],
