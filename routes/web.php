@@ -71,8 +71,10 @@ Route::get('/masterdata/{id}', [MasterDataController::class, 'show'])->name('mas
 Route::resource('/suratjalan', SuratJalanController::class);
 
 
-
+//RUTE UNTUK RETUR
 Route::resource('/retur', ReturController::class);
+Route::get('/retur/bergaransi/index', [ReturController::class, 'bergaransiIndex'])->name('retur.bergaransi.index');
+Route::get('/retur/handal/index', [ReturController::class, 'handalIndex'])->name('retur.handal.index');
 
 
 // Rute untuk reports
