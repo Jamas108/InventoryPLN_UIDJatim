@@ -33,7 +33,7 @@ class ReturBarang extends Model
     }
 
     // Relationship with KategoriPeminjaman model
-    public function stausRetur()
+    public function statusRetur()
     {
         return $this->belongsTo(StatusReturBarang::class, 'Id_Status-Retur');
     }
@@ -51,4 +51,5 @@ class ReturBarang extends Model
     {
         return $this->belongsTo(BarangMasuk::class, 'Kode_Barang', 'Kode_Barang');
     }
+
 }

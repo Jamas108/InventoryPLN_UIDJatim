@@ -70,7 +70,6 @@ Route::get('/masterdata/{id}', [MasterDataController::class, 'show'])->name('mas
 
 Route::resource('/suratjalan', SuratJalanController::class);
 
-
 //RUTE UNTUK RETUR
 Route::resource('/retur', ReturController::class);
 Route::get('/retur/bergaransi/index', [ReturController::class, 'bergaransiIndex'])->name('retur.bergaransi.index');
@@ -81,8 +80,12 @@ Route::get('/retur/handal/index', [ReturController::class, 'handalIndex'])->name
 Route::resource('/reports', ReportsController::class);
 Route::get('/reports/barangkeluar/index', [ReportsController::class, 'indexbarangkeluar'])->name('indexbarangkeluar');
 Route::get('/reports/barangmasuk/index', [ReportsController::class, 'indexbarangmasuk'])->name('indexbarangmasuk');
-Route::get('/reports/barangrusak/index', [ReportsController::class, 'indexbarangrusak'])->name('indexbarangrusak');
+Route::get('/reports/barangrusak/index', [ReportsController::class, 'indexbarangrusak'])->name('reports.barangrusak.index');
 Route::get('/reports/requesteditem/index', [ReportsController::class, 'indexrequesteditem'])->name('indexrequesteditem');
+Route::get('/reports/barangmasuk/pdf', [ReportsController::class, 'exportPdfBarangMasuk'])->name('reports.barangmasuk.pdf');
+Route::get('/reports/barangkeluar/pdf', [ReportsController::class, 'exportPdfBarangKeluar'])->name('reports.barangkeluar.pdf');
+Route::get('/reports/barangrusak/export-pdf', [ReportsController::class, 'exportPdfBarangRusak'])->name('reports.exportPdfBarangRusak');
+
 
 
 

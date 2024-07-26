@@ -55,4 +55,9 @@ class BarangKeluar extends Model
     {
         return $this->belongsTo(BeritaAcara::class, 'Id_BeritaAcara');
     }
+    public function statusBarang()
+    {
+        return $this->belongsTo(StatusBarang::class, 'Id_StatusBarangKeluar');
+    }
+
 }
