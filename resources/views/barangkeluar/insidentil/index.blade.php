@@ -27,13 +27,13 @@
                                    style="width: 100%">
                                 <thead>
                                     <tr>
-                                        <th>No. Surat Jalan</th>
-                                        <th>Berita Acara</th>
-                                        <th>Pihak Peminjam</th>
-                                        <th>Tanggal Peminjaman</th>
-                                        <th>Total Barang</th>
-                                        <th>Approval Status</th>
-                                        <th>Action</th>
+                                        <th scope="col" style="width: 300px; color:white">No. Surat Jalan</th>
+                                        <th  scope="col" style="width: 300px; color:white">Berita Acara</th>
+                                        <th  scope="col" style="width: 300px; color:white">Pihak Peminjam</th>
+                                        <th  scope="col" style="width: 300px; color:white">Tanggal Peminjaman</th>
+                                        <th  scope="col" style="width: 300px; color:white">Total Barang</th>
+                                        <th  scope="col" style="width: 300px; color:white">Approval Status</th>
+                                        <th  scope="col" style="width: 300px; color:white">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>

@@ -48,6 +48,7 @@ class BarangKeluarController extends Controller
         $items->Tanggal_BarangKeluar = $items->first()->Tanggal_BarangKeluar;
         $items->Nama_PihakPeminjam = $items->first()->Nama_PihakPeminjam;
         $items->File_BeritaAcara = $items->first()->File_BeritaAcara;
+
         return $items;
     });
 
@@ -78,6 +79,7 @@ class BarangKeluarController extends Controller
             $items->Tanggal_BarangKeluar = $items->first()->Tanggal_BarangKeluar;
             $items->Nama_PihakPeminjam = $items->first()->Nama_PihakPeminjam;
             $items->File_BeritaAcara = $items->first()->File_BeritaAcara;
+
             return $items;
         });
 
@@ -175,6 +177,7 @@ class BarangKeluarController extends Controller
             'Tanggal_Keluar' => 'required|date',
             'File_BeritaAcara' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
             'File_SuratJalan' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+            
         ]);
 
         $barangKeluars = BarangKeluar::where('Kode_BarangKeluar', $request->Kode_BarangKeluar)->get();

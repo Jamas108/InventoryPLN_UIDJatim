@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\BarangMasuk;
+use App\Models\BarangKeluar;
+use App\Models\ReturBarang;
 use App\Models\StatusBarang;
+use App\Models\StatusReturBarang;
+use Illuminate\Http\Request;
 
 class ReportsController extends Controller
 {
@@ -12,6 +16,7 @@ class ReportsController extends Controller
     {
         $this->middleware('auth');
     }
+
     public function index()
     {
         return view('reports.index');
@@ -19,16 +24,12 @@ class ReportsController extends Controller
 
     public function indexBarangMasuk(Request $request)
     {
-        // $groupedBarangMasuks = BarangMasuk::all()->groupBy('No_Surat_Jalan');
-        // $statusBarangs = StatusBarang::all();
         $barangMasuks = BarangMasuk::with('kategoriBarang', 'statusBarang')
-            ->orderBy('Tanggal_Masuk', 'desc'); // Tambahkan orderBy disini
+            ->orderBy('Tanggal_Masuk', 'desc');
 
-        // Ambil filter dari request
         $filterYear = $request->input('year');
         $filterCondition = $request->input('condition');
 
-        // Terapkan filter jika ada
         if ($filterYear) {
             $barangMasuks->whereYear('Tanggal_Masuk', $filterYear);
         }
@@ -37,70 +38,153 @@ class ReportsController extends Controller
             $barangMasuks->where('Kondisi_Barang', $filterCondition);
         }
 
-        // Kelompokkan barang masuk berdasarkan nomor surat
         $groupedBarangMasuks = $barangMasuks->get()->groupBy('No_Surat');
-
         $statusBarangs = StatusBarang::all();
 
-        // Kirim filter ke view untuk ditampilkan di form filter
         return view('reports.barangmasuk.index', compact('groupedBarangMasuks', 'statusBarangs', 'filterYear', 'filterCondition'));
     }
 
-    public function indexBarangKeluar()
+    public function exportPdfBarangMasuk(Request $request)
     {
-        return view('reports.barangkeluar.index');
+        $barangMasuks = BarangMasuk::with('kategoriBarang', 'statusBarang')
+            ->orderBy('Tanggal_Masuk', 'desc');
+
+        $filterYear = $request->input('year');
+        $filterCondition = $request->input('condition');
+
+        if ($filterYear) {
+            $barangMasuks->whereYear('Tanggal_Masuk', $filterYear);
+        }
+
+        if ($filterCondition) {
+            $barangMasuks->where('Kondisi_Barang', $filterCondition);
+        }
+
+        $groupedBarangMasuks = $barangMasuks->get()->groupBy('No_Surat');
+        $pdf = PDF::loadView('reports.barangmasuk.pdf', compact('groupedBarangMasuks', 'filterYear', 'filterCondition'));
+
+        return $pdf->download('reports_barangmasuk.pdf');
     }
-    public function indexBarangRusak()
+
+    public function indexBarangKeluar(Request $request)
     {
-        return view('reports.barangrusak.index');
+        $barangKeluars = BarangKeluar::with('kategoriBarang', 'barangMasuk', 'statusBarang')
+            ->orderBy('Tanggal_BarangKeluar', 'desc');
+
+        $filterYear = $request->input('year');
+        $filterCondition = $request->input('condition');
+
+        if ($filterYear) {
+            $barangKeluars->whereYear('Tanggal_BarangKeluar', $filterYear);
+        }
+
+        if ($filterCondition) {
+            $barangKeluars->where('Kondisi_Barang', $filterCondition);
+        }
+
+        $groupedBarangKeluars = $barangKeluars->get()->groupBy('Kode_BarangKeluar');
+        $statusBarangs = StatusBarang::all();
+
+        return view('reports.barangkeluar.index', compact('groupedBarangKeluars', 'statusBarangs', 'filterYear', 'filterCondition'));
     }
+
+    public function exportPdfBarangKeluar(Request $request)
+    {
+        $barangKeluars = BarangKeluar::with('kategoriBarang', 'barangMasuk', 'statusBarang')
+            ->orderBy('Tanggal_BarangKeluar', 'desc');
+
+        $filterYear = $request->input('year');
+        $filterCondition = $request->input('condition');
+
+        if ($filterYear) {
+            $barangKeluars->whereYear('Tanggal_BarangKeluar', $filterYear);
+        }
+
+        if ($filterCondition) {
+            $barangKeluars->where('Kondisi_Barang', $filterCondition);
+        }
+
+        $groupedBarangKeluars = $barangKeluars->get()->groupBy('Kode_BarangKeluar');
+        $pdf = PDF::loadView('reports.barangkeluar.pdf', compact('groupedBarangKeluars', 'filterYear', 'filterCondition'));
+
+        return $pdf->download('reports_barangkeluar.pdf');
+    }
+
+    public function indexBarangRusak(Request $request)
+    {
+        $barangRusaks = ReturBarang::with('statusRetur')
+            ->orderBy('Tanggal_Retur', 'desc');
+
+        $filterYear = $request->input('year');
+        $filterCondition = $request->input('condition');
+
+        if ($filterYear) {
+            $barangRusaks->whereYear('Tanggal_Retur', $filterYear);
+        }
+
+        if ($filterCondition) {
+            $barangRusaks->where('Id_Status_Retur', $filterCondition);
+        }
+
+        $groupedBarangRusaks = $barangRusaks->get()->groupBy('Kode_Barang');
+        $statusReturs = StatusReturBarang::all();
+
+        return view('reports.barangrusak.index', compact('groupedBarangRusaks', 'statusReturs', 'filterYear', 'filterCondition'));
+    }
+
+    public function exportPdfBarangRusak(Request $request)
+    {
+        $barangRusaks = ReturBarang::with('statusRetur')
+            ->orderBy('Tanggal_Retur', 'desc');
+
+        $filterYear = $request->input('year');
+        $filterCondition = $request->input('condition');
+
+        if ($filterYear) {
+            $barangRusaks->whereYear('Tanggal_Retur', $filterYear);
+        }
+
+        if ($filterCondition) {
+            $barangRusaks->where('Id_Status_Retur', $filterCondition);
+        }
+
+        $groupedBarangRusaks = $barangRusaks->get()->groupBy('Kode_Barang');
+        $pdf = PDF::loadView('reports.barangrusak.pdf', compact('groupedBarangRusaks', 'filterYear', 'filterCondition'));
+
+        return $pdf->download('reports_barangrusak.pdf');
+    }
+
+
     public function indexRequestedItem()
     {
         return view('reports.requesteditem.index');
     }
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //

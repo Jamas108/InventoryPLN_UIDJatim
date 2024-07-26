@@ -34,7 +34,7 @@
                             </a>
                         </div>
                         <div class="col-md-3 mb-4">
-                            <a href="{{ route('indexbarangrusak') }}" style="text-decoration: none">
+                            <a href="{{ route('reports.barangrusak.index') }}" style="text-decoration: none">
                                 <div class="card shadow-sm">
                                     <div class="card-body text-center">
                                         <i class="fas fa-exclamation-triangle fa-3x" style="color: red;"></i>

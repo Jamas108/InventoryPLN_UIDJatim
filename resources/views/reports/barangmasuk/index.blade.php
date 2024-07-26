@@ -11,12 +11,10 @@
                     <h1 class="h3 mb-0 text-gray-800">Report Barang Masuk</h1>
                     <ul class="list-inline mb-0 float-start">
                         <li class="list-inline-item flex-end">
-                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
+                            <a href="{{ route('reports.barangmasuk.pdf', ['year' => request('year'), 'condition' => request('condition')]) }}"
+                                class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
                                 <i class="fas fa-download fa-sm text-white-50"></i> Download PDF
-                            </a>
-                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">
-                                <i class="fas fa-download fa-sm text-white-50"></i> Download Excel
-                            </a>
+                             </a>
                         </li>
                     </ul>
                 </div>
