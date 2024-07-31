@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -11,7 +13,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('user.index');
+        $users = User::with(['userRole'])->get();
+        return view('user.index', compact('users'));
     }
 
     /**
@@ -41,17 +44,26 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+        $user = User::findOrFail($id);
+        $roles = UserRole::all(); // Ambil semua role untuk dropdown
+        return view('user.edit', compact('user', 'roles'));
     }
-
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'role_id' => 'required|exists:users_role,id', // Validasi input role
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->Id_Role = $request->input('role_id');
+        $user->save();
+
+        return redirect()->route('user.index', $id)->with('success', 'User role updated successfully');
     }
 
     /**

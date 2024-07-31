@@ -42,7 +42,8 @@
                                             <td>{{ $barangKeluars->No_SuratJalanBK }}</td>
                                             <td>
                                                 @if (!empty($barangKeluars->File_BeritaAcara))
-                                                    <a href="{{ asset('storage/' . $barangKeluars->File_BeritaAcara) }}" class="btn btn-sm btn-info" target="_blank">Lihat Berita Acara</a>
+                                                    <a href="{{ asset('storage/' . $barangKeluars->File_BeritaAcara) }}"
+                                                        class="btn btn-sm btn-info" target="_blank">Lihat Berita Acara</a>
                                                 @else
                                                     <span>Tidak Ada</span>
                                                 @endif

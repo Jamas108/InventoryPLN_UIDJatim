@@ -89,9 +89,44 @@ class BarangKeluarController extends Controller
     }
 
     public function allIndex()
-    {
-        return view('barangkeluar.all.index');
+{
+    // Mengambil semua data barang keluar reguler dan insidentil
+    $regulerKategori = KategoriPeminjaman::where('Nama_Kategori_Peminjaman', 'Reguler')->first();
+    $insidentilKategori = KategoriPeminjaman::where('Nama_Kategori_Peminjaman', 'Insidentil')->first();
+
+    $barangKeluarsReguler = [];
+    $barangKeluarsInsidentil = [];
+
+    if ($regulerKategori) {
+        $barangKeluarsReguler = BarangKeluar::with('kategoriBarang', 'barangMasuk')
+            ->where('Id_Kategori_Peminjaman', $regulerKategori->id)
+            ->orderBy('Kode_BarangKeluar')
+            ->get();
     }
+
+    if ($insidentilKategori) {
+        $barangKeluarsInsidentil = BarangKeluar::with('kategoriBarang', 'barangMasuk')
+            ->where('Id_Kategori_Peminjaman', $insidentilKategori->id)
+            ->orderBy('Kode_BarangKeluar')
+            ->get();
+    }
+
+    $barangKeluars = $barangKeluarsReguler->merge($barangKeluarsInsidentil);
+
+    // Group by Kode_BarangKeluar and include the sum of Jumlah_Barang and No_SuratJalanBK
+    $groupedBarangKeluars = $barangKeluars->groupBy('Kode_BarangKeluar')->map(function ($items) {
+        $items->Jumlah_Barang = $items->sum('Jumlah_Barang');
+        $items->No_SuratJalanBK = $items->first()->No_SuratJalanBK;
+        $items->Tanggal_BarangKeluar = $items->first()->Tanggal_BarangKeluar;
+        $items->Nama_PihakPeminjam = $items->first()->Nama_PihakPeminjam;
+        $items->File_BeritaAcara = $items->first()->File_BeritaAcara;
+
+        return $items;
+    });
+
+    return view('barangkeluar.all.index', compact('groupedBarangKeluars', 'barangKeluars'));
+}
+
 
     /**
      * Show the form for creating a new resource.

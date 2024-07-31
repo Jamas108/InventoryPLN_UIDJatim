@@ -101,3 +101,6 @@ Route::middleware('auth')->group(function () {
 
 
 Route::resource('/user', UserController::class);
+Route::get('/users', [UserController::class, 'index']);
+Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
+Route::post('/user/{id}/update', [UserController::class, 'update'])->name('user.update');

@@ -11,7 +11,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-
     protected $fillable = [
         'Id_Role', 'Nama', 'Jenis_Kelamin', 'No_Telepon', 'Alamat', 'Instansi', 'email', 'password',
     ];
@@ -20,8 +19,8 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function UsersRole()
+    public function userRole()
     {
-        return $this->hasMany(UserRole::class, 'Id_Role');
+        return $this->belongsTo(UserRole::class, 'Id_Role');
     }
 }
