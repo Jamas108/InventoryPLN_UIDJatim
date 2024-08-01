@@ -7,16 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserRole extends Model
 {
-    protected $table = 'kategori_barang';
+    use HasFactory;
+
+    protected $table = 'users_role';
 
     protected $fillable = [
         'Nama_Role_Users',
         'Deskripsi_Role_Users',
     ];
 
-    public function Users()
+    public function users()
     {
         return $this->hasMany(User::class, 'Id_Role');
     }
-
 }
