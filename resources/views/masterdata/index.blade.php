@@ -1,4 +1,5 @@
 @extends('layouts.app')
+
 @section('content')
     @include('layouts.sidebar')
     <div id="content-wrapper" class="d-flex flex-column">
@@ -12,32 +13,25 @@
                 <div class="container-fluid pt-2 px-2">
                     <div class="bg-white justify-content-between rounded shadow p-4">
                         <div class="table-responsive">
-                            <table class="table text-start align-middle table-bordered table-hover mb-0 datatable"
-                                id="ProductTable" style="width: 100%;">
-                                <thead>
+                            <table class="table text-start align-middle table-bordered table-hover mb-0 datatable" id="ProductTable" style="width: 100%;">
+                                <thead class="text-center">
                                     <tr>
                                         <th scope="col" style="width: 200px; color:white">ITEM NAME</th>
-                                        <th scope="col" style="width: 500px; color:white"></th>
+                                        <th scope="col" style="width: 500px; color:white">DETAILS</th>
                                         <th scope="col" style="width: 150px; color:white">DATE ADDED</th>
-
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($items as $item)
+                                    @foreach ($barangMasuks as $item)
                                         <tr>
-                                            <td class="d-flex justify-content-center align-items-center">
-                                                <img src="{{ Vite::asset('resources/assets/' . $item->image) }}"
-                                                    alt="{{ $item->name }}" style="width: 100px;">
-                                            </td>
+                                            <td>{{ $item->Nama_Barang }}</td>
                                             <td>
-                                                <strong>{{ $item->name }}</strong><br>
-                                                Category: {{ $item->category }}<br>
-                                                Location: {{ $item->location }}<br>
-                                                Kode: {{ $item->kode }}<br>
-                                                {{-- Merk: {{ $item->merk }}<br>
-                                                Jenis Barang: {{ $item->jenis_barang }} --}}
+                                                Kode Barang : {{ $item->Kode_Barang }}<br>
+                                                Kategori Barang : {{ $item->kategoriBarang->Nama_Kategori_Barang }}<br>
+                                                Perusahaan Pengirim : {{ $item->NamaPerusahaan_Pengirim }}<br>
+                                                Jumlah : {{ $item->JumlahBarang_Masuk }}
                                             </td>
-                                            <td class="text-center align-middle">{{ $item->date_added->format('M d, Y') }}</td>
+                                            <td class="text-center align-middle">{{ $item->TanggalPengiriman_Barang}}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

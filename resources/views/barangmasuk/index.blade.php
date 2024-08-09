@@ -3,33 +3,30 @@
 @push('scripts')
     <script type="module">
         $(document).ready(function() {
-
-              $('#employeeTable').DataTable();
+            $('#employeeTable').DataTable();
         });
 
+        $(".datatable").on("click", ".btn-delete", function(e) {
+            e.preventDefault();
 
-            $(".datatable").on("click", ".btn-delete", function(e) {
-                e.preventDefault();
+            var form = $(this).closest("form");
+            var name = $(this).data("name");
 
-                var form = $(this).closest("form");
-                var name = $(this).data("name");
-
-                Swal.fire({
-                    title: "Apakah yakin menghapus barang?",
-                    text: "Data yang dihapus tidak dapat kembali!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonClass: "bg-primary",
-                    confirmButtonText: "Ya, hapus barang",
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
+            Swal.fire({
+                title: "Apakah yakin menghapus barang?",
+                text: "Data yang dihapus tidak dapat kembali!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "bg-primary",
+                confirmButtonText: "Ya, hapus barang",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
             });
+        });
     </script>
 @endpush
-
 
 @section('content')
     @include('layouts.sidebar')
@@ -78,17 +75,16 @@
                                                     aria-expanded="false" aria-controls="collapse-{{ $noSurat }}">
                                                     +
                                                 </button>
-                                                <a href="{{ route('barangmasuk.edit', $noSurat) }}"
-                                                    class="btn btn-primary btn-sm">
+                                                <a href="{{ route('barangmasuk.edit', ['noSurat' => $noSurat]) }}" class="btn btn-primary btn-sm">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
+                                                
                                                 <form
                                                     action="{{ route('barangmasuk.destroy', $barangMasuks->first()->id) }}"
                                                     method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm btn-delete"
-                                                        >
+                                                    <button type="submit" class="btn btn-danger btn-sm btn-delete">
                                                         <i class="fas fa-trash-alt"></i>
                                                     </button>
                                                 </form>
@@ -119,7 +115,7 @@
                                                                     </td>
                                                                     <td>
                                                                         <form
-                                                                            action="{{ route('barangmasuk.update', $barangMasuk->id) }}"
+                                                                            action="{{ route('barangmasuk.updateStatus', $barangMasuk->id) }}"
                                                                             method="POST"
                                                                             class="d-flex align-items-center">
                                                                             @csrf

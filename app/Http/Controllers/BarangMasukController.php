@@ -114,16 +114,18 @@ class BarangMasukController extends Controller
     }
 
     public function edit($noSurat)
-    {
-        $barangMasuks = BarangMasuk::where('No_Surat', $noSurat)->get();
-        $staffGudangs = User::all();
-        $kategoriBarangs = KategoriBarang::all();
-        $statusBarangs = StatusBarang::all();
+{
+    
+    // Ambil data barang masuk berdasarkan No_Surat
+    $barangMasuks = BarangMasuk::where('No_Surat', $noSurat)->get();
 
-        return view('barangmasuk.edit', compact('barangMasuks', 'staffGudangs', 'kategoriBarangs', 'statusBarangs'));
-    }
+    // Ambil data lain yang diperlukan
+    $staffGudangs = User::all();
+    $kategoriBarangs = KategoriBarang::all();
+    $statusBarangs = StatusBarang::all();
 
-
+    return view('barangmasuk.edit', compact('barangMasuks', 'staffGudangs', 'kategoriBarangs', 'statusBarangs'));
+}
 
     public function update(Request $request, $noSurat)
     {
@@ -186,5 +188,20 @@ class BarangMasukController extends Controller
 
     return redirect()->route('barangmasuk.index')->with('success', 'Barang Masuk berhasil dihapus.');
 }
+public function updateStatus(Request $request, $id)
+{
+    $request->validate([
+        'Id_Status_Barang' => 'required|exists:status_barang,id',
+    ]);
+
+    $barangMasuk = BarangMasuk::findOrFail($id);
+    $barangMasuk->Id_Status_Barang = $request->Id_Status_Barang;
+    $barangMasuk->save();
+
+    Alert::success('Berhasil Diubah', 'Status Barang Berhasil Diubah.');
+
+    return redirect()->route('barangmasuk.index')->with('success', 'Status Barang berhasil diperbarui.');
+}
+
 
 }

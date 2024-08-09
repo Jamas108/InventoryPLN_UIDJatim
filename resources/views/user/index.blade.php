@@ -15,15 +15,15 @@
                         <div class="table-responsive">
                             <table class="table text-start align-middle table-bordered table-hover mb-0 datatable"
                                 id="UserTable" style="width:100%">
-                                <thead>
+                                <thead class="text-center">
                                     <tr>
-                                        <th scope="col">Role User</th>
-                                        <th scope="col">Nama</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">No. Telepon</th>
-                                        <th scope="col">Instansi</th>
-                                        <th scope="col">Log Activity</th>
-                                        <th scope="col">Action</th>
+                                        <th scope="col" style="width: 200px; color:white;">Role User</th>
+                                        <th scope="col" style="width: 200px; color:white;">Nama</th>
+                                        <th scope="col" style="width: 200px; color:white;">Email</th>
+                                        <th scope="col" style="width: 200px; color:white;">No. Telepon</th>
+                                        <th scope="col" style="width: 200px; color:white;">Instansi</th>
+                                        <th scope="col" style="width: 200px; color:white;">Log Activity</th>
+                                        <th scope="col" style="width: 200px; color:white;">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -35,7 +35,7 @@
                                             <td>{{ $user->No_Telepon }}</td>
                                             <td>{{ $user->Instansi }}</td>
                                             <td>activity</td>
-                                            <td>
+                                            <td class="text-center">
                                                 <a href="{{ route('user.edit', $user->id) }}"
                                                     class="btn btn-warning btn-sm">Edit Role</a>
                                             </td>

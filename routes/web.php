@@ -34,6 +34,11 @@ Route::post('/login', [LoginController::class, 'authenticate']);
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::resource('barangmasuk', BarangMasukController::class);
+Route::put('/barangmasuk/updateStatus/{id}', [BarangMasukController::class, 'updateStatus'])->name('barangmasuk.updateStatus');
+Route::get('/barangmasuk/edit/{noSurat}', [BarangMasukController::class, 'edit'])->name('barangmasuk.edit');
+Route::put('/barangmasuk/update/{noSurat}', [BarangMasukController::class, 'update'])->name('barangmasuk.update');
+
+
 
 //BARANG KELUAR ROUTE
 Route::resource('/barangkeluar', BarangKeluarController::class);
@@ -66,6 +71,9 @@ Route::get('/stokbarang/networking/index', [StokBarangController::class, 'networ
 
 Route::resource('/masterdata', MasterDataController::class);
 Route::get('/masterdata/{id}', [MasterDataController::class, 'show'])->name('masterdata.show');
+
+Route::get('/master-data', [MasterDataController::class, 'index'])->name('master-data.index');
+
 
 
 Route::resource('/suratjalan', SuratJalanController::class);
