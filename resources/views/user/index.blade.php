@@ -13,17 +13,17 @@
                 <div class="container-fluid pt-2 px-2">
                     <div class="bg-white justify-content-between rounded shadow p-4">
                         <div class="table-responsive">
-                            <table class="table text-start align-middle table-bordered table-hover mb-0 datatable"
+                            <table class="table text-center align-middle table-hover mb-0 datatable"
                                 id="UserTable" style="width:100%">
-                                <thead class="text-center">
+                                <thead>
                                     <tr>
-                                        <th scope="col" style="width: 200px; color:white;">Role User</th>
-                                        <th scope="col" style="width: 200px; color:white;">Nama</th>
-                                        <th scope="col" style="width: 200px; color:white;">Email</th>
-                                        <th scope="col" style="width: 200px; color:white;">No. Telepon</th>
-                                        <th scope="col" style="width: 200px; color:white;">Instansi</th>
-                                        <th scope="col" style="width: 200px; color:white;">Log Activity</th>
-                                        <th scope="col" style="width: 200px; color:white;">Action</th>
+                                        <th scope="col" style="width: 200px; color:white; ">Role User</th>
+                                        <th scope="col" style="width: 200px; color:white; ">Nama</th>
+                                        <th scope="col" style="width: 200px; color:white; ">Email</th>
+                                        <th scope="col" style="width: 200px; color:white; ">No. Telepon</th>
+                                        <th scope="col" style="width: 200px; color:white; ">Instansi</th>
+                                        <th scope="col" style="width: 200px; color:white; ">Log Activity</th>
+                                        <th scope="col" style="width: 200px; color:white; ">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
