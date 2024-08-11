@@ -68,6 +68,7 @@
         {{-- @include('sweetalert::alert') --}}
         @vite('resources/js/app.js')
         @include('sweetalert::alert')
+        @include('vendor.larapexcharts')
         @stack('scripts')
     </div>
 </body>

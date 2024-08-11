@@ -9,7 +9,8 @@
                 <form action="{{ route('barangkeluar.reguler.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="container-fluid">
-                        <div class="d-sm-flex align-items-center justify-content-center rounded-top" style="background-color: rgb(1, 1, 95);">
+                        <div class="d-sm-flex align-items-center justify-content-center rounded-top"
+                            style="background-color: rgb(1, 1, 95);">
                             <h3 class="h3 mb-0 text-white"><strong>PENGAJUAN PEMINJAMAN BARANG</strong></h3>
                         </div>
 
@@ -18,15 +19,19 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="tanggal_peminjamanbarang">Tanggal Peminjaman</label>
-                                        <input type="date" class="form-control" placeholder="Masukan Rencana Tanggal Peminjaman Barang" id="tanggal_peminjamanbarang" name="tanggal_peminjamanbarang">
+                                        <input type="date" class="form-control"
+                                            placeholder="Masukan Rencana Tanggal Peminjaman Barang"
+                                            id="tanggal_peminjamanbarang" name="tanggal_peminjamanbarang">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Id_Kategori_Peminjaman">Kategori Peminjaman</label>
-                                        <select class="form-control @error('Id_Kategori_Peminjaman') is-invalid @enderror" id="Id_Kategori_Peminjaman" name="Id_Kategori_Peminjaman">
+                                        <select class="form-control @error('Id_Kategori_Peminjaman') is-invalid @enderror"
+                                            id="Id_Kategori_Peminjaman" name="Id_Kategori_Peminjaman">
                                             @foreach ($kategoriPeminjamans as $kategoriPeminjaman)
-                                                <option value="{{ $kategoriPeminjaman->id }}">{{ $kategoriPeminjaman->Nama_Kategori_Peminjaman }}</option>
+                                                <option value="{{ $kategoriPeminjaman->id }}">
+                                                    {{ $kategoriPeminjaman->Nama_Kategori_Peminjaman }}</option>
                                             @endforeach
                                         </select>
                                         @error('Id_Kategori_Peminjaman')
@@ -36,21 +41,34 @@
                                         @enderror
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="suratJalan">Surat Jalan</label>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="File_SuratJalan"
+                                                name="File_SuratJalan" accept="application/pdf">
+                                            <label class="custom-file-label" for="suratJalan">Pilih file PDF</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <div id="items-container" class="p-2">
                             <div class="row mb-3 bg-white justify-content-between rounded-bottom shadow mt-4 barang-item">
-                                <div class="d-sm-flex align-items-center justify-content-center rounded-top mb-4" style="background-color: rgb(1, 1, 95); height:50px">
+                                <div class="d-sm-flex align-items-center justify-content-center rounded-top mb-4"
+                                    style="background-color: rgb(1, 1, 95); height:50px">
                                     <h5 class="h5 mb-0 text-white">Barang 1</h5>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="nama_barang">Nama Barang</label>
-                                        <select class="form-control @error('nama_barang.*') is-invalid @enderror" id="nama_barang" name="nama_barang[]">
+                                        <select class="form-control @error('nama_barang.*') is-invalid @enderror"
+                                            id="nama_barang" name="nama_barang[]">
                                             @foreach ($Barangs as $barang)
-                                                <option value="{{ $barang->id }}" data-kode="{{ $barang->Kode_Barang }}" data-kategori="{{ $barang->kategoriBarang->Nama_Kategori_Barang }}">
+                                                <option value="{{ $barang->id }}" data-kode="{{ $barang->Kode_Barang }}"
+                                                    data-kategori="{{ $barang->kategoriBarang->Nama_Kategori_Barang }}">
                                                     {{ $barang->Nama_Barang }}</option>
                                             @endforeach
                                         </select>
@@ -64,19 +82,22 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="kode_barang">Kode Barang</label>
-                                        <input type="text" class="form-control" id="kode_barang" name="kode_barang[]" readonly>
+                                        <input type="text" class="form-control" id="kode_barang" name="kode_barang[]"
+                                            readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Kategori_Barang">Kategori Barang</label>
-                                        <input type="text" class="form-control" id="Kategori_Barang" name="Kategori_Barang[]" readonly>
+                                        <input type="text" class="form-control" id="Kategori_Barang"
+                                            name="Kategori_Barang[]" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="jumlah_barang">Jumlah Barang</label>
-                                        <input type="number" class="form-control" id="jumlah_barang" name="jumlah_barang[]" min="1">
+                                        <input type="number" class="form-control" id="jumlah_barang" name="jumlah_barang[]"
+                                            min="1">
                                     </div>
                                 </div>
                             </div>

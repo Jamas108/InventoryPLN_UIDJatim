@@ -13,6 +13,8 @@ use App\Events\NewNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
+use PDF;
+use Illuminate\Support\Facades\File;
 
 class BarangKeluarController extends Controller
 {
@@ -41,16 +43,16 @@ class BarangKeluarController extends Controller
             ->orderBy('Kode_BarangKeluar')
             ->get();
 
-       // Group by Kode_BarangKeluar and include the sum of Jumlah_Barang and No_SuratJalanBK
-       $groupedBarangKeluars = $barangKeluars->groupBy('Kode_BarangKeluar')->map(function ($items) {
-        $items->Jumlah_Barang = $items->sum('Jumlah_Barang');
-        $items->No_SuratJalanBK = $items->first()->No_SuratJalanBK;
-        $items->Tanggal_BarangKeluar = $items->first()->Tanggal_BarangKeluar;
-        $items->Nama_PihakPeminjam = $items->first()->Nama_PihakPeminjam;
-        $items->File_BeritaAcara = $items->first()->File_BeritaAcara;
+        // Group by Kode_BarangKeluar and include the sum of Jumlah_Barang and No_SuratJalanBK
+        $groupedBarangKeluars = $barangKeluars->groupBy('Kode_BarangKeluar')->map(function ($items) {
+            $items->Jumlah_Barang = $items->sum('Jumlah_Barang');
+            $items->No_SuratJalanBK = $items->first()->No_SuratJalanBK;
+            $items->Tanggal_BarangKeluar = $items->first()->Tanggal_BarangKeluar;
+            $items->Nama_PihakPeminjam = $items->first()->Nama_PihakPeminjam;
+            $items->File_BeritaAcara = $items->first()->File_BeritaAcara;
 
-        return $items;
-    });
+            return $items;
+        });
 
         confirmDelete();
 
@@ -89,43 +91,43 @@ class BarangKeluarController extends Controller
     }
 
     public function allIndex()
-{
-    // Mengambil semua data barang keluar reguler dan insidentil
-    $regulerKategori = KategoriPeminjaman::where('Nama_Kategori_Peminjaman', 'Reguler')->first();
-    $insidentilKategori = KategoriPeminjaman::where('Nama_Kategori_Peminjaman', 'Insidentil')->first();
+    {
+        // Mengambil semua data barang keluar reguler dan insidentil
+        $regulerKategori = KategoriPeminjaman::where('Nama_Kategori_Peminjaman', 'Reguler')->first();
+        $insidentilKategori = KategoriPeminjaman::where('Nama_Kategori_Peminjaman', 'Insidentil')->first();
 
-    $barangKeluarsReguler = [];
-    $barangKeluarsInsidentil = [];
+        $barangKeluarsReguler = [];
+        $barangKeluarsInsidentil = [];
 
-    if ($regulerKategori) {
-        $barangKeluarsReguler = BarangKeluar::with('kategoriBarang', 'barangMasuk')
-            ->where('Id_Kategori_Peminjaman', $regulerKategori->id)
-            ->orderBy('Kode_BarangKeluar')
-            ->get();
+        if ($regulerKategori) {
+            $barangKeluarsReguler = BarangKeluar::with('kategoriBarang', 'barangMasuk')
+                ->where('Id_Kategori_Peminjaman', $regulerKategori->id)
+                ->orderBy('Kode_BarangKeluar')
+                ->get();
+        }
+
+        if ($insidentilKategori) {
+            $barangKeluarsInsidentil = BarangKeluar::with('kategoriBarang', 'barangMasuk')
+                ->where('Id_Kategori_Peminjaman', $insidentilKategori->id)
+                ->orderBy('Kode_BarangKeluar')
+                ->get();
+        }
+
+        $barangKeluars = $barangKeluarsReguler->merge($barangKeluarsInsidentil);
+
+        // Group by Kode_BarangKeluar and include the sum of Jumlah_Barang and No_SuratJalanBK
+        $groupedBarangKeluars = $barangKeluars->groupBy('Kode_BarangKeluar')->map(function ($items) {
+            $items->Jumlah_Barang = $items->sum('Jumlah_Barang');
+            $items->No_SuratJalanBK = $items->first()->No_SuratJalanBK;
+            $items->Tanggal_BarangKeluar = $items->first()->Tanggal_BarangKeluar;
+            $items->Nama_PihakPeminjam = $items->first()->Nama_PihakPeminjam;
+            $items->File_BeritaAcara = $items->first()->File_BeritaAcara;
+
+            return $items;
+        });
+
+        return view('barangkeluar.all.index', compact('groupedBarangKeluars', 'barangKeluars'));
     }
-
-    if ($insidentilKategori) {
-        $barangKeluarsInsidentil = BarangKeluar::with('kategoriBarang', 'barangMasuk')
-            ->where('Id_Kategori_Peminjaman', $insidentilKategori->id)
-            ->orderBy('Kode_BarangKeluar')
-            ->get();
-    }
-
-    $barangKeluars = $barangKeluarsReguler->merge($barangKeluarsInsidentil);
-
-    // Group by Kode_BarangKeluar and include the sum of Jumlah_Barang and No_SuratJalanBK
-    $groupedBarangKeluars = $barangKeluars->groupBy('Kode_BarangKeluar')->map(function ($items) {
-        $items->Jumlah_Barang = $items->sum('Jumlah_Barang');
-        $items->No_SuratJalanBK = $items->first()->No_SuratJalanBK;
-        $items->Tanggal_BarangKeluar = $items->first()->Tanggal_BarangKeluar;
-        $items->Nama_PihakPeminjam = $items->first()->Nama_PihakPeminjam;
-        $items->File_BeritaAcara = $items->first()->File_BeritaAcara;
-
-        return $items;
-    });
-
-    return view('barangkeluar.all.index', compact('groupedBarangKeluars', 'barangKeluars'));
-}
 
 
     /**
@@ -153,11 +155,19 @@ class BarangKeluarController extends Controller
             'kode_barang.*' => 'required|string|max:50',
             'Kategori_Barang.*' => 'required|string|max:50',
             'jumlah_barang.*' => 'required|integer|min:1',
+            'File_SuratJalan' => 'nullable|file|mimes:pdf,doc,docx|max:2048', // Tambahkan validasi untuk File_SuratJalan
         ]);
 
         $Kode_BarangKeluar = $this->generateNumericUID();
         $userId = Auth::id();
         $statusId = 3;
+        $filePath = null;
+
+        // Simpan file jika diunggah
+        if ($request->hasFile('File_SuratJalan')) {
+            $file = $request->file('File_SuratJalan');
+            $filePath = $file->storeAs('public/surat_jalan', $Kode_BarangKeluar . '.' . $file->getClientOriginalExtension());
+        }
 
         foreach ($validatedData['nama_barang'] as $index => $nama_barang) {
             BarangKeluar::create([
@@ -170,6 +180,7 @@ class BarangKeluarController extends Controller
                 'Kategori_Barang' => $validatedData['Kategori_Barang'][$index],
                 'Jumlah_Barang' => $validatedData['jumlah_barang'][$index],
                 'Tanggal_BarangKeluar' => $validatedData['tanggal_peminjamanbarang'],
+                'File_SuratJalan' => $filePath ? str_replace('public/', 'storage/', $filePath) : null, // Simpan path file jika ada
             ]);
         }
 
@@ -185,6 +196,7 @@ class BarangKeluarController extends Controller
 
         return redirect()->route('barangkeluar.insidentil.index')->with('success', 'Barang Keluar berhasil disimpan.');
     }
+
 
     public function buatBeritaAcaraInsidentil(Request $request, $Kode_BarangKeluar)
     {
@@ -210,9 +222,6 @@ class BarangKeluarController extends Controller
             'Nama_PihakPeminjam' => 'required|string|max:255',
             'Catatan' => 'nullable|string',
             'Tanggal_Keluar' => 'required|date',
-            'File_BeritaAcara' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-            'File_SuratJalan' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-            
         ]);
 
         $barangKeluars = BarangKeluar::where('Kode_BarangKeluar', $request->Kode_BarangKeluar)->get();
@@ -224,20 +233,41 @@ class BarangKeluarController extends Controller
                 'Catatan' => $request->Catatan,
                 'Tanggal_Keluar' => $request->Tanggal_Keluar,
             ]);
-
-            if ($request->hasFile('File_BeritaAcara')) {
-                $filePath = $request->file('File_BeritaAcara')->store('public/berita_acara_files');
-                $barangKeluar->File_BeritaAcara = str_replace('public/', '', $filePath);
-            }
-
-            if ($request->hasFile('File_SuratJalan')) {
-                $filePath = $request->file('File_SuratJalan')->store('public/surat_jalan_files');
-                $barangKeluar->File_SuratJalan = str_replace('public/', '', $filePath);
-            }
-
-            $barangKeluar->save();
         }
 
+        // Data untuk PDF
+        $data = [
+            'No_SuratJalanBK' => $request->No_SuratJalanBK,
+            'Nama_PihakPeminjam' => $request->Nama_PihakPeminjam,
+            'Catatan' => $request->Catatan,
+            'Tanggal_Keluar' => $request->Tanggal_Keluar,
+            'barangKeluarList' => $barangKeluars,
+        ];
+
+        // Generate PDF
+        $pdf = PDF::loadView('barangkeluar.reguler.beritaacarareguler', $data);
+
+        // Tentukan path direktori
+        $directoryPath = storage_path('app/public/berita_acara');
+
+        // Buat direktori jika belum ada
+        if (!File::exists($directoryPath)) {
+            File::makeDirectory($directoryPath, 0755, true);
+        }
+
+        // Simpan PDF ke penyimpanan server
+        $pdfFilename = $barangKeluar->Kode_BarangKeluar . '.pdf';
+        $pdfPath = $directoryPath . '/' . $pdfFilename;
+        $pdf->save($pdfPath);
+
+        // Simpan path PDF ke dalam kolom File_BeritaAcara di tabel barang_keluar
+        foreach ($barangKeluars as $barangKeluar) {
+            $barangKeluar->update([
+                'File_BeritaAcara' => 'storage/berita_acara/' . $pdfFilename,
+            ]);
+        }
+
+        // Kirim notifikasi
         $notification = Notification::create([
             'title' => 'Approval Berita Acara',
             'message' => 'Berita Acara berhasil dibuat dengan Kode Barang Keluar: ' . $request->Kode_BarangKeluar,
@@ -246,9 +276,8 @@ class BarangKeluarController extends Controller
 
         event(new NewNotification($notification));
 
-        Alert::success('Berhasil', 'Berita Acara Berhasil Ditambahkan.');
-
-        return redirect()->route('barangkeluar.reguler.index')->with('success', 'Berita Acara berhasil disimpan.');
+        // Redirect ke halaman indeks dengan pesan sukses
+        return redirect()->route('barangkeluar.reguler.index')->with('success', 'Berita Acara berhasil dibuat dan disimpan.');
     }
 
 
@@ -277,20 +306,42 @@ class BarangKeluarController extends Controller
                 'Tanggal_Keluar' => $request->Tanggal_Keluar,
                 'Tanggal_PengembalianBarang' => $request->Tanggal_Kembali,
             ]);
-
-            if ($request->hasFile('File_BeritaAcara')) {
-                $filePath = $request->file('File_BeritaAcara')->store('public/berita_acara_files');
-                $barangKeluar->File_BeritaAcara = str_replace('public/', '', $filePath);
-            }
-
-            if ($request->hasFile('File_SuratJalan')) {
-                $filePath = $request->file('File_SuratJalan')->store('public/surat_jalan_files');
-                $barangKeluar->File_SuratJalan = str_replace('public/', '', $filePath);
-            }
-
-            $barangKeluar->save();
         }
 
+        // Data untuk PDF
+        $data = [
+            'No_SuratJalanBK' => $request->No_SuratJalanBK,
+            'Nama_PihakPeminjam' => $request->Nama_PihakPeminjam,
+            'Catatan' => $request->Catatan,
+            'Tanggal_Keluar' => $request->Tanggal_Keluar,
+            'Tanggal_PengembalianBarang' => $request->Tanggal_Kembali,
+            'barangKeluarList' => $barangKeluars,
+        ];
+
+        // Generate PDF
+        $pdf = PDF::loadView('barangkeluar.insidentil.beritaacara', $data);
+
+        // Tentukan path direktori
+        $directoryPath = storage_path('app/public/berita_acara');
+
+        // Buat direktori jika belum ada
+        if (!File::exists($directoryPath)) {
+            File::makeDirectory($directoryPath, 0755, true);
+        }
+
+        // Simpan PDF ke penyimpanan server
+        $pdfFilename = $barangKeluar->Kode_BarangKeluar . '.pdf';
+        $pdfPath = $directoryPath . '/' . $pdfFilename;
+        $pdf->save($pdfPath);
+
+        // Simpan path PDF ke dalam kolom File_BeritaAcara di tabel barang_keluar
+        foreach ($barangKeluars as $barangKeluar) {
+            $barangKeluar->update([
+                'File_BeritaAcara' => 'storage/berita_acara/' . $pdfFilename,
+            ]);
+        }
+
+        // Kirim notifikasi
         $notification = Notification::create([
             'title' => 'Approval Berita Acara',
             'message' => 'Berita Acara berhasil dibuat dengan Kode Barang Keluar: ' . $request->Kode_BarangKeluar,
@@ -299,9 +350,8 @@ class BarangKeluarController extends Controller
 
         event(new NewNotification($notification));
 
-        Alert::success('Berhasil', 'Berita Acara Berhasil Ditambahkan.');
-
-        return redirect()->route('barangkeluar.insidentil.index')->with('success', 'Berita Acara berhasil disimpan.');
+        // Redirect ke halaman indeks dengan pesan sukses
+        return redirect()->route('barangkeluar.insidentil.index')->with('success', 'Berita Acara berhasil dibuat dan disimpan.');
     }
 
     public function createReguler(Request $request)
@@ -323,11 +373,19 @@ class BarangKeluarController extends Controller
             'kode_barang.*' => 'required|string|max:50',
             'Kategori_Barang.*' => 'required|string|max:50',
             'jumlah_barang.*' => 'required|integer|min:1',
+            'File_SuratJalan' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
         ]);
 
         $Kode_BarangKeluar = $this->generateNumericUID();
         $userId = Auth::id();
         $statusId = 3;
+        $filePath = null;
+
+        // Simpan file jika diunggah
+        if ($request->hasFile('File_SuratJalan')) {
+            $file = $request->file('File_SuratJalan');
+            $filePath = $file->storeAs('public/surat_jalan', $Kode_BarangKeluar . '.' . $file->getClientOriginalExtension());
+        }
 
         foreach ($validatedData['nama_barang'] as $index => $nama_barang) {
             BarangKeluar::create([
@@ -340,6 +398,7 @@ class BarangKeluarController extends Controller
                 'Kategori_Barang' => $validatedData['Kategori_Barang'][$index],
                 'Jumlah_Barang' => $validatedData['jumlah_barang'][$index],
                 'Tanggal_BarangKeluar' => $validatedData['tanggal_peminjamanbarang'],
+                'File_SuratJalan' => $filePath ? str_replace('public/', 'storage/', $filePath) : null,
             ]);
         }
 

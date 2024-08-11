@@ -15,7 +15,7 @@
                             <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">
                                 <i class="fas fa-download fa-sm text-white-50"></i> Download Excel</a>
                             <a href="{{ route('barangkeluar.insidentil.create') }}"
-                               class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
                                 <i class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Barang Keluar </a>
                         </li>
                     </ul>
@@ -24,16 +24,16 @@
                     <div class="bg-white justify-content-between rounded shadow p-4">
                         <div class="table-responsive">
                             <table class="table text-center align-middle table-hover mb-0" id="ProductTable"
-                                   style="width: 100%">
+                                style="width: 100%">
                                 <thead>
                                     <tr>
                                         <th scope="col" style="width: 300px; color:white">No. Surat Jalan</th>
-                                        <th  scope="col" style="width: 300px; color:white">Berita Acara</th>
-                                        <th  scope="col" style="width: 300px; color:white">Pihak Peminjam</th>
-                                        <th  scope="col" style="width: 300px; color:white">Tanggal Peminjaman</th>
-                                        <th  scope="col" style="width: 300px; color:white">Total Barang</th>
-                                        <th  scope="col" style="width: 300px; color:white">Approval Status</th>
-                                        <th  scope="col" style="width: 300px; color:white">Action</th>
+                                        <th scope="col" style="width: 300px; color:white">Berita Acara</th>
+                                        <th scope="col" style="width: 300px; color:white">Pihak Peminjam</th>
+                                        <th scope="col" style="width: 300px; color:white">Tanggal Peminjaman</th>
+                                        <th scope="col" style="width: 300px; color:white">Total Barang</th>
+                                        <th scope="col" style="width: 300px; color:white">Deadline</th>
+                                        <th scope="col" style="width: 300px; color:white">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -42,7 +42,8 @@
                                             <td>{{ $barangKeluars->No_SuratJalanBK }}</td>
                                             <td>
                                                 @if (!empty($barangKeluars->File_BeritaAcara))
-                                                    <a href="{{ asset('storage/' . $barangKeluars->File_BeritaAcara) }}" class="btn btn-sm btn-info" target="_blank">Lihat Berita Acara</a>
+                                                    <a href="{{ asset('/' . $barangKeluars->File_BeritaAcara) }}"
+                                                        class="btn btn-sm btn-info" target="_blank">Lihat Berita Acara</a>
                                                 @else
                                                     <span>Tidak Ada</span>
                                                 @endif
@@ -50,7 +51,38 @@
                                             <td>{{ $barangKeluars->Nama_PihakPeminjam }}</td>
                                             <td>{{ $barangKeluars->first()->Tanggal_BarangKeluar }}</td>
                                             <td>{{ $barangKeluars->Jumlah_Barang }}</td>
-                                            <td>Approved</td>
+                                            <td>
+                                                <span id="countdown-{{ $Kode_GrupBarangKeluar }}"></span>
+                                                <script>
+                                                    document.addEventListener('DOMContentLoaded', function() {
+                                                        function getRemainingTime(startDate, returnDate) {
+                                                            const now = new Date();
+                                                            const end = new Date(returnDate);
+                                                            const start = new Date(startDate);
+                                                            let timeDiff = end - now;
+                                                            if (now > end) return "Expired";
+                                                            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                                                            timeDiff -= days * (1000 * 60 * 60 * 24);
+                                                            const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+                                                            timeDiff -= hours * (1000 * 60 * 60);
+                                                            const minutes = Math.floor(timeDiff / (1000 * 60));
+                                                            timeDiff -= minutes * (1000 * 60);
+                                                            const seconds = Math.floor(timeDiff / 1000);
+                                                            return `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
+                                                        }
+
+                                                        function updateCountdown() {
+                                                            const startDate = "{{ $barangKeluars->first()->Tanggal_BarangKeluar }}";
+                                                            const returnDate = "{{ $barangKeluars->first()->Tanggal_PengembalianBarang }}";
+                                                            const countdownElement = document.getElementById('countdown-{{ $Kode_GrupBarangKeluar }}');
+                                                            countdownElement.innerText = getRemainingTime(startDate, returnDate);
+                                                        }
+
+                                                        updateCountdown();
+                                                        setInterval(updateCountdown, 1000);
+                                                    });
+                                                </script>
+                                            </td>
                                             <td>
                                                 <button class="btn btn-primary btn-sm" type="button"
                                                     data-bs-toggle="collapse"
@@ -97,7 +129,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="10">Tidak ada barang masuk.</td>
+                                            <td colspan="7">Tidak ada barang keluar.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
