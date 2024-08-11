@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -40,12 +41,16 @@ class BarangMasuk extends Model
     {
         return $this->belongsTo(KategoriBarang::class, 'Id_Kategori_Barang');
     }
+    protected $attributes = [
+        'Id_Status_Barang' => 2, // Asumsikan 1 adalah ID untuk status "Pending"
+    ];
 
     public function statusBarang()
     {
         return $this->belongsTo(StatusBarang::class, 'Id_Status_Barang');
     }
-
-
-
+    public function barangKeluar()
+    {
+        return $this->hasMany(BarangKeluar::class, 'Kode_Barang', 'Kode_Barang');
+    }
 }

@@ -18,52 +18,81 @@ class StokBarangController extends Controller
     }
 
     public function hardwareIndex(Request $request)
-    {
-        $filter = $request->input('filter');
+{
+    $filter = $request->input('filter');
 
-        $hardwareBarangMasuks = BarangMasuk::with('kategoriBarang', 'statusBarang')
-            ->whereHas('kategoriBarang', function($query) {
-                $query->where('Nama_Kategori_Barang', 'hardware');
-            });
+    $hardwareBarangMasuks = BarangMasuk::with(['kategoriBarang', 'statusBarang', 'barangKeluar'])
+        ->whereHas('kategoriBarang', function($query) {
+            $query->where('Nama_Kategori_Barang', 'hardware');
+        });
 
-        if ($filter) {
-            if ($filter == 'available') {
-                $hardwareBarangMasuks = $hardwareBarangMasuks->where('JumlahBarang_Masuk', '>', 50);
-            } elseif ($filter == 'low-stock') {
-                $hardwareBarangMasuks = $hardwareBarangMasuks->where('JumlahBarang_Masuk', '<=', 50)->where('JumlahBarang_Masuk', '>', 20);
-            } elseif ($filter == 'last-stock') {
-                $hardwareBarangMasuks = $hardwareBarangMasuks->where('JumlahBarang_Masuk', '<=', 20);
-            }
+    // Hitung stok untuk setiap item
+    $hardwareBarangMasuks = $hardwareBarangMasuks->get()->map(function ($barang) {
+        $totalBarangKeluar = $barang->barangKeluar->sum('Jumlah_Barang');
+        $stokBarang = $barang->JumlahBarang_Masuk - $totalBarangKeluar;
+
+        // Tetapkan atribut dinamis
+        $barang->setAttribute('totalBarangKeluar', $totalBarangKeluar);
+        $barang->setAttribute('stokBarang', $stokBarang);
+
+        return $barang;
+    });
+
+    // Terapkan filter setelah menghitung stok
+    if ($filter) {
+        if ($filter == 'available') {
+            $hardwareBarangMasuks = $hardwareBarangMasuks->where('stokBarang', '>', 50);
+        } elseif ($filter == 'low-stock') {
+            $hardwareBarangMasuks = $hardwareBarangMasuks->where('stokBarang', '<=', 50)->where('stokBarang', '>', 20);
+        } elseif ($filter == 'last-stock') {
+            $hardwareBarangMasuks = $hardwareBarangMasuks->where('stokBarang', '<=', 20);
         }
-
-        $hardwareBarangMasuks = $hardwareBarangMasuks->orderBy('Tanggal_Masuk', 'desc')->get();
-
-        return view('stokbarang.hardware.index', compact('hardwareBarangMasuks'));
     }
+
+    $hardwareBarangMasuks = $hardwareBarangMasuks->sortByDesc('Tanggal_Masuk');
+
+    return view('stokbarang.hardware.index', compact('hardwareBarangMasuks'));
+}
+
 
     public function networkingIndex(Request $request)
     {
         $filter = $request->input('filter');
-
-        $networkingBarangMasuks = BarangMasuk::with('kategoriBarang', 'statusBarang')
+    
+        $networkingBarangMasuks = BarangMasuk::with(['kategoriBarang', 'statusBarang', 'barangKeluar'])
             ->whereHas('kategoriBarang', function($query) {
                 $query->where('Nama_Kategori_Barang', 'networking');
             });
-
+    
+        // Hitung stok untuk setiap item
+        $networkingBarangMasuks = $networkingBarangMasuks->get()->map(function ($barang) {
+            $totalBarangKeluar = $barang->barangKeluar->sum('Jumlah_Barang');
+            $stokBarang = $barang->JumlahBarang_Masuk - $totalBarangKeluar;
+    
+            // Tetapkan atribut dinamis
+            $barang->setAttribute('totalBarangKeluar', $totalBarangKeluar);
+            $barang->setAttribute('stokBarang', $stokBarang);
+    
+            return $barang;
+        });
+    
+        // Terapkan filter setelah menghitung stok
         if ($filter) {
             if ($filter == 'available') {
-                $networkingBarangMasuks = $networkingBarangMasuks->where('JumlahBarang_Masuk', '>', 50);
+                $networkingBarangMasuks = $networkingBarangMasuks->where('stokBarang', '>', 50);
             } elseif ($filter == 'low-stock') {
-                $networkingBarangMasuks = $networkingBarangMasuks->where('JumlahBarang_Masuk', '<=', 50)->where('JumlahBarang_Masuk', '>', 20);
+                $networkingBarangMasuks = $networkingBarangMasuks->where('stokBarang', '<=', 50)->where('stokBarang', '>', 20);
             } elseif ($filter == 'last-stock') {
-                $networkingBarangMasuks = $networkingBarangMasuks->where('JumlahBarang_Masuk', '<=', 20);
+                $networkingBarangMasuks = $networkingBarangMasuks->where('stokBarang', '<=', 20);
             }
         }
-
-        $networkingBarangMasuks = $networkingBarangMasuks->orderBy('Tanggal_Masuk', 'desc')->get();
-
+    
+        $networkingBarangMasuks = $networkingBarangMasuks->sortByDesc('Tanggal_Masuk');
+    
         return view('stokbarang.networking.index', compact('networkingBarangMasuks'));
     }
+    
+
 
     public function create()
     {

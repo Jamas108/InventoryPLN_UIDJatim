@@ -31,10 +31,10 @@
                         </form>
 
                         <div class="table-responsive">
-                            <table class="table text-center align-middle  mb-0 datatable"
-                                id="ProductTable" style="width: 100%;">
-                                <thead >
-                                    <tr >
+                            <table class="table text-center align-middle  mb-0 datatable" id="ProductTable"
+                                style="width: 100%;">
+                                <thead style="background-color: rgb(1, 1, 95);">
+                                    <tr style="color: white">
                                         <th scope="col" style="width:400px; color:white">ITEM NAME</th>
                                         <th scope="col" style="color:white">QUANTITY</th>
                                         <th scope="col" style="color:white">DATE ADDED</th>
@@ -50,7 +50,8 @@
                                                         class="card-img-top ml-2 rounded" alt="{{ $barang->Nama_Barang }}"
                                                         style="width: 150px; height:120px; object-fit: cover;">
                                                     <div class="card-body" style="margin-left: 10px; text-align: left;">
-                                                        <h5 class="card-title"><strong>{{ $barang->Nama_Barang }}</strong></h5>
+                                                        <h5 class="card-title"><strong>{{ $barang->Nama_Barang }}</strong>
+                                                        </h5>
                                                         Kategori: {{ $barang->kategoriBarang->Nama_Kategori_Barang }}<br>
                                                         Kode: {{ $barang->Kode_Barang }}<br>
                                                         Kondisi: {{ $barang->Kondisi_Barang }}<br>
@@ -59,14 +60,16 @@
                                                 </div>
                                             </td>
                                             <td class="text-center align-middle">
+                                                Stok Barang:
+                                                <br>
                                                 @if ($barang->JumlahBarang_Masuk > 50)
-                                                    <span class="badge bg-success">{{ $barang->JumlahBarang_Masuk }}
+                                                    <span class="badge bg-success">{{ $barang->stokBarang }}
                                                         Available</span>
                                                 @elseif($barang->JumlahBarang_Masuk > 20)
-                                                    <span class="badge bg-warning">{{ $barang->JumlahBarang_Masuk }} Low
+                                                    <span class="badge bg-warning">{{ $barang->stokBarang }} Low
                                                         Stock</span>
                                                 @else
-                                                    <span class="badge bg-danger">{{ $barang->JumlahBarang_Masuk }} Last
+                                                    <span class="badge bg-danger">{{ $barang->stokBarang }} Last
                                                         Stock</span>
                                                 @endif
                                             </td>

@@ -18,12 +18,13 @@
                         </li>
                     </ul>
                 </div>
+                
                 <div class="container-fluid pt-2 px-2 vh-50 d-grid" style="grid-template-columns: repeat(2, 1fr); gap: 1rem;">
-                    <div class="card p-0" style="background-color: transparent; border: none;">
-                        <img src="{{ Vite::asset('../resources/assets/hardware.jpg') }}" class="rounded" alt="Autumn Logo"
+                    <div class="card p-10" style="background-color: transparent; border: none;">
+                        <img src="{{ Vite::asset('../resources/assets/boxGaransi.png') }}" class="rounded" alt="Autumn Logo"
                             style="object-fit: cover; width: 100%; height: 50vh;">
                         <div class="card-img-overlay d-flex justify-content-between flex-column">
-                            <div style="align-self: flex-start; color:white">
+                            <div style="align-self: flex-start; color:rgb(255, 255, 255)">
                                 <h6 class="card-text">CATALOG</h6>
                                 <h3 class="card-title" style="font-weight: 800">Bekas Bergaransi</h3>
                             </div>
@@ -31,11 +32,11 @@
                         </div>
                     </div>
 
-                    <div class="card p-0" style="background-color: transparent; border: none;">
-                        <img src="{{ Vite::asset('../resources/assets/network.jpg') }}" class="rounded" alt="Autumn Logo"
+                    <div class="card p-0" style="background-color: transparent; border: none; ">
+                        <img src="{{ Vite::asset('../resources/assets/Boxbekas.png') }}" class="rounded" alt="Autumn Logo" 
                             style="object-fit: cover; width: 100%; height: 50vh;">
                         <div class="card-img-overlay d-flex justify-content-between flex-column">
-                            <div style="align-self: flex-start; color:white">
+                            <div style="align-self: flex-start; color:rgb(255, 255, 255)">
                                 <h6 class="card-text">CATALOG</h6>
                                 <h3 class="card-title" style="font-weight: 800">Bekas Handal</h3>
                             </div>
