@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 use PDF;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
 
 class BarangKeluarController extends Controller
 {
@@ -148,16 +149,33 @@ class BarangKeluarController extends Controller
      */
     public function storeInsidentil(Request $request)
     {
-        $validatedData = $request->validate([
+        // Definisikan pesan kustom untuk validasi
+        $messages = [
+            'required' => ':Attribute harus diisi.',
+            'date' => 'Format :attribute tidak valid.',
+            'integer' => 'Isi :attribute dengan angka.',
+            'min' => 'Isi :attribute dengan nilai minimal :min.',
+            'file' => 'File :attribute harus berupa file.',
+            'mimes' => 'File :attribute harus memiliki ekstensi: :values.',
+            'max' => 'Ukuran file :attribute tidak boleh lebih dari :max kilobytes.',
+        ];
+
+        // Validasi data input menggunakan Validator
+        $validator = Validator::make($request->all(), [
             'tanggal_peminjamanbarang' => 'required|date',
             'Id_Kategori_Peminjaman' => 'required',
             'nama_barang.*' => 'required',
             'kode_barang.*' => 'required|string|max:50',
             'Kategori_Barang.*' => 'required|string|max:50',
             'jumlah_barang.*' => 'required|integer|min:1',
-            'File_SuratJalan' => 'nullable|file|mimes:pdf,doc,docx|max:2048', // Tambahkan validasi untuk File_SuratJalan
-        ]);
+            'File_SuratJalan' => 'required|file|mimes:pdf,doc,docx|max:2048',
+        ], $messages);
 
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        // Variabel awal
         $Kode_BarangKeluar = $this->generateNumericUID();
         $userId = Auth::id();
         $statusId = 3;
@@ -169,21 +187,47 @@ class BarangKeluarController extends Controller
             $filePath = $file->storeAs('public/surat_jalan', $Kode_BarangKeluar . '.' . $file->getClientOriginalExtension());
         }
 
-        foreach ($validatedData['nama_barang'] as $index => $nama_barang) {
-            BarangKeluar::create([
-                'Id_User' => $userId,
-                'Id_Kategori_Peminjaman' => $validatedData['Id_Kategori_Peminjaman'],
-                'Id_StatusBarangKeluar' => $statusId,
-                'Kode_BarangKeluar' => $Kode_BarangKeluar,
-                'Nama_Barang' => $nama_barang,
-                'Kode_Barang' => $validatedData['kode_barang'][$index],
-                'Kategori_Barang' => $validatedData['Kategori_Barang'][$index],
-                'Jumlah_Barang' => $validatedData['jumlah_barang'][$index],
-                'Tanggal_BarangKeluar' => $validatedData['tanggal_peminjamanbarang'],
-                'File_SuratJalan' => $filePath ? str_replace('public/', 'storage/', $filePath) : null, // Simpan path file jika ada
-            ]);
+        // Ambil data yang sudah divalidasi
+        $validatedData = $request->except('File_SuratJalan');
+        $namaBarangArray = $validatedData['nama_barang'];
+        $jumlahBarangArray = $validatedData['jumlah_barang'];
+        $kodeBarangArray = $validatedData['kode_barang'];
+        $kategoriBarangArray = $validatedData['Kategori_Barang'];
+
+        foreach ($namaBarangArray as $index => $nama_barang) {
+            $jumlahBarang = $jumlahBarangArray[$index];
+            $kodeBarang = $kodeBarangArray[$index];
+
+            // Cek stok barang
+            $barangMasuk = BarangMasuk::where('Kode_Barang', $kodeBarang)->first();
+
+            if ($barangMasuk) {
+                $stokBarang = $barangMasuk->JumlahBarang_Masuk - $barangMasuk->barangKeluar->sum('Jumlah_Barang');
+
+                if ($stokBarang < $jumlahBarang) {
+                    return redirect()->back()->withErrors([
+                        'jumlah_barang.' . $index => 'Stok tidak mencukupi untuk barang ' . $nama_barang . '.'
+                    ])->withInput();
+                }
+
+                // Buat record BarangKeluar
+                BarangKeluar::create([
+                    'Id_User' => $userId,
+                    'Id_Kategori_Peminjaman' => $validatedData['Id_Kategori_Peminjaman'],
+                    'Id_StatusBarangKeluar' => $statusId,
+                    'Kode_BarangKeluar' => $Kode_BarangKeluar,
+                    'Nama_Barang' => $nama_barang,
+                    'Kode_Barang' => $kodeBarang,
+                    'Kategori_Barang' => $kategoriBarangArray[$index],
+                    'Jumlah_Barang' => $jumlahBarang,
+                    'Tanggal_BarangKeluar' => now(),
+                ]);
+            } else {
+                return redirect()->back()->with('error', 'Barang dengan kode ' . $kodeBarang . ' tidak ditemukan.')->withInput();
+            }
         }
 
+        // Kirim notifikasi
         $notification = Notification::create([
             'title' => 'Approval Barang Keluar Insidentil',
             'message' => 'Barang berhasil ditambahkan dengan Kode Barang Keluar: ' . $Kode_BarangKeluar,
@@ -196,6 +240,9 @@ class BarangKeluarController extends Controller
 
         return redirect()->route('barangkeluar.insidentil.index')->with('success', 'Barang Keluar berhasil disimpan.');
     }
+
+
+
 
 
     public function buatBeritaAcaraInsidentil(Request $request, $Kode_BarangKeluar)

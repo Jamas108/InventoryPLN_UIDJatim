@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Inventory PLN') }}</title>
 
     <!-- Fonts -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -68,7 +68,6 @@
         {{-- @include('sweetalert::alert') --}}
         @vite('resources/js/app.js')
         @include('sweetalert::alert')
-        @include('vendor.larapexcharts')
         @stack('scripts')
     </div>
 </body>
