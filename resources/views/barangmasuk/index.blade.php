@@ -65,7 +65,7 @@
                                 <tbody>
                                     @forelse ($groupedBarangMasuks as $noSurat => $barangMasuks)
                                         <tr>
-                                            <td>{{ $noSurat }}</td>
+                                            <td>{{str_replace('\\', '/', $noSurat )}}</td>
                                             <td>{{ $barangMasuks->first()->NamaPerusahaan_Pengirim }}</td>
                                             <td>{{ $barangMasuks->Jumlah_barang }}</td>
                                             <td>Approved</td>
