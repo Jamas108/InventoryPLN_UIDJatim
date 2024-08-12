@@ -40,7 +40,7 @@
                                             $firstItem = $barangKeluarGroup->first();
                                         @endphp
                                         <tr>
-<td>{{str_replace('\\', '/', $firstItem->No_SuratJalanBK) }}</td>
+                                            <td>{{ str_replace('\\', '/', $firstItem->No_SuratJalanBK) }}</td>
                                             <td>
                                                 @if (!empty($firstItem->File_BeritaAcara))
                                                     <a href="{{ asset('storage/' . $firstItem->File_BeritaAcara) }}"
@@ -56,8 +56,7 @@
                                             <td>
                                                 <button class="btn btn-primary btn-sm" type="button"
                                                     data-bs-toggle="collapse"
-                                                    data-bs-target="#collapse-{{ $kodeBarangKeluar }}"
-                                                    aria-expanded="false"
+                                                    data-bs-target="#collapse-{{ $kodeBarangKeluar }}" aria-expanded="false"
                                                     aria-controls="collapse-{{ $kodeBarangKeluar }}">
                                                     +
                                                 </button>
@@ -74,7 +73,7 @@
                                                                 <th>Nama Barang</th>
                                                                 <th>Kuantitas</th>
                                                                 <th>Kategori Barang</th>
-                                                                <th>Status Barang</th>
+                                                                <th>Action</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -84,7 +83,10 @@
                                                                     <td>{{ $barangKeluar->barangMasuk->Nama_Barang }}</td>
                                                                     <td>{{ $barangKeluar->Jumlah_Barang }}</td>
                                                                     <td>{{ $barangKeluar->Kategori_Barang }}</td>
-                                                                    <td> - </td>
+                                                                    <td>
+                                                                        <a href="{{ route('retur.create', ['id' => $barangKeluar->id, 'kode_barang' => $barangKeluar->Kode_Barang, 'nama_barang' => $barangKeluar->barangMasuk->Nama_Barang, 'pihak_peminjam' => $firstItem->Nama_PihakPeminjam, 'kategori_barang' => $barangKeluar->Kategori_Barang]) }}"
+                                                                            class="btn btn-warning btn-sm">Retur Barang</a>
+                                                                    </td>
                                                                 </tr>
                                                             @endforeach
                                                         </tbody>

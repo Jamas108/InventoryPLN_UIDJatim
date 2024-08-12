@@ -65,7 +65,7 @@
                                 <tbody>
                                     @forelse ($groupedBarangMasuks as $noSurat => $barangMasuks)
                                         <tr>
-                                            <td>{{str_replace('\\', '/', $noSurat )}}</td>
+                                            <td>{{ str_replace('\\', '/', $noSurat) }}</td>
                                             <td>{{ $barangMasuks->first()->NamaPerusahaan_Pengirim }}</td>
                                             <td>{{ $barangMasuks->Jumlah_barang }}</td>
                                             <td>Approved</td>
@@ -75,10 +75,11 @@
                                                     aria-expanded="false" aria-controls="collapse-{{ $noSurat }}">
                                                     +
                                                 </button>
-                                                <a href="{{ route('barangmasuk.edit', ['noSurat' => $noSurat]) }}" class="btn btn-primary btn-sm">
+                                                <a href="{{ route('barangmasuk.edit', ['noSurat' => $noSurat]) }}"
+                                                    class="btn btn-primary btn-sm">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                
+
                                                 <form
                                                     action="{{ route('barangmasuk.destroy', $barangMasuks->first()->id) }}"
                                                     method="POST" style="display:inline;">

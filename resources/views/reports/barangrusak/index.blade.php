@@ -55,10 +55,10 @@
                             <table class="table text-center align-middle table-bordered table-hover mb-0 datatable" id="ProductTable" style="width: 100%">
                                 <thead>
                                     <tr>
-                                        <th scope="col" style="width: 300px;">Kode Barang</th>
-                                        <th scope="col" style="width: 300px;">Nama Barang</th>
-                                        <th scope="col" style="width: 300px;">Kategori Barang</th>
-                                        <th scope="col" style="width: 300px;">Jumlah Barang</th>
+                                        <th scope="col" style="width: 300px; color: white">Kode Barang</th>
+                                        <th scope="col" style="width: 300px; color: white">Nama Barang</th>
+                                        <th scope="col" style="width: 300px; color: white">Kategori Barang</th>
+                                        <th scope="col" style="width: 300px; color: white">Jumlah Barang</th>
                                     </tr>
                                 </thead>
                                 <tbody>
