@@ -19,11 +19,16 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="tanggal_peminjamanbarang">Tanggal Peminjaman</label>
-                                        <input type="date" class="form-control"
+                                        <input type="date"
+                                            class="form-control @error('tanggal_peminjamanbarang') is-invalid @enderror"
                                             placeholder="Masukan Rencana Tanggal Peminjaman Barang"
                                             id="tanggal_peminjamanbarang" name="tanggal_peminjamanbarang">
+                                        @error('tanggal_peminjamanbarang')
+                                            <div class="text-danger"><small>{{ $message }}</small></div>
+                                        @enderror
                                     </div>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Id_Kategori_Peminjaman">Kategori Peminjaman</label>
@@ -45,9 +50,13 @@
                                     <div class="form-group">
                                         <label for="suratJalan">Surat Jalan</label>
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" id="File_SuratJalan"
-                                                name="File_SuratJalan" accept="application/pdf">
+                                            <input type="file"
+                                                class="custom-file-input @error('File_SuratJalan') is-invalid @enderror"
+                                                id="File_SuratJalan" name="File_SuratJalan" accept="application/pdf">
                                             <label class="custom-file-label" for="suratJalan">Pilih file PDF</label>
+                                            @error('File_SuratJalan')
+                                                <div class="text-danger"><small>{{ $message }}</small></div>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -96,8 +105,12 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="jumlah_barang">Jumlah Barang</label>
-                                        <input type="number" class="form-control" id="jumlah_barang" name="jumlah_barang[]"
-                                            min="1">
+                                        <input type="number"
+                                            class="form-control @error('jumlah_barang.*') is-invalid @enderror"
+                                            id="jumlah_barang" name="jumlah_barang[]" min="1">
+                                        @error('jumlah_barang.*')
+                                            <div class="text-danger"><small>{{ $message }}</small></div>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
