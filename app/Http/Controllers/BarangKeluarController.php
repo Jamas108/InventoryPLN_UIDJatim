@@ -412,55 +412,75 @@ class BarangKeluarController extends Controller
     }
 
     public function storeReguler(Request $request)
-    {
-        $validatedData = $request->validate([
-            'tanggal_peminjamanbarang' => 'required|date',
-            'Id_Kategori_Peminjaman' => 'required',
-            'nama_barang.*' => 'required',
-            'kode_barang.*' => 'required|string|max:50',
-            'Kategori_Barang.*' => 'required|string|max:50',
-            'jumlah_barang.*' => 'required|integer|min:1',
-            'File_SuratJalan' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
-        ]);
+{
+    $validatedData = $request->validate([
+        'tanggal_peminjamanbarang' => 'required|date',
+        'Id_Kategori_Peminjaman' => 'required',
+        'nama_barang.*' => 'required',
+        'kode_barang.*' => 'required|string|max:50',
+        'Kategori_Barang.*' => 'required|string|max:50',
+        'jumlah_barang.*' => 'required|integer|min:1',
+        'File_SuratJalan' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+    ]);
 
-        $Kode_BarangKeluar = $this->generateNumericUID();
-        $userId = Auth::id();
-        $statusId = 3;
-        $filePath = null;
+    $Kode_BarangKeluar = $this->generateNumericUID();
+    $userId = Auth::id();
+    $statusId = 3;
+    $filePath = null;
 
-        // Simpan file jika diunggah
-        if ($request->hasFile('File_SuratJalan')) {
-            $file = $request->file('File_SuratJalan');
-            $filePath = $file->storeAs('public/surat_jalan', $Kode_BarangKeluar . '.' . $file->getClientOriginalExtension());
-        }
+    // Simpan file jika diunggah
+    if ($request->hasFile('File_SuratJalan')) {
+        $file = $request->file('File_SuratJalan');
+        $filePath = $file->storeAs('public/surat_jalan', $Kode_BarangKeluar . '.' . $file->getClientOriginalExtension());
+    }
 
-        foreach ($validatedData['nama_barang'] as $index => $nama_barang) {
+    foreach ($validatedData['nama_barang'] as $index => $nama_barang) {
+        $kodeBarang = $validatedData['kode_barang'][$index];
+        $jumlahBarang = $validatedData['jumlah_barang'][$index];
+
+        // Cek stok barang
+        $barangMasuk = BarangMasuk::where('Kode_Barang', $kodeBarang)->first();
+
+        if ($barangMasuk) {
+            $stokBarang = $barangMasuk->JumlahBarang_Masuk - $barangMasuk->barangKeluar->sum('Jumlah_Barang');
+
+            if ($stokBarang < $jumlahBarang) {
+                return redirect()->back()->withErrors([
+                    'jumlah_barang.' . $index => 'Stok tidak mencukupi untuk barang ' . $nama_barang . '.'
+                ])->withInput();
+            }
+
+            // Buat record BarangKeluar
             BarangKeluar::create([
                 'Id_User' => $userId,
                 'Id_Kategori_Peminjaman' => $validatedData['Id_Kategori_Peminjaman'],
                 'Id_StatusBarangKeluar' => $statusId,
                 'Kode_BarangKeluar' => $Kode_BarangKeluar,
                 'Nama_Barang' => $nama_barang,
-                'Kode_Barang' => $validatedData['kode_barang'][$index],
+                'Kode_Barang' => $kodeBarang,
                 'Kategori_Barang' => $validatedData['Kategori_Barang'][$index],
-                'Jumlah_Barang' => $validatedData['jumlah_barang'][$index],
+                'Jumlah_Barang' => $jumlahBarang,
                 'Tanggal_BarangKeluar' => $validatedData['tanggal_peminjamanbarang'],
                 'File_SuratJalan' => $filePath ? str_replace('public/', 'storage/', $filePath) : null,
             ]);
+        } else {
+            return redirect()->back()->with('error', 'Barang dengan kode ' . $kodeBarang . ' tidak ditemukan.')->withInput();
         }
-
-        $notification = Notification::create([
-            'title' => 'Approval Barang Keluar Reguler',
-            'message' => 'Barang berhasil ditambahkan dengan Kode Barang Keluar: ' . $Kode_BarangKeluar,
-            'status' => 'unread',
-        ]);
-
-        event(new NewNotification($notification));
-
-        Alert::success('Berhasil', 'Barang Berhasil Ditambahkan.');
-
-        return redirect()->route('barangkeluar.reguler.index')->with('success', 'Barang Keluar berhasil disimpan.');
     }
+
+    $notification = Notification::create([
+        'title' => 'Approval Barang Keluar Reguler',
+        'message' => 'Barang berhasil ditambahkan dengan Kode Barang Keluar: ' . $Kode_BarangKeluar,
+        'status' => 'unread',
+    ]);
+
+    event(new NewNotification($notification));
+
+    Alert::success('Berhasil', 'Barang Berhasil Ditambahkan.');
+
+    return redirect()->route('barangkeluar.reguler.index')->with('success', 'Barang Keluar berhasil disimpan.');
+}
+
 
     /**
      * Display the specified resource.

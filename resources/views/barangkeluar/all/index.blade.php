@@ -40,7 +40,7 @@
                                             $firstItem = $barangKeluarGroup->first();
                                         @endphp
                                         <tr>
-                                            <td>{{ $firstItem->No_SuratJalanBK }}</td>
+<td>{{str_replace('\\', '/', $firstItem->No_SuratJalanBK) }}</td>
                                             <td>
                                                 @if (!empty($firstItem->File_BeritaAcara))
                                                     <a href="{{ asset('storage/' . $firstItem->File_BeritaAcara) }}"

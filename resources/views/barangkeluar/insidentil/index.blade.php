@@ -27,7 +27,7 @@
                                 style="width: 100%">
                                 <thead>
                                     <tr>
-                                        <th scope="col" style="width: 300px; color:white">No. Surat Jalan</th>
+                                        <th scope="col" style="width: 300px; color:white">Surat Jalan</th>
                                         <th scope="col" style="width: 300px; color:white">Berita Acara</th>
                                         <th scope="col" style="width: 300px; color:white">Pihak Peminjam</th>
                                         <th scope="col" style="width: 300px; color:white">Tanggal Peminjaman</th>
@@ -39,7 +39,13 @@
                                 <tbody>
                                     @forelse ($groupedBarangKeluars as $Kode_GrupBarangKeluar => $barangKeluars)
                                         <tr>
-                                            <td>{{ $barangKeluars->No_SuratJalanBK }}</td>
+                                            <td>
+                                                @if (!empty($barangKeluars->File_SuratJalan))
+                                                    <a href="{{ asset('/' . $barangKeluars->File_SuratJalan) }}" class="btn btn-sm btn-info" target="_blank">Lihat Surat Jalan</a>
+                                                @else
+                                                    <span>Tidak Ada</span>
+                                                @endif
+                                            </td>
                                             <td>
                                                 @if (!empty($barangKeluars->File_BeritaAcara))
                                                     <a href="{{ asset('/' . $barangKeluars->File_BeritaAcara) }}"

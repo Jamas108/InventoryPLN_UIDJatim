@@ -96,8 +96,12 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="jumlah_barang">Jumlah Barang</label>
-                                        <input type="number" class="form-control" id="jumlah_barang" name="jumlah_barang[]"
-                                            min="1">
+                                        <input type="number"
+                                            class="form-control @error('jumlah_barang.*') is-invalid @enderror"
+                                            id="jumlah_barang" name="jumlah_barang[]" min="1">
+                                        @error('jumlah_barang.*')
+                                            <div class="text-danger"><small>{{ $message }}</small></div>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
