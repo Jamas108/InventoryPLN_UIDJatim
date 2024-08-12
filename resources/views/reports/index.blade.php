@@ -44,7 +44,7 @@
                             </a>
                         </div>
                         <div class="col-md-3 mb-4">
-                            <a href="{{ route('indexrequesteditem') }}" style="text-decoration: none">
+                            <a href="{{ route('reports.requesteditem.index') }}" style="text-decoration: none">
                                 <div class="card shadow-sm">
                                     <div class="card-body text-center">
                                         <i class="fas fa-clipboard-list fa-3x" style="color: orange;"></i>

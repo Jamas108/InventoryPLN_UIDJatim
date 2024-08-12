@@ -9,6 +9,7 @@ use App\Models\ReturBarang;
 use App\Models\StatusBarang;
 use App\Models\StatusReturBarang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB; 
 
 class ReportsController extends Controller
 {
@@ -113,7 +114,8 @@ class ReportsController extends Controller
     public function indexBarangRusak(Request $request)
     {
         $barangRusaks = ReturBarang::with('statusRetur')
-            ->orderBy('Tanggal_Retur', 'desc');
+        ->where('Id_Jenis_Retur', 3)    
+        ->orderBy('Tanggal_Retur', 'desc');
 
         $filterYear = $request->input('year');
         $filterCondition = $request->input('condition');
@@ -135,7 +137,8 @@ class ReportsController extends Controller
     public function exportPdfBarangRusak(Request $request)
     {
         $barangRusaks = ReturBarang::with('statusRetur')
-            ->orderBy('Tanggal_Retur', 'desc');
+        ->where('Id_Jenis_Retur', 3)    
+        ->orderBy('Tanggal_Retur', 'desc');
 
         $filterYear = $request->input('year');
         $filterCondition = $request->input('condition');
@@ -155,10 +158,55 @@ class ReportsController extends Controller
     }
 
 
-    public function indexRequestedItem()
+    public function indexRequestedItem(Request $request)
     {
-        return view('reports.requesteditem.index');
+        // Ambil filter tahun dari request
+        $filterYear = $request->input('year');
+    
+        // Buat query untuk mendapatkan barang keluar dan melakukan grouping
+        $requestedItemsQuery = BarangKeluar::select('Kode_Barang', DB::raw('SUM(Jumlah_Barang) as total_request'))
+            ->groupBy('Kode_Barang')
+            ->orderByDesc('total_request')
+            ->with('barangMasuk');
+    
+        // Terapkan filter tahun jika ada
+        if ($filterYear) {
+            $requestedItemsQuery->whereYear('Tanggal_BarangKeluar', $filterYear);
+        }
+    
+        // Eksekusi query dan ambil 10 hasil teratas
+        $requestedItems = $requestedItemsQuery->take(10)->get();
+    
+        // Kembalikan view dengan data yang difilter
+        return view('reports.requesteditem.index', compact('requestedItems'));
+
     }
+    
+public function exportPdfRequestedItem(Request $request)
+{
+    // Ambil filter tahun dari request
+    $filterYear = $request->input('year');
+
+    // Buat query untuk mendapatkan barang keluar dan melakukan grouping
+    $requestedItemsQuery = BarangKeluar::select('Kode_Barang', DB::raw('SUM(Jumlah_Barang) as total_request'))
+        ->groupBy('Kode_Barang')
+        ->orderByDesc('total_request')
+        ->with('barangMasuk');
+
+    // Terapkan filter tahun jika ada
+    if ($filterYear) {
+        $requestedItemsQuery->whereYear('Tanggal_BarangKeluar', $filterYear);
+    }
+
+    // Eksekusi query dan ambil 10 hasil teratas
+    $requestedItems = $requestedItemsQuery->take(10)->get();
+
+    // Generate PDF dengan data yang difilter
+    $pdf = PDF::loadView('reports.requesteditem.pdf', compact('requestedItems', 'filterYear'));
+
+    return $pdf->download('reports_requesteditem.pdf');
+}
+
 
     public function create()
     {

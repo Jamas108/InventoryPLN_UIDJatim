@@ -84,7 +84,7 @@
                                                                 <th>Nama Barang</th>
                                                                 <th>Kuantitas</th>
                                                                 <th>Kategori Barang</th>
-                                                                <th>Status Barang</th>
+                                                                <th>Action</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -93,25 +93,13 @@
                                                                     <td>{{ $barangKeluar->Kode_Barang }}</td>
                                                                     <td>{{ $barangKeluar->barangMasuk->Nama_Barang }}</td>
                                                                     <td>{{ $barangKeluar->Jumlah_Barang }}</td>
-                                                                    <td>{{ $barangKeluar->Kategori_Barang }}
-                                                                    </td>
+                                                                    <td>{{ $barangKeluar->Kategori_Barang }}</td>
                                                                     <td>
-                                                                        {{-- <form
-                                                                            action="{{ route('barangmasuk.update', $barangKeluar->id) }}"
-                                                                            method="POST"
-                                                                            class="d-flex align-items-center">
-                                                                            @csrf
-                                                                            @method('PUT')
-                                                                            <select name="Id_Status_Barang"
-                                                                                class="form-select form-select-sm me-1"
-                                                                                aria-label="Ubah Status">
-                                                                            </select>
-                                                                            <button type="submit"
-                                                                                class="btn btn-sm btn-primary"><i
-                                                                                    class="fas fa-save"></i></button>
-                                                                        </form> --}}
-                                                                        -
+                                                                        <a href="{{ route('retur.create', ['id' => $barangKeluar->id, 'kode_barang' => $barangKeluar->Kode_Barang, 'nama_barang' => $barangKeluar->barangMasuk->Nama_Barang, 'pihak_peminjam' => $barangKeluars->Nama_PihakPeminjam, 'kategori_barang' => $barangKeluar->Kategori_Barang]) }}"
+                                                                            class="btn btn-warning btn-sm">Retur Barang</a>
                                                                     </td>
+
+
                                                                 </tr>
                                                             @endforeach
                                                         </tbody>

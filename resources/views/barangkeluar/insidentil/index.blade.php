@@ -40,11 +40,11 @@
                                     @forelse ($groupedBarangKeluars as $Kode_GrupBarangKeluar => $barangKeluars)
                                         <tr>
                                             <td>
-                                                @if (!empty($barangKeluars->File_SuratJalan))
-                                                    <a href="{{ asset('/' . $barangKeluars->File_SuratJalan) }}" class="btn btn-sm btn-info" target="_blank">Lihat Surat Jalan</a>
-                                                @else
-                                                    <span>Tidak Ada</span>
+                                                @if (isset($item->File_SuratJalan))
+                                                    <a href="{{ asset($item->File_SuratJalan) }}" target="_blank">Lihat
+                                                        Surat Jalan</a>
                                                 @endif
+
                                             </td>
                                             <td>
                                                 @if (!empty($barangKeluars->File_BeritaAcara))
