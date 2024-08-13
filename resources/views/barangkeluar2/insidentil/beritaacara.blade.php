@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Berita Acara</title>
 </head>
+
 <body>
     <h1>PT PLN (Persero)</h1>
     <h2>Unit Induk Jawa Timur</h2>
@@ -11,7 +13,8 @@
     <h3 style="text-align: center;">BERITA ACARA SERAH TERIMA BARANG</h3>
 
     <p>Pada hari ini, Tanggal {{ $Tanggal_Keluar }} telah diserahkan dari PT PLN (PERSERO)
-        DIV STI OPS JATIM kepada {{ $Nama_PihakPeminjam }} dan harus dikembalikan kepada PT PLN (PERSERO) DIV STI OPS JATIM sebelum tanggal {{ $Tanggal_PengembalianBarang }} dengan rincian
+        DIV STI OPS JATIM kepada {{ $Nama_PihakPeminjam }} dan harus dikembalikan kepada PT PLN (PERSERO) DIV STI OPS
+        JATIM sebelum tanggal dengan rincian
         sebagai berikut :</p>
 
     <table border="1" cellpadding="5" cellspacing="0" style="width: 100%;">
@@ -52,4 +55,5 @@
         </tr>
     </table>
 </body>
+
 </html>

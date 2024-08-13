@@ -8,6 +8,14 @@
             <div class="container-fluid">
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">User</h1>
+                    <ul class="list-inline mb-0 float-end">
+                        <li class="list-inline-item">
+
+                            <a href="{{ route('user.create') }}"
+                                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                                <i class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Akun </a>
+                        </li>
+                    </ul>
                 </div>
 
                 <div class="container-fluid pt-2 px-2">

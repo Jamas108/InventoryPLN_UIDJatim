@@ -141,19 +141,19 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="Jenis_Barang">Jenis Barang</label>
-                                        <input type="text"
-                                            class="form-control @error('Jenis_Barang') is-invalid @enderror"
-                                            id="Jenis_Barang" name="Jenis_Barang[]" value="{{ old('Jenis_Barang') }}">
-                                        @error('Jenis_Barang')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
+
+                                <div class="form-group">
+                                    <input type="text" class="form-control @error('Jenis_Barang') is-invalid @enderror"
+                                        id="Jenis_Barang" name="Jenis_Barang[]"
+                                        value="{{ old('Jenis_Barang', 'Baru') }}" hidden>
+                                    @error('Jenis_Barang')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
+
+
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Id_Kategori_Barang">Kategori Barang</label>
@@ -161,7 +161,6 @@
                                             <option value="Hardware">Hardware</option>
                                             <option value="Networking">Networking</option>
                                         </select>
-
                                     </div>
                                 </div>
                                 <div class="col-md-6">

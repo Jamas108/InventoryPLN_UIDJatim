@@ -6,7 +6,7 @@
         <div id="content">
             @include('layouts.navbar')
             <div class="container-fluid p-2">
-                <form action="{{ route('barangkeluar.insidentil.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('barangkeluar.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="container-fluid">
                         <div class="d-sm-flex align-items-center justify-content-center rounded-top"
@@ -28,14 +28,28 @@
                                         @enderror
                                     </div>
                                 </div>
-
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="kategori_peminjaman">Kategori Peminjaman</label>
-                                        <input type="text" class="form-control" id="Kategori_Peminjaman"
-                                            value="Insidentil" name="Kategori_Peminjaman" readonly>
+                                        <label for="Tanggal_PengembalianBarang">Tanggal Pengembalian</label>
+                                        <input type="date"
+                                            class="form-control @error('Tanggal_PengembalianBarang') is-invalid @enderror"
+                                            placeholder="Masukan Rencana Tanggal Peminjaman Barang"
+                                            id="Tanggal_PengembalianBarang" name="Tanggal_PengembalianBarang">
+                                        @error('Tanggal_PengembalianBarang')
+                                            <div class="text-danger"><small>{{ $message }}</small></div>
+                                        @enderror
                                     </div>
-                                    @error('Kategori_Peminjaman')
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="Kategori">Kategori</label>
+                                        <select name="Kategori" id="Kategori" class="form-control">
+                                            <option value="Insidentl">Insidentil</option>
+                                            <option value="Reguler">Reguler</option>
+                                        </select>
+                                    </div>
+                                    @error('Kategori')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
@@ -46,10 +60,10 @@
                                         <label for="suratJalan">Surat Jalan</label>
                                         <div class="custom-file">
                                             <input type="file"
-                                                class="custom-file-input @error('File_SuratJalan') is-invalid @enderror"
-                                                id="File_SuratJalan" name="File_SuratJalan" accept="application/pdf">
+                                                class="custom-file-input @error('File_Surat') is-invalid @enderror"
+                                                id="File_Surat" name="File_Surat" accept="application/pdf">
                                             <label class="custom-file-label" for="suratJalan">Pilih file PDF</label>
-                                            @error('File_SuratJalan')
+                                            @error('File_Surat')
                                                 <div class="text-danger"><small>{{ $message }}</small></div>
                                             @enderror
                                         </div>
@@ -71,7 +85,8 @@
                                         <select class="form-control @error('nama_barang.*') is-invalid @enderror"
                                             id="nama_barang" name="nama_barang[]">
                                             @foreach ($Barangs as $barang)
-                                                <option value="{{ $barang['Nama_Barang'] }}" data-kode="{{ $barang['Kode_Barang'] }}"
+                                                <option value="{{ $barang['Nama_Barang'] }}"
+                                                    data-kode="{{ $barang['Kode_Barang'] }}"
                                                     data-kategori="{{ $barang['kategoriBarang']['Nama_Kategori_Barang'] }}">
                                                     {{ $barang['Nama_Barang'] }}</option>
                                             @endforeach

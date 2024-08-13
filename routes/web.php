@@ -54,12 +54,22 @@ Route::post('/barangkeluar/reguler/store', [BarangKeluarController::class, 'stor
 Route::get('/barangkeluar/{Kode_BarangKeluar}/buat-berita-acara-reguler', [BarangKeluarController::class, 'buatBeritaAcaraReguler'])->name('barangkeluar.buat-berita-acara-reguler');
 Route::post('barangkeluar/store-berita-acara-reguler', [BarangKeluarController::class, 'storeBeritaAcaraReguler'])->name('barangkeluar.storeBeritaAcaraReguler');
 //BARANG KELUAR INSIDENTIL
-Route::get('/barangkeluar/insidentil/index', [BarangKeluarController::class, 'insidentilIndex'])->name('barangkeluar.insidentil.index');
-Route::get('/barangkeluar/insidentil/create', [BarangKeluarController::class, 'createInsidentil'])->name('barangkeluar.insidentil.create');
-Route::post('/barangkeluar/insidentil/store', [BarangKeluarController::class, 'storeInsidentil'])->name('barangkeluar.insidentil.store');
-Route::get('/barangkeluar/{Kode_BarangKeluar}/buat-berita-acara-insidentil', [BarangKeluarController::class, 'buatBeritaAcaraInsidentil'])->name('barangkeluar.buat-berita-acara-insidentil');
+// Route::get('/barangkeluar/insidentil/index', [BarangKeluarController::class, 'insidentilIndex'])->name('barangkeluar.insidentil.index');
+// Route::get('/barangkeluar/insidentil/create', [BarangKeluarController::class, 'createInsidentil'])->name('barangkeluar.insidentil.create');
+// Route::post('/barangkeluar/insidentil/store', [BarangKeluarController::class, 'storeInsidentil'])->name('barangkeluar.insidentil.store');
+// Route::get('/barangkeluar/{Kode_BarangKeluar}/buat-berita-acara-insidentil', [BarangKeluarController::class, 'buatBeritaAcaraInsidentil'])->name('barangkeluar.buat-berita-acara-insidentil');
 Route::post('barangkeluar/store-berita-acara', [BarangKeluarController::class, 'storeBeritaAcara'])->name('barangkeluar.storeBeritaAcara');
-Route::get('barangkeluar/buat-berita-acara-insidentil/{id}', [BarangKeluarController::class, 'storeBeritaAcara'])->name('barangkeluar.buat-berita-acara-insidentil');
+// Route::get('barangkeluar/buat-berita-acara-insidentil/{id}', [BarangKeluarController::class, 'storeBeritaAcara'])->name('barangkeluar.buat-berita-acara-insidentil');
+// web.php
+// Route::get('/barangkeluar/createba/{id}', [BarangKeluarController::class, 'buatBeritaAcara'])->name('barangkeluar.createba');
+
+Route::get('/barangkeluar/berita-acara/{id}', [BarangKeluarController::class, 'buatBeritaAcara'])->name('barangkeluar.createBeritaAcara');
+
+// Route for storing Berita Acara
+Route::post('/barangkeluar/berita-acara/{id}', [BarangKeluarController::class, 'storeBeritaAcara'])->name('barangkeluar.storeBeritaAcara');
+
+
+
 
 
 

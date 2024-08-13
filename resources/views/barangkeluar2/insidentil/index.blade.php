@@ -49,12 +49,13 @@
                                             </td>
                                             <td>
                                                 @if (!empty($group['File_BeritaAcara']))
-                                                    <a href="{{ $group['File_BeritaAcara'] }}" class="btn btn-sm btn-info"
-                                                        target="_blank">Lihat Berita Acara</a>
+                                                    <!-- Use asset to access files in public/storage -->
+                                                    <a href="{{ asset('storage/' . $group['File_BeritaAcara']) }}" class="btn btn-sm btn-info" target="_blank">Lihat Berita Acara</a>
                                                 @else
                                                     <span>Tidak Ada</span>
                                                 @endif
                                             </td>
+
                                             <td>{{ $group['Nama_PihakPeminjam'] }}</td>
                                             <td>{{ $group['tanggal_peminjamanbarang'] }}</td>
                                             <td>{{ $group['total_barang'] }}</td>
@@ -99,8 +100,10 @@
                                                     aria-controls="collapse-{{ $group['tanggal_peminjamanbarang'] }}">
                                                     +
                                                 </button>
-                                                <a href="{{ route('barangkeluar.buat-berita-acara-insidentil', ['id' => $group['id']]) }}"
-                                                    class="btn btn-primary btn-sm">Buat Berita Acara</a>
+                                                <a href="{{ route('barangkeluar.createba', ['id' => $group['id']]) }}"
+                                                    class="btn btn-primary">Buat Berita Acara</a>
+
+
                                             </td>
                                         </tr>
                                         <tr id="collapse-{{ $group['tanggal_peminjamanbarang'] }}" class="collapse"

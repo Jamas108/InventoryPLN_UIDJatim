@@ -20,7 +20,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         {{-- <label for="Kode_BarangKeluar" class="form-label">Kode Barang Keluar</label> --}}
-                                        <input type="text" name="Kode_BarangKeluar" value="{{ $Kode_BarangKeluar }}" hidden>
+                                        <input type="text" name="Kode_BarangKeluar" value="{{ $id }}" hidden>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
