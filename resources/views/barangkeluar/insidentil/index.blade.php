@@ -37,28 +37,29 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($groupedBarangKeluars as $Kode_GrupBarangKeluar => $barangKeluars)
+                                    @forelse ($groupedBarangKeluars as $group)
                                         <tr>
                                             <td>
-                                                @if (isset($item->File_SuratJalan))
-                                                    <a href="{{ asset($item->File_SuratJalan) }}" target="_blank">Lihat
-                                                        Surat Jalan</a>
-                                                @endif
-
-                                            </td>
-                                            <td>
-                                                @if (!empty($barangKeluars->File_BeritaAcara))
-                                                    <a href="{{ asset('/' . $barangKeluars->File_BeritaAcara) }}"
-                                                        class="btn btn-sm btn-info" target="_blank">Lihat Berita Acara</a>
+                                                @if (!empty($group['File_SuratJalan']))
+                                                    <a href="{{ $group['File_SuratJalan'] }}" target="_blank">Lihat Surat
+                                                        Jalan</a>
                                                 @else
                                                     <span>Tidak Ada</span>
                                                 @endif
                                             </td>
-                                            <td>{{ $barangKeluars->Nama_PihakPeminjam }}</td>
-                                            <td>{{ $barangKeluars->first()->Tanggal_BarangKeluar }}</td>
-                                            <td>{{ $barangKeluars->Jumlah_Barang }}</td>
                                             <td>
-                                                <span id="countdown-{{ $Kode_GrupBarangKeluar }}"></span>
+                                                @if (!empty($group['File_BeritaAcara']))
+                                                    <a href="{{ $group['File_BeritaAcara'] }}" class="btn btn-sm btn-info"
+                                                        target="_blank">Lihat Berita Acara</a>
+                                                @else
+                                                    <span>Tidak Ada</span>
+                                                @endif
+                                            </td>
+                                            <td>{{ $group['Nama_PihakPeminjam'] }}</td>
+                                            <td>{{ $group['tanggal_peminjamanbarang'] }}</td>
+                                            <td>{{ $group['total_barang'] }}</td>
+                                            <td>
+                                                <span id="countdown-{{ $group['tanggal_peminjamanbarang'] }}"></span>
                                                 <script>
                                                     document.addEventListener('DOMContentLoaded', function() {
                                                         function getRemainingTime(startDate, returnDate) {
@@ -78,9 +79,10 @@
                                                         }
 
                                                         function updateCountdown() {
-                                                            const startDate = "{{ $barangKeluars->first()->Tanggal_BarangKeluar }}";
-                                                            const returnDate = "{{ $barangKeluars->first()->Tanggal_PengembalianBarang }}";
-                                                            const countdownElement = document.getElementById('countdown-{{ $Kode_GrupBarangKeluar }}');
+                                                            const startDate = "{{ $group['tanggal_peminjamanbarang'] }}";
+                                                            const returnDate = "{{ $group['Tanggal_PengembalianBarang'] }}";
+                                                            const countdownElement = document.getElementById(
+                                                                'countdown-{{ $group['tanggal_peminjamanbarang'] }}');
                                                             countdownElement.innerText = getRemainingTime(startDate, returnDate);
                                                         }
 
@@ -92,16 +94,16 @@
                                             <td>
                                                 <button class="btn btn-primary btn-sm" type="button"
                                                     data-bs-toggle="collapse"
-                                                    data-bs-target="#collapse-{{ $Kode_GrupBarangKeluar }}"
+                                                    data-bs-target="#collapse-{{ $group['tanggal_peminjamanbarang'] }}"
                                                     aria-expanded="false"
-                                                    aria-controls="collapse-{{ $Kode_GrupBarangKeluar }}">
+                                                    aria-controls="collapse-{{ $group['tanggal_peminjamanbarang'] }}">
                                                     +
                                                 </button>
-                                                <a href="{{ route('barangkeluar.buat-berita-acara-insidentil', $Kode_GrupBarangKeluar) }}"
+                                                <a href="{{ route('barangkeluar.buat-berita-acara-insidentil', ['id' => $group['id']]) }}"
                                                     class="btn btn-primary btn-sm">Buat Berita Acara</a>
                                             </td>
                                         </tr>
-                                        <tr id="collapse-{{ $Kode_GrupBarangKeluar }}" class="collapse"
+                                        <tr id="collapse-{{ $group['tanggal_peminjamanbarang'] }}" class="collapse"
                                             data-bs-parent="#ProductTable">
                                             <td colspan="7">
                                                 <div class="accordion-body">
@@ -116,16 +118,16 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @foreach ($barangKeluars as $barangKeluar)
+                                                            @foreach ($group['items'] as $item)
                                                                 <tr>
-                                                                    <td>{{ $barangKeluar->Kode_Barang }}</td>
-                                                                    <td>{{ $barangKeluar->barangMasuk->Nama_Barang }}</td>
-                                                                    <td>{{ $barangKeluar->Jumlah_Barang }}</td>
-                                                                    <td>{{ $barangKeluar->Kategori_Barang }}</td>
-                                                                    <td>
-                                                                        <a href="{{ route('retur.create', ['id' => $barangKeluar->id, 'kode_barang' => $barangKeluar->Kode_Barang, 'nama_barang' => $barangKeluar->barangMasuk->Nama_Barang, 'pihak_peminjam' => $barangKeluars->Nama_PihakPeminjam, 'kategori_barang' => $barangKeluar->Kategori_Barang]) }}"
+                                                                    <td>{{ $item->kode_barang }}</td>
+                                                                    <td>{{ $item->nama_barang }}</td>
+                                                                    <td>{{ $item->jumlah_barang }}</td>
+                                                                    <td>{{ $item->kategori_barang }}</td>
+                                                                    {{-- <td>
+                                                                        <a href="{{ route('retur.create', ['id' => $item->id, 'kode_barang' => $item->kode_barang, 'nama_barang' => $item->nama_barang, 'pihak_peminjam' => $group['Nama_PihakPeminjam'], 'kategori_barang' => $item->kategori_barang]) }}"
                                                                             class="btn btn-warning btn-sm">Retur Barang</a>
-                                                                    </td>
+                                                                    </td> --}}
                                                                 </tr>
                                                             @endforeach
                                                         </tbody>

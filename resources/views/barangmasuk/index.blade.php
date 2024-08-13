@@ -6,6 +6,43 @@
             $('#employeeTable').DataTable();
         });
 
+        $(".status-select").on("change", function() {
+            var status = $(this).val();
+            var id = $(this).data("id");
+
+            $.ajax({
+                url: "{{ route('barangmasuk.updateStatusAjax') }}",
+                type: 'PUT',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    id: id,
+                    status: status
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Status berhasil diperbarui',
+                            text: response.message
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal memperbarui status',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Terjadi kesalahan',
+                        text: 'Status tidak dapat diperbarui'
+                    });
+                }
+            });
+        });
+
         $(".datatable").on("click", ".btn-delete", function(e) {
             e.preventDefault();
 
@@ -80,9 +117,7 @@
                                                     <i class="fas fa-edit"></i>
                                                 </a>
 
-                                                <form
-                                                    action="{{ route('barangmasuk.destroy', $barangMasuks->first()->id) }}"
-                                                    method="POST" style="display:inline;">
+                                                <form action="" method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm btn-delete">
@@ -112,29 +147,23 @@
                                                                     <td>{{ $barangMasuk->Kode_Barang }}</td>
                                                                     <td>{{ $barangMasuk->Nama_Barang }}</td>
                                                                     <td>{{ $barangMasuk->JumlahBarang_Masuk }}</td>
-                                                                    <td>{{ $barangMasuk->kategoriBarang->Nama_Kategori_Barang }}
+                                                                    <td>{{ $barangMasuk->Kategori_Barang }}
                                                                     </td>
                                                                     <td>
-                                                                        <form
-                                                                            action="{{ route('barangmasuk.updateStatus', $barangMasuk->id) }}"
-                                                                            method="POST"
-                                                                            class="d-flex align-items-center">
-                                                                            @csrf
-                                                                            @method('PUT')
-                                                                            <select name="Id_Status_Barang"
-                                                                                class="form-select form-select-sm me-1"
-                                                                                aria-label="Ubah Status">
-                                                                                @foreach ($statusBarangs as $statusBarang)
-                                                                                    <option value="{{ $statusBarang->id }}"
-                                                                                        {{ $barangMasuk->Id_Status_Barang == $statusBarang->id ? 'selected' : '' }}>
-                                                                                        {{ $statusBarang->Nama_Status }}
-                                                                                    </option>
-                                                                                @endforeach
-                                                                            </select>
-                                                                            <button type="submit"
-                                                                                class="btn btn-sm btn-primary"><i
-                                                                                    class="fas fa-save"></i></button>
-                                                                        </form>
+                                                                        <select
+                                                                            class="form-select form-select-sm status-select"
+                                                                            data-id="{{ $barangMasuk->id }}"
+                                                                            aria-label="Ubah Status">
+                                                                            <option value="Accept"
+                                                                                {{ $barangMasuk->Status == 'Accept' ? 'selected' : '' }}>
+                                                                                Accept</option>
+                                                                            <option value="Pending"
+                                                                                {{ $barangMasuk->Status == 'Pending' ? 'selected' : '' }}>
+                                                                                Pending</option>
+                                                                            <option value="Reject"
+                                                                                {{ $barangMasuk->Status == 'Reject' ? 'selected' : '' }}>
+                                                                                Reject</option>
+                                                                        </select>
                                                                     </td>
                                                                 </tr>
                                                             @endforeach

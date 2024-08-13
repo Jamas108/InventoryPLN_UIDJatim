@@ -34,9 +34,13 @@ Route::post('/login', [LoginController::class, 'authenticate']);
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::resource('barangmasuk', BarangMasukController::class);
-Route::put('/barangmasuk/updateStatus/{id}', [BarangMasukController::class, 'updateStatus'])->name('barangmasuk.updateStatus');
+// Route::put('/barangmasuk/updateStatus/{id}', [BarangMasukController::class, 'updateStatus'])->name('barangmasuk.updateStatus');
 Route::get('/barangmasuk/edit/{noSurat}', [BarangMasukController::class, 'edit'])->name('barangmasuk.edit');
 Route::put('/barangmasuk/update/{noSurat}', [BarangMasukController::class, 'update'])->name('barangmasuk.update');
+Route::put('/barangmasuk/{id}/update-status', [BarangMasukController::class, 'updateStatus'])->name('barangmasuk.updateStatus');
+Route::put('/barangmasuk/update-status-ajax', [BarangMasukController::class, 'updateStatusAjax'])->name('barangmasuk.updateStatusAjax');
+
+
 
 
 
@@ -55,6 +59,8 @@ Route::get('/barangkeluar/insidentil/create', [BarangKeluarController::class, 'c
 Route::post('/barangkeluar/insidentil/store', [BarangKeluarController::class, 'storeInsidentil'])->name('barangkeluar.insidentil.store');
 Route::get('/barangkeluar/{Kode_BarangKeluar}/buat-berita-acara-insidentil', [BarangKeluarController::class, 'buatBeritaAcaraInsidentil'])->name('barangkeluar.buat-berita-acara-insidentil');
 Route::post('barangkeluar/store-berita-acara', [BarangKeluarController::class, 'storeBeritaAcara'])->name('barangkeluar.storeBeritaAcara');
+Route::get('barangkeluar/buat-berita-acara-insidentil/{id}', [BarangKeluarController::class, 'storeBeritaAcara'])->name('barangkeluar.buat-berita-acara-insidentil');
+
 
 
 

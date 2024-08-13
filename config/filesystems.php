@@ -36,10 +36,18 @@ return [
             'throw' => false,
         ],
 
+        'firebase' => [
+            'driver' => 'firebase',
+            'firebase' => [
+                'key' => env('FIREBASE_CREDENTIALS'), // Path ke file kredensial Firebase
+                'storage_bucket' => env('FIREBASE_STORAGE_BUCKET'), // Nama bucket penyimpanan
+            ],
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
         ],

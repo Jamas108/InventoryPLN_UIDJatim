@@ -31,20 +31,15 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="Id_Kategori_Peminjaman">Kategori Peminjaman</label>
-                                        <select class="form-control @error('Id_Kategori_Peminjaman') is-invalid @enderror"
-                                            id="Id_Kategori_Peminjaman" name="Id_Kategori_Peminjaman">
-                                            @foreach ($kategoriPeminjamans as $kategoriPeminjaman)
-                                                <option value="{{ $kategoriPeminjaman->id }}">
-                                                    {{ $kategoriPeminjaman->Nama_Kategori_Peminjaman }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('Id_Kategori_Peminjaman')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
+                                        <label for="kategori_peminjaman">Kategori Peminjaman</label>
+                                        <input type="text" class="form-control" id="Kategori_Peminjaman"
+                                            value="Insidentil" name="Kategori_Peminjaman" readonly>
                                     </div>
+                                    @error('Kategori_Peminjaman')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -76,9 +71,9 @@
                                         <select class="form-control @error('nama_barang.*') is-invalid @enderror"
                                             id="nama_barang" name="nama_barang[]">
                                             @foreach ($Barangs as $barang)
-                                                <option value="{{ $barang->id }}" data-kode="{{ $barang->Kode_Barang }}"
-                                                    data-kategori="{{ $barang->kategoriBarang->Nama_Kategori_Barang }}">
-                                                    {{ $barang->Nama_Barang }}</option>
+                                                <option value="{{ $barang['Nama_Barang'] }}" data-kode="{{ $barang['Kode_Barang'] }}"
+                                                    data-kategori="{{ $barang['kategoriBarang']['Nama_Kategori_Barang'] }}">
+                                                    {{ $barang['Nama_Barang'] }}</option>
                                             @endforeach
                                         </select>
                                         @error('nama_barang.*')
@@ -87,6 +82,7 @@
                                             </span>
                                         @enderror
                                     </div>
+
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">

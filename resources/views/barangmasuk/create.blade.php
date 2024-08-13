@@ -83,8 +83,8 @@
                                         <label for="Jumlah_barang">Jumlah Barang</label>
                                         <input type="text"
                                             class="form-control @error('Jumlah_barang') is-invalid @enderror"
-                                            id="Jumlah_barang" name="Jumlah_barang"
-                                            value="{{ old('Jumlah_barang') }}" readonly>
+                                            id="Jumlah_barang" name="Jumlah_barang" value="{{ old('Jumlah_barang') }}"
+                                            readonly>
                                         @error('Jumlah_barang')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -157,18 +157,11 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Id_Kategori_Barang">Kategori Barang</label>
-                                        <select class="form-control @error('Id_Kategori_Barang') is-invalid @enderror"
-                                            id="Id_Kategori_Barang" name="Id_Kategori_Barang[]">
-                                            @foreach ($kategoriBarangs as $kategoriBarang)
-                                                <option value="{{ $kategoriBarang->id }}">
-                                                    {{ $kategoriBarang->Nama_Kategori_Barang }}</option>
-                                            @endforeach
+                                        <select name="Kategori_Barang[]" id="Kategori_Barang" class="form-control">
+                                            <option value="Hardware">Hardware</option>
+                                            <option value="Networking">Networking</option>
                                         </select>
-                                        @error('Id_Kategori_Barang')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
+
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -246,19 +239,12 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="Id_Status_Barang">Status Barang</label>
-                                        <select class="form-control @error('Id_Status_Barang') is-invalid @enderror"
-                                            id="Id_Status_Barang" name="Id_Status_Barang[]">
-                                            @foreach ($statusBarangs as $statusBarang)
-                                                <option value="{{ $statusBarang->id }}">
-                                                    {{ $statusBarang->Nama_Status }}</option>
-                                            @endforeach
+                                        <label for="Status">Status Barang</label>
+                                        <select name="Status[]" id="Status" class="form-control">
+                                            <option value="Accept">Accept</option>
+                                            <option value="Reject">Reject</option>
+                                            <option value="Pending">Pending</option>
                                         </select>
-                                        @error('Id_Status_Barang')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
                                     </div>
                                 </div>
                             </div>
