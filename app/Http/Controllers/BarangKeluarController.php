@@ -275,6 +275,8 @@ class BarangKeluarController extends Controller
             'Tanggal_Keluar' => 'required|date',
         ]);
 
+        //test
+
         $barangKeluars = BarangKeluar::where('Kode_BarangKeluar', $request->Kode_BarangKeluar)->get();
 
         foreach ($barangKeluars as $barangKeluar) {
