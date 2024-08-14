@@ -21,6 +21,15 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
+                                        <label for="Catatan" class="form-label">Nomor Berita Acara</label>
+                                        <input type="text" class="form-control" id="nomor_beritaacara"
+                                            name="nomor_beritaacara" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
                                         {{-- <label for="Kode_BarangKeluar" class="form-label">Kode Barang Keluar</label> --}}
                                         <input type="text" name="Kode_BarangKeluar" value="{{ $id }}" hidden>
                                     </div>
@@ -28,8 +37,8 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="Nama_PihakPeminjam" class="form-label">Nama Pihak Peminjam</label>
-                                        <input type="text" class="form-control" value="{{ $Nama_PihakPeminjam }}" id="Nama_PihakPeminjam"
-                                            name="Nama_PihakPeminjam" required >
+                                        <input type="text" class="form-control" value="{{ $Nama_PihakPeminjam }}"
+                                            id="Nama_PihakPeminjam" name="Nama_PihakPeminjam" required>
                                     </div>
                                 </div>
                             </div>

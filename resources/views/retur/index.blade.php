@@ -53,7 +53,8 @@
                                             <td>{{ \Carbon\Carbon::parse($item['Tanggal_Retur'])->format('d-m-Y') }}</td>
                                             <td>{{ $item['status'] }}</td>
                                             <td>
-                                                <a href="#" class="btn btn-info btn-sm">Kelola</a>
+                                                <a href="{{ route('retur.edit', ['id' => $item['id']]) }}"
+                                                    class="btn btn-info btn-sm">Kelola</a>
                                                 <a href="#" class="btn btn-danger btn-sm">Delete</a>
                                             </td>
                                         </tr>

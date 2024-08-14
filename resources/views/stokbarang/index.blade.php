@@ -1,4 +1,5 @@
 @extends('layouts.app')
+
 @section('content')
     @include('layouts.sidebar')
     <div id="content-wrapper" class="d-flex flex-column">
@@ -18,31 +19,63 @@
                         </li>
                     </ul>
                 </div>
-                <div class="container-fluid pt-2 px-2 vh-50 d-grid" style="grid-template-columns: repeat(2, 1fr); gap: 1rem;">
-                    <div class="card p-0" style="background-color: transparent; border: none;">
-                        <img src="{{ Vite::asset('../resources/assets/hardware.jpg') }}" class="rounded" alt="Autumn Logo"
-                            style="object-fit: cover; width: 100%; height: 50vh;">
-                        <div class="card-img-overlay d-flex justify-content-between flex-column">
-                            <div style="align-self: flex-start; color:white">
-                                <h6 class="card-text">CATALOG</h6> 
-                                <h3 class="card-title" style="font-weight: 800">Hardware</h3>
-                            </div>
-                            <a href="{{ route('stokbarang.hardware.index') }}" class="btn btn-primary" style="align-self: flex-end;">See Details</a>
-                        </div>
-                    </div>
 
-                    <div class="card p-0" style="background-color: transparent; border: none;">
-                        <img src="{{ Vite::asset('../resources/assets/network.jpg') }}" class="rounded" alt="Autumn Logo"
-                            style="object-fit: cover; width: 100%; height: 50vh;">
-                        <div class="card-img-overlay d-flex justify-content-between flex-column">
-                            <div style="align-self: flex-start; color:white">
-                                <h6 class="card-text">CATALOG</h6>
-                                <h3 class="card-title" style="font-weight: 800">Networking</h3>
-                            </div>
-                            <a href="{{ route('stokbarang.networking.index') }}" class="btn btn-primary" style="align-self: flex-end;">See Details</a>
+                <div class="container-fluid pt-2 px-2">
+                    <div class="bg-white justify-content-between rounded shadow p-4">
+                        <div class="col-lg-12 mt-lg-0 d-flex align-items-stretch mx-auto" data-aos="fade-up"
+                            data-aos-delay="200">
+                            <!-- Update table in resources/views/barang_rusak.blade.php -->
+                            <table class="table text-center align-middle table-bordered table-hover mb-0 datatable"
+                                id="ProductTable" style="90%">
+                                <thead style="background-color: rgb(1, 1, 95);">
+                                    <tr style="color: white">
+                                        <th scope="col" style="width: 150px; color:white">No</th>
+                                        <th scope="col" style="width: 150px; color:white">Gambar Barang</th>
+                                        <th scope="col" style="width: 200px; color:white">Kode Barang</th>
+                                        <th scope="col" style="width: 150px; color:white">Nama Barang</th>
+                                        <th scope="col" style="width: 150px; color:white">Jumlah Barang</th>
+                                        <th scope="col" style="width: 150px; color:white">Kategori</th>
+                                        <th scope="col" style="width: 150px; color:white">Garansi</th>
+                                        <th scope="col" style="width: 150px; color:white">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($groupedBarangMasuks as $index => $barang)
+                                        <tr>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td>
+                                                @if ($barang['gambar_barang'])
+                                                    <img src="{{ $barang['gambar_barang'] }}" alt="Gambar Barang"
+                                                        width="100">
+                                                @else
+                                                    N/A
+                                                @endif
+                                            </td>
+                                            <td>{{ $barang['kode_barang'] }}</td>
+                                            <td>{{ $barang['nama_barang'] }}</td>
+                                            <td>{{ $barang['jumlah_barang'] }}</td>
+                                            <td>{{ $barang['kategori'] }}</td>
+                                            <td>{{ $barang['sisa_hari_garansi'] }}</td>
+                                            <td>
+                                                <a href="#" class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <form action="#" method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm btn-delete">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

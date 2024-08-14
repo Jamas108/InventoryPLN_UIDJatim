@@ -104,16 +104,39 @@ class ReturController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        // Ambil data dari Firebase menggunakan instance $this->database
+        $returBarangSnapshot = $this->database->getReference('Retur_Barang/' . $id)->getSnapshot();
+        $returBarang = $returBarangSnapshot->getValue();
+
+        // Kirim data ke view
+        return view('retur.edit', ['returBarang' => $returBarang]);
     }
+
+    public function update(Request $request, string $id)
+    {
+        $validatedData = $request->validate([
+            'Pihak_Pemohon' => 'required|string|max:255',
+            'Nama_Barang' => 'required|string|max:255',
+            'Kode_Barang' => 'required|string|max:255',
+            'Kategori_Barang' => 'required|string|max:255',
+            'Kategori_Retur' => 'nullable|string|in:Bekas Handal,Barang Rusak,Bekas Bergaransi',
+            'Jumlah_Barang' => 'required|integer|min:1',
+            'Deskripsi' => 'nullable|string',
+            'Tanggal_Retur' => 'required|date',
+        ]);
+
+        // Update data di Firebase
+        $this->database->getReference('Retur_Barang/' . $id)->update($validatedData);
+
+        // Redirect dengan pesan sukses
+        return redirect()->route('retur.index')->with('success', 'Retur barang berhasil diperbarui.');
+    }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+
 
     /**
      * Remove the specified resource from storage.

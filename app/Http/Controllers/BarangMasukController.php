@@ -7,12 +7,14 @@ use App\Models\BarangMasuk;
 use App\Models\StaffGudang;
 use App\Models\Notification;
 use App\Models\StatusBarang;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\KategoriBarang;
 use App\Events\NewNotification;
 use RealRashid\SweetAlert\Facades\Alert;
 use Kreait\Firebase\Factory;
 use Illuminate\Support\Facades\Auth;
+
 
 class BarangMasukController extends Controller
 {
@@ -43,8 +45,30 @@ class BarangMasukController extends Controller
             return (object) $item; // Convert main item to object
         });
 
-        // Kelompokkan barang keluar berdasarkan tanggal peminjaman
-        $groupedBarangMasuks = $barangMasuks->groupBy('id');
+        // Calculate remaining warranty days for each item
+        foreach ($barangMasuks as $barangMasuk) {
+            foreach ($barangMasuk->barang as $barang) {
+                if (isset($barang->garansi_barang_awal) && isset($barang->garansi_barang_akhir)) {
+                    $garansiAwal = Carbon::parse($barang->garansi_barang_awal);
+                    $garansiAkhir = Carbon::parse($barang->garansi_barang_akhir);
+                    $currentDate = Carbon::now();
+
+                    if ($currentDate->lessThan($garansiAwal)) {
+                        $sisaHari = 'Garansi belum mulai';
+                    } elseif ($currentDate->greaterThan($garansiAkhir)) {
+                        $sisaHari = 'Garansi telah berakhir';
+                    } else {
+                        $sisaHari = $currentDate->diffInDays($garansiAkhir, false) . ' hari tersisa';
+                    }
+
+                    $barang->sisa_hari_garansi = $sisaHari;
+                } else {
+                    $barang->sisa_hari_garansi = 'Informasi garansi tidak lengkap';
+                }
+            }
+        }
+
+
 
         // Hitung total barang untuk setiap grup
         $groupedBarangMasuks = $barangMasuks->groupBy('id')->map(function ($items) {
@@ -57,7 +81,8 @@ class BarangMasukController extends Controller
                 'Jumlah_BarangMasuk' => $items->first()->Jumlah_BarangMasuk ?? null,
                 'No_Surat' => $items->first()->No_Surat ?? null,
                 'TanggalPengiriman_Barang' => $items->first()->TanggalPengiriman_Barang ?? null,
-                'id' => $items->first()->id ?? null
+                'id' => $items->first()->id ?? null,
+
             ]);
         });
         $Id_role = Auth::user()->Id_Role;
@@ -81,6 +106,8 @@ class BarangMasukController extends Controller
     public function store(Request $request)
     {
         $request->validate([]);
+
+
 
         $fileSuratJalanPath = null;
         if ($request->hasFile('File_SuratJalan')) {
@@ -128,6 +155,9 @@ class BarangMasukController extends Controller
                 $gambarBarangPath = $filePath;
             }
 
+            $status = isset($request->Status[$i]) ? $request->Status[$i] : 'Pending';
+            $JenisBarang = isset($request->Jenis_Barang[$i]) ? $request->Jenis_Barang[$i] : 'Baru';
+
             // Add the item's data including the specific image path
             $data['barang'][] = [
                 'id' => uniqid(),
@@ -135,10 +165,11 @@ class BarangMasukController extends Controller
                 'kode_barang' => $request->Kode_Barang[$i],
                 'kategori_barang' => $request->Kategori_Barang[$i],
                 'jumlah_barang' => $request->JumlahBarang_Masuk[$i],
-                'jenis_barang' => $request->Jenis_Barang[$i],
-                'garansi_barang' => $request->Garansi_Barang[$i],
+                'jenis_barang' => $JenisBarang,
+                'garansi_barang_awal' => $request->Garansi_Barang_Awal[$i],
+                'garansi_barang_akhir' => $request->Garansi_Barang_Akhir[$i],
                 'tanggal_masuk' => $request->Tanggal_Masuk[$i],
-                'Status' => $request->Status[$i],
+                'Status' => $status,
                 'gambar_barang' => $gambarBarangPath,
             ];
         }

@@ -4,15 +4,16 @@
     <title>Berita Acara</title>
 </head>
 <body>
-    <h1>PT PLN (Persero)</h1>
-    <h2>Unit Induk Jawa Timur</h2>
-    <h3>DIV STI Ops Jatim</h3>
+    PT PLN (Persero)</br>
+    Unit Induk Jawa Timur</br>
+    DIV STI Ops Jatim</br>
+    Perihal: Pengajuan Peminjaman Barang</br>
+    Nomor: {{ $No_SuratJalanBK }}
 
-    <h3 style="text-align: center;">BERITA ACARA SERAH TERIMA BARANG</h3>
+    <h3 style="text-align: center; padding-top:20px; text-decoration: underline">BERITA ACARA SERAH TERIMA BARANG</h3>
 
     <p>Pada hari ini, Tanggal {{ $Tanggal_Keluar }} telah diserahkan dari PT PLN (PERSERO)
-        DIV STI OPS JATIM kepada {{ $Nama_PihakPeminjam }} dan harus dikembalikan kepada PT PLN (PERSERO) DIV STI OPS JATIM sebelum tanggal  dengan rincian
-        sebagai berikut :</p>
+        DIV STI OPS JATIM kepada {{ $Nama_PihakPeminjam }} dengan kategori peminjaman {{$Kategori}}, Berikut ini merupakan keterangan atau informasi barang yang anda pinjam dari PT PLN (PERSERO) DIV STI OPS JATIM</p>
 
     <table border="1" cellpadding="5" cellspacing="0" style="width: 100%;">
         <thead>
@@ -21,6 +22,7 @@
                 <th>Nama Barang</th>
                 <th>Kuantitas</th>
                 <th>Kategori Barang</th>
+                <th>Jenis Barang</th>
             </tr>
         </thead>
         <tbody>
@@ -30,10 +32,14 @@
                     <td>{{ $barang['Nama_Barang'] }}</td>
                     <td>{{ $barang['Jumlah_Barang'] }}</td>
                     <td>{{ $barang['Kategori_Barang'] }}</td>
+                    <td>{{ $barang['Jenis_Barang'] }}</td>
                 </tr>
             @endforeach
         </tbody>
-    </table>
+    </table></br>
+
+    Catatan:</br>
+    {{$Catatan}}</br>
 
     <p>Demikian Berita Acara Serah Terima Barang ini dibuat untuk dipergunakan seperlunya.</p>
 

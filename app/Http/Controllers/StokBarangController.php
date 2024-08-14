@@ -4,25 +4,90 @@ namespace App\Http\Controllers;
 
 use App\Models\BarangMasuk;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Kreait\Firebase\Factory;
 
 class StokBarangController extends Controller
 {
+    protected $database;
+    protected $storage;
+
     public function __construct()
     {
+        $firebase = (new Factory)
+            ->withServiceAccount(base_path(env('FIREBASE_CREDENTIALS')))
+            ->withDatabaseUri(env("FIREBASE_DATABASE_URL"));
+
+        $this->database = $firebase->createDatabase();
+        $this->storage = $firebase->createStorage();
         $this->middleware('auth');
     }
 
     public function index()
     {
-        return view('stokbarang.index');
+        // Fetch data from Firebase
+        $barangMasuksSnapshot = $this->database->getReference('barang_masuk')->getSnapshot();
+        $barangMasuksData = $barangMasuksSnapshot->getValue();
+
+        // Convert data to collection of objects
+        $barangMasuks = collect($barangMasuksData)->flatMap(function ($item) {
+            return collect($item['barang'])->map(function ($barang) {
+                // Convert each barang to object
+                return (object) $barang;
+            });
+        });
+
+        // Filter out repeated items based on 'kode_barang'
+        $groupedBarangMasuks = $barangMasuks->groupBy('kode_barang')->map(function ($items, $kode_barang) {
+            // Generate URL for the image
+            $gambarUrl = null;
+            if (isset($items->first()->gambar_barang)) {
+                $object = $this->storage->getBucket()->object($items->first()->gambar_barang);
+                $gambarUrl = $object->signedUrl(new \DateTime('1 hour'));
+            }
+
+            return [
+                'kode_barang' => $kode_barang,
+                'gambar_barang' => $gambarUrl,
+                'nama_barang' => $items->first()->nama_barang ?? null,
+                'jumlah_barang' => $items->sum('jumlah_barang'),
+                'kategori' => $items->first()->kategori_barang ?? null,
+                'garansi_barang_awal' => $items->first()->garansi_barang_awal ?? null,
+                'garansi_barang_akhir' => $items->first()->garansi_barang_akhir ?? null,
+                'sisa_hari_garansi' => $this->calculateSisaHariGaransi($items->first()),
+            ];
+        });
+
+        return view('stokbarang.index', ['groupedBarangMasuks' => $groupedBarangMasuks]);
     }
+
+
+    private function calculateSisaHariGaransi($barang)
+    {
+        if (isset($barang->garansi_barang_awal) && isset($barang->garansi_barang_akhir)) {
+            $garansiAwal = Carbon::parse($barang->garansi_barang_awal);
+            $garansiAkhir = Carbon::parse($barang->garansi_barang_akhir);
+            $currentDate = Carbon::now();
+
+            if ($currentDate->lessThan($garansiAwal)) {
+                return 'Garansi belum mulai';
+            } elseif ($currentDate->greaterThan($garansiAkhir)) {
+                return 'Garansi telah berakhir';
+            } else {
+                return $currentDate->diffInDays($garansiAkhir, false) . ' hari tersisa';
+            }
+        } else {
+            return 'Informasi garansi tidak lengkap';
+        }
+    }
+
 
     public function hardwareIndex(Request $request)
     {
         $filter = $request->input('filter');
 
         $hardwareBarangMasuks = BarangMasuk::with(['kategoriBarang', 'statusBarang', 'barangKeluar'])
-            ->whereHas('kategoriBarang', function($query) {
+            ->whereHas('kategoriBarang', function ($query) {
                 $query->where('Nama_Kategori_Barang', 'hardware');
             })
             ->get()
@@ -59,7 +124,7 @@ class StokBarangController extends Controller
         $filter = $request->input('filter');
 
         $networkingBarangMasuks = BarangMasuk::with(['kategoriBarang', 'statusBarang', 'barangKeluar'])
-            ->whereHas('kategoriBarang', function($query) {
+            ->whereHas('kategoriBarang', function ($query) {
                 $query->where('Nama_Kategori_Barang', 'networking');
             })
             ->get()

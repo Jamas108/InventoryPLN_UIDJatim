@@ -108,12 +108,13 @@
                                             <td>Approved</td>
                                             <td>
                                                 <button class="btn btn-primary btn-sm" type="button"
-                                                    data-bs-toggle="collapse" data-bs-target="#collapse-{{ $barangMasuks['TanggalPengiriman_Barang'] }}"
-                                                    aria-expanded="false" aria-controls="collapse-{{ $barangMasuks['TanggalPengiriman_Barang'] }}">
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#collapse-{{ $barangMasuks['TanggalPengiriman_Barang'] }}"
+                                                    aria-expanded="false"
+                                                    aria-controls="collapse-{{ $barangMasuks['TanggalPengiriman_Barang'] }}">
                                                     +
                                                 </button>
-                                                <a href=""
-                                                    class="btn btn-primary btn-sm">
+                                                <a href="" class="btn btn-primary btn-sm">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
 
@@ -138,6 +139,7 @@
                                                                 <th>Nama Barang</th>
                                                                 <th>Kuantitas</th>
                                                                 <th>Kategori Barang</th>
+                                                                <th>Garansi Barang</th>
                                                                 <th>Status Barang</th>
                                                             </tr>
                                                         </thead>
@@ -147,8 +149,20 @@
                                                                     <td>{{ $barangMasuk->kode_barang }}</td>
                                                                     <td>{{ $barangMasuk->nama_barang }}</td>
                                                                     <td>{{ $barangMasuk->jumlah_barang }}</td>
-                                                                    <td>{{ $barangMasuk->kategori_barang }}
+
+                                                                    <td>{{ $barangMasuk->kategori_barang }}</td>
+                                                                    <td>
+                                                                        @if ($barangMasuk->sisa_hari_garansi == 'Garansi tidak tersedia')
+                                                                            <span
+                                                                                class="text-warning">{{ $barangMasuk->sisa_hari_garansi }}</span>
+                                                                        @elseif($barangMasuk->sisa_hari_garansi == 'Garansi telah berakhir')
+                                                                            <span
+                                                                                class="text-danger">{{ $barangMasuk->sisa_hari_garansi }}</span>
+                                                                        @else
+                                                                            {{ $barangMasuk->sisa_hari_garansi }}
+                                                                        @endif
                                                                     </td>
+
                                                                     {{-- <td class="text-center">
                                                                         <form
                                                                             action="{{ route('barangmasuk.updateStatus', $barangMasuk->id) }}"

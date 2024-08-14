@@ -100,6 +100,8 @@ Route::resource('/suratjalan', SuratJalanController::class);
 Route::resource('/retur', ReturController::class);
 Route::get('/retur/bergaransi/index', [ReturController::class, 'bergaransiIndex'])->name('retur.bergaransi.index');
 Route::get('/retur/handal/index', [ReturController::class, 'handalIndex'])->name('retur.handal.index');
+Route::get('retur/{id}/edit', [ReturController::class, 'edit'])->name('retur.edit');
+Route::put('retur/{id}', [ReturController::class, 'update'])->name('retur.update');
 
 
 // Rute untuk reports

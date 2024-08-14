@@ -84,13 +84,14 @@
                                         <label for="nama_barang">Nama Barang</label>
                                         <select class="form-control @error('nama_barang.*') is-invalid @enderror"
                                             id="nama_barang" name="nama_barang[]">
-                                            @foreach ($Barangs as $barang)
-                                                <option value="{{ $barang['Nama_Barang'] }}"
-                                                    data-kode="{{ $barang['Kode_Barang'] }}"
-                                                    data-kategori="{{ $barang['kategoriBarang']['Nama_Kategori_Barang'] }}">
-                                                    {{ $barang['Nama_Barang'] }}</option>
+                                            @foreach ($allItems as $item)
+                                                <option value="{{ $item->nama_barang }}" data-kode="{{ $item->kode_barang }}"
+                                                    data-kategori="{{ $item->kategori_barang }}">
+                                                    {{ $item->nama_barang }}</option>
                                             @endforeach
                                         </select>
+
+
                                         @error('nama_barang.*')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>

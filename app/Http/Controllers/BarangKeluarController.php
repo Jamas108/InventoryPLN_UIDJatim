@@ -79,32 +79,28 @@ class BarangKeluarController extends Controller
     public function create()
     {
         $pageTitle = 'Tambahkan Barang Keluar';
-        $kategoriPeminjamans = KategoriPeminjaman::where('Nama_Kategori_Peminjaman')->get();
+        $kategoriPeminjamans = KategoriPeminjaman::all(); // Ambil kategori peminjaman
 
-        // Mengambil data barang dari Firebase menggunakan instance $this->database
-        $reference = $this->database->getReference('barang_masuk');
-        $snapshot = $reference->getSnapshot();
-        $barangData = $snapshot->getValue();
+        // Ambil data barang dari Firebase
+        $barangMasuksSnapshot = $this->database->getReference('barang_masuk')->getSnapshot();
+        $barangMasuksData = $barangMasuksSnapshot->getValue();
 
-        $Barangs = [];
+        // Mengubah struktur data
+        $allItems = collect($barangMasuksData)->flatMap(function ($item) {
+            return collect($item['barang'])->map(function ($barang) {
+                return (object) $barang; // Convert each barang to object
+            });
+        });
 
-        // Mengubah format data agar sesuai dengan view
-        if ($barangData) {
-            foreach ($barangData as $id => $barang) {
-                // Memeriksa apakah status barang adalah "Accept"
-                if (isset($barang['Status']) && $barang['Status'] === 'Accept') {
-                    $Barangs[] = [
-                        'id' => $id,
-                        'Nama_Barang' => $barang['Nama_Barang'],
-                        'Kode_Barang' => $barang['Kode_Barang'],
-                        'kategoriBarang' => ['Nama_Kategori_Barang' => $barang['Kategori_Barang']]
-                    ];
-                }
-            }
-        }
-
-        return view('barangkeluar.create', compact('pageTitle', 'kategoriPeminjamans', 'Barangs'));
+        return view('barangkeluar.create', [
+            'pageTitle' => $pageTitle,
+            'kategoriPeminjamans' => $kategoriPeminjamans,
+            'allItems' => $allItems // Mengirimkan data barang ke view
+        ]);
     }
+
+
+
 
 
     /**
@@ -170,7 +166,7 @@ class BarangKeluarController extends Controller
         // Update the data with the Firebase generated ID
         $newRecordRef->update(['id' => $newRecordId]);
 
-        return redirect()->back()->with('success', 'Data successfully saved!');
+        return view('barangkeluar.index');
     }
 
 
@@ -197,6 +193,7 @@ class BarangKeluarController extends Controller
 
         // Validate the request
         $request->validate([
+            'nomor_beritaacara' => 'nullable|string',
             'Nama_PihakPeminjam' => 'nullable|string',
             'Tanggal_Kembali' => 'nullable|date',
             'Catatan' => 'nullable|string',
@@ -221,12 +218,14 @@ class BarangKeluarController extends Controller
                     'Nama_Barang' => $barangData['nama_barang'] ?? 'N/A',
                     'Jumlah_Barang' => $barangData['jumlah_barang'] ?? 'N/A',
                     'Kategori_Barang' => $barangData['kategori_barang'] ?? 'N/A',
+                    'Jenis_Barang' => $barangData['jenis_barang'] ?? 'N/A',
                 ];
             }
         }
 
         // Update data with the request
         $updateData = [
+            'No_SuratJalanBK' => $request->input('nomor_beritaacara', $barangKeluar['nomor_beritaacara'] ?? ''),
             'Nama_PihakPeminjam' => $request->input('Nama_PihakPeminjam', $barangKeluar['Nama_PihakPeminjam'] ?? ''),
             'Tanggal_Kembali' => $request->input('Tanggal_Kembali', $barangKeluar['Tanggal_Kembali'] ?? ''),
             'Catatan' => $request->input('Catatan', $barangKeluar['Catatan'] ?? ''),  // Added Catatan field
@@ -239,8 +238,11 @@ class BarangKeluarController extends Controller
 
         // Generate PDF
         $pdf = Pdf::loadView('barangkeluar.beritaacara', [
-            'Tanggal_Keluar' => $barangKeluar['Tanggal_Keluar'] ?? null,
+            'No_SuratJalanBK' => $updateData['No_SuratJalanBK'],
+            'Tanggal_Keluar' => $updateData['Tanggal_Keluar'] ?? null,
+            'Kategori' => $barangKeluar['Kategori'] ?? null,
             'Nama_PihakPeminjam' => $updateData['Nama_PihakPeminjam'],
+            'Catatan' => $updateData['Catatan'],
             'barangKeluarList' => $barangKeluarList
         ]);
 
@@ -256,7 +258,38 @@ class BarangKeluarController extends Controller
         // Update Firebase record with the PDF URL and other fields
         $barangKeluarRef->update(array_merge($updateData, ['File_BeritaAcara' => $pdfFileUrl]));
 
-        return redirect()->route('barangkeluar.createBeritaAcara', ['id' => $id])->with('success', 'Berita Acara berhasil diperbarui dan PDF dihasilkan!');
+        // Update stock in Barang Masuk
+        $this->updateStockBarangMasuk($barangKeluar['barang']);
+
+        return view('barangkeluar.index');
+    }
+
+    private function updateStockBarangMasuk(array $barangKeluarList)
+    {
+        foreach ($barangKeluarList as $barang) {
+            $kodeBarang = $barang['kode_barang'] ?? 'N/A';
+            $jumlahBarang = $barang['jumlah_barang'] ?? 0;
+
+            // Fetch Barang Masuk data from Firebase
+            $barangMasukRef = $this->database->getReference('barang_masuk');
+            $barangMasukSnapshot = $barangMasukRef->getSnapshot();
+            $barangMasukData = $barangMasukSnapshot->getValue();
+
+            foreach ($barangMasukData as $key => $barangMasuk) {
+                foreach ($barangMasuk['barang'] as $index => $barangItem) {
+                    if ($barangItem['kode_barang'] === $kodeBarang) {
+                        // Update stock quantity
+                        $currentStock = $barangItem['jumlah_barang'] ?? 0;
+                        $newStock = $currentStock - $jumlahBarang;
+
+                        // Update Firebase record
+                        $barangMasukRef->getChild($key . '/barang/' . $index)->update([
+                            'jumlah_barang' => $newStock,
+                        ]);
+                    }
+                }
+            }
+        }
     }
 
 

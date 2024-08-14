@@ -83,8 +83,8 @@
                                         <label for="Jumlah_barang">Jumlah Barang</label>
                                         <input type="text"
                                             class="form-control @error('Jumlah_barang') is-invalid @enderror"
-                                            id="Jumlah_barang" name="jumlah_barangmasuk" value="{{ old('jumlah_barangmasuk') }}"
-                                            readonly>
+                                            id="Jumlah_barang" name="jumlah_barangmasuk"
+                                            value="{{ old('jumlah_barangmasuk') }}" readonly>
                                         @error('Jumlah_barang')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -180,11 +180,25 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="Garansi_Barang">Garansi Barang</label>
-                                        <input type="number"
+                                        <label for="Garansi_Barang">Tanggal Garansi Awal</label>
+                                        <input type="date"
                                             class="form-control @error('Garansi_Barang') is-invalid @enderror"
-                                            id="Garansi_Barang" name="Garansi_Barang[]"
-                                            value="{{ old('Garansi_Barang') }}">
+                                            id="Garansi_Barang" name="Garansi_Barang_Awal[]"
+                                            value="{{ old('Garansi_Barang_Awal') }}">
+                                        @error('Garansi_Barang')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="Garansi_Barang">Tanggal Garansi Akhir</label>
+                                        <input type="date"
+                                            class="form-control @error('Garansi_Barang') is-invalid @enderror"
+                                            id="Garansi_Barang" name="Garansi_Barang_Akhir[]"
+                                            value="{{ old('Garansi_Barang_Akhir') }}">
                                         @error('Garansi_Barang')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -207,6 +221,11 @@
                                         @enderror
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="Status" name="Status[]"
+                                        value="{{ old('Status', 'Pending') }}" hidden>
+                                </div>
+
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Tanggal_Masuk">Tanggal Masuk</label>
@@ -236,11 +255,6 @@
                                     </div>
 
                                 </div>
-                                <div class="form-group">
-                                    <input type="text" class="form-control" id="Status" name="Status[]"
-                                        value="Pending" hidden>
-                                </div>
-
                             </div>
                         </div>
 
