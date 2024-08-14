@@ -149,21 +149,52 @@
                                                                     <td>{{ $barangMasuk->JumlahBarang_Masuk }}</td>
                                                                     <td>{{ $barangMasuk->Kategori_Barang }}
                                                                     </td>
-                                                                    <td>
-                                                                        <select
-                                                                            class="form-select form-select-sm status-select"
-                                                                            data-id="{{ $barangMasuk->id }}"
-                                                                            aria-label="Ubah Status">
-                                                                            <option value="Accept"
-                                                                                {{ $barangMasuk->Status == 'Accept' ? 'selected' : '' }}>
-                                                                                Accept</option>
-                                                                            <option value="Pending"
-                                                                                {{ $barangMasuk->Status == 'Pending' ? 'selected' : '' }}>
-                                                                                Pending</option>
-                                                                            <option value="Reject"
-                                                                                {{ $barangMasuk->Status == 'Reject' ? 'selected' : '' }}>
-                                                                                Reject</option>
-                                                                        </select>
+                                                                    <td class="text-center">
+                                                                        <form
+                                                                            action="{{ route('barangmasuk.updateStatus', $barangMasuk->id) }}"
+                                                                            method="POST">
+                                                                            @csrf
+                                                                            @if (Auth::user()->Id_Role == 3)
+                                                                                <!-- Cek apakah id role adalah 3 -->
+                                                                                <div
+                                                                                    class="d-flex justify-content-center align-items-center">
+                                                                                    <select name="Status" id="status"
+                                                                                        class="form-control form-control-sm w-auto">
+                                                                                        <option value="Accept"
+                                                                                            {{ $barangMasuk->Status == 'Accept' ? 'selected' : '' }}>
+                                                                                            Accept</option>
+                                                                                        <option value="Pending"
+                                                                                            {{ $barangMasuk->Status == 'Pending' ? 'selected' : '' }}>
+                                                                                            Pending</option>
+                                                                                        <option value="Reject"
+                                                                                            {{ $barangMasuk->Status == 'Reject' ? 'selected' : '' }}>
+                                                                                            Reject</option>
+                                                                                        <!-- Tambahkan pilihan status lainnya sesuai kebutuhan -->
+                                                                                    </select>
+                                                                                    <button type="submit"
+                                                                                        class="btn btn-primary btn-sm ms-2">Update</button>
+                                                                                </div>
+                                                                            @else
+                                                                                <div
+                                                                                    class="d-flex justify-content-center align-items-center">
+                                                                                    <select name="Status" id="status"
+                                                                                        class="form-control form-control-sm w-auto"
+                                                                                        disabled>
+                                                                                        <option value="Accept"
+                                                                                            {{ $barangMasuk->Status == 'Accept' ? 'selected' : '' }}>
+                                                                                            Accept</option>
+                                                                                        <option value="Pending"
+                                                                                            {{ $barangMasuk->Status == 'Pending' ? 'selected' : '' }}>
+                                                                                            Pending</option>
+                                                                                        <option value="Reject"
+                                                                                            {{ $barangMasuk->Status == 'Reject' ? 'selected' : '' }}>
+                                                                                            Reject</option>
+                                                                                        <!-- Tambahkan pilihan status lainnya sesuai kebutuhan -->
+                                                                                    </select>
+                                                                                </div>
+                                                                            @endif
+                                                                        </form>
+
                                                                     </td>
                                                                 </tr>
                                                             @endforeach

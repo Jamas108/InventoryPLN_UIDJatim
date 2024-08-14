@@ -1,9 +1,9 @@
 @extends('layouts.app')
 @section('content')
-@include('layouts.sidebar')
-<div id="content-wrapper" class="d-flex flex-column">
-    <div id="content">
-        @include('layouts.navbar')
+    @include('layouts.sidebar')
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            @include('layouts.navbar')
             <!-- Begin Page Content -->
             <div class="container-fluid">
 
@@ -89,6 +89,59 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <!-- Chart -->
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">Barang Masuk dan Barang Keluar Per Bulan</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
+
+        @push('scripts')
+            <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var options = {
+                        chart: {
+                            type: 'line',
+                        },
+                        series: [{
+                                name: 'Barang Masuk',
+                                data: @json($masukData),
+                            },
+                            {
+                                name: 'Barang Keluar',
+                                data: @json($keluarData),
+                            }
+                        ],
+                        xaxis: {
+                            categories: @json($months),
+                            title: {
+                                text: 'Bulan'
+                            }
+                        },
+                        yaxis: {
+                            title: {
+                                text: 'Jumlah Barang'
+                            }
+                        },
+                        title: {
+                            text: 'Laporan Barang Masuk dan Barang Keluar per Bulan'
+                        }
+                    }
+
+                    var chart = new ApexCharts(document.querySelector("#chart"), options);
+                    chart.render();
+                });
+            </script>
+        @endpush
     @endsection

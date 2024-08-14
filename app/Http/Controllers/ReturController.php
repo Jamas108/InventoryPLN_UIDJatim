@@ -6,17 +6,34 @@ use App\Models\JenisReturBarang;
 use App\Models\ReturBarang;
 use App\Models\StatusReturBarang;
 use Illuminate\Http\Request;
+use Kreait\Firebase\Factory;
 
 class ReturController extends Controller
 {
+    protected $database;
+    protected $storage;
+
     public function __construct()
     {
+        $firebase = (new Factory)
+            ->withServiceAccount(base_path(env('FIREBASE_CREDENTIALS')))
+            ->withDatabaseUri(env("FIREBASE_DATABASE_URL"));
+
+        $this->database = $firebase->createDatabase();
+        $this->storage = $firebase->createStorage();
         $this->middleware('auth');
     }
+
     public function index()
     {
-        return view('retur.index');
+        // Ambil data dari Firebase menggunakan instance $this->database
+        $returBarangSnapshot = $this->database->getReference('Retur_Barang')->getSnapshot();
+        $returBarangData = $returBarangSnapshot->getValue();
+
+        // Kirim data ke view
+        return view('retur.index', ['returBarangData' => $returBarangData]);
     }
+
     public function bergaransiIndex()
     {
         $bekasBergaransis = ReturBarang::where('Id_Jenis_Retur', 2)->get();

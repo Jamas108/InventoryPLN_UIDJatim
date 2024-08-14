@@ -11,9 +11,12 @@
                     <ul class="list-inline mb-0 float-end">
                         <li class="list-inline-item">
 
-                            <a href="{{ route('user.create') }}"
+                            <a href="{{ route('viewcreate.user') }}"
                                 class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                                <i class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Akun </a>
+                                <i class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Akun Pengguna</a>
+                                <a href="{{ route('user.create') }}"
+                                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                                <i class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Akun Pegawai</a>
                         </li>
                     </ul>
                 </div>

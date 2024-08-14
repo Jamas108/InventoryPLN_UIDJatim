@@ -12,6 +12,7 @@ use App\Models\KategoriBarang;
 use App\Events\NewNotification;
 use RealRashid\SweetAlert\Facades\Alert;
 use Kreait\Firebase\Factory;
+use Illuminate\Support\Facades\Auth;
 
 class BarangMasukController extends Controller
 {
@@ -51,9 +52,11 @@ class BarangMasukController extends Controller
         // Ambil data status barang dari database lokal jika tidak ada di Firebase
         $statusBarangs = StatusBarang::all();
 
+        $Id_role = Auth::user()->Id_Role;
+
         confirmDelete();
 
-        return view('barangmasuk.index', compact('groupedBarangMasuks', 'statusBarangs'));
+        return view('barangmasuk.index', compact('groupedBarangMasuks', 'statusBarangs', 'Id_role'));
     }
 
 
@@ -281,16 +284,28 @@ class BarangMasukController extends Controller
     }
     public function updateStatus(Request $request, $id)
     {
+        // Validasi inputan
         $request->validate([
-            'status' => 'required|in:Accept,Pending,Reject',
+            'Status' => 'required|string|max:50',
         ]);
 
-        $barangMasuk = BarangMasuk::findOrFail($id);
-        $barangMasuk->Status = $request->input('status');
-        $barangMasuk->save();
+        try {
+            // Mendapatkan referensi ke data barang masuk berdasarkan ID
+            $barangMasukRef = $this->database->getReference('barang_masuk/' . $id);
 
-        return redirect()->route('barangmasuk.index')->with('success', 'Status barang telah diperbarui.');
+            // Memperbarui field Status
+            $barangMasukRef->update([
+                'Status' => $request->input('Status'),
+            ]);
+
+            Alert::success('Berhasil', 'Status barang berhasil diperbarui.');
+        } catch (\Exception $e) {
+            Alert::error('Gagal', 'Terjadi kesalahan saat memperbarui status barang: ' . $e->getMessage());
+        }
+
+        return redirect()->route('barangmasuk.index')->with('success', 'Status barang berhasil diperbarui.');
     }
+
 
     public function updateStatusAjax(Request $request)
     {

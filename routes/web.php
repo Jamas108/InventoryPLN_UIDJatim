@@ -37,10 +37,12 @@ Route::resource('barangmasuk', BarangMasukController::class);
 // Route::put('/barangmasuk/updateStatus/{id}', [BarangMasukController::class, 'updateStatus'])->name('barangmasuk.updateStatus');
 Route::get('/barangmasuk/edit/{noSurat}', [BarangMasukController::class, 'edit'])->name('barangmasuk.edit');
 Route::put('/barangmasuk/update/{noSurat}', [BarangMasukController::class, 'update'])->name('barangmasuk.update');
-Route::put('/barangmasuk/{id}/update-status', [BarangMasukController::class, 'updateStatus'])->name('barangmasuk.updateStatus');
+Route::post('/barangmasuk/{id}/updateStatus', [BarangMasukController::class, 'updateStatus'])->name('barangmasuk.updateStatus');
 Route::put('/barangmasuk/update-status-ajax', [BarangMasukController::class, 'updateStatusAjax'])->name('barangmasuk.updateStatusAjax');
 
-
+//USER
+Route::get('/create-user', [UserController::class, 'viewCreateUser'])->name('viewcreate.user');
+Route::post('/create-user', [UserController::class, 'createUser'])->name('create.user');
 
 
 

@@ -91,17 +91,21 @@ class BarangKeluarController extends Controller
         // Mengubah format data agar sesuai dengan view
         if ($barangData) {
             foreach ($barangData as $id => $barang) {
-                $Barangs[] = [
-                    'id' => $id,
-                    'Nama_Barang' => $barang['Nama_Barang'],
-                    'Kode_Barang' => $barang['Kode_Barang'],
-                    'kategoriBarang' => ['Nama_Kategori_Barang' => $barang['Kategori_Barang']]
-                ];
+                // Memeriksa apakah status barang adalah "Accept"
+                if (isset($barang['Status']) && $barang['Status'] === 'Accept') {
+                    $Barangs[] = [
+                        'id' => $id,
+                        'Nama_Barang' => $barang['Nama_Barang'],
+                        'Kode_Barang' => $barang['Kode_Barang'],
+                        'kategoriBarang' => ['Nama_Kategori_Barang' => $barang['Kategori_Barang']]
+                    ];
+                }
             }
         }
 
         return view('barangkeluar.create', compact('pageTitle', 'kategoriPeminjamans', 'Barangs'));
     }
+
 
     /**
      * Store a newly created resource in storage.

@@ -10,7 +10,7 @@
                 <form action="{{ route('barangkeluar.storeBeritaAcara', ['id' => $id]) }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
-                    
+
                     <div class="container-fluid">
                         <div class="d-sm-flex align-items-center justify-content-center rounded-top"
                             style="background-color: rgb(1, 1, 95);">
@@ -29,7 +29,7 @@
                                     <div class="form-group">
                                         <label for="Nama_PihakPeminjam" class="form-label">Nama Pihak Peminjam</label>
                                         <input type="text" class="form-control" value="{{ $Nama_PihakPeminjam }}" id="Nama_PihakPeminjam"
-                                            name="Nama_PihakPeminjam" required readonly>
+                                            name="Nama_PihakPeminjam" required >
                                     </div>
                                 </div>
                             </div>

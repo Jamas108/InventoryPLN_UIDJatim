@@ -18,32 +18,52 @@
                         </li>
                     </ul>
                 </div>
-                
-                <div class="container-fluid pt-2 px-2 vh-50 d-grid" style="grid-template-columns: repeat(2, 1fr); gap: 1rem;">
-                    <div class="card p-10" style="background-color: transparent; border: none;">
-                        <img src="{{ Vite::asset('../resources/assets/boxGaransi.png') }}" class="rounded" alt="Autumn Logo"
-                            style="object-fit: cover; width: 100%; height: 50vh;">
-                        <div class="card-img-overlay d-flex justify-content-between flex-column">
-                            <div style="align-self: flex-start; color:rgb(255, 255, 255)">
-                                <h6 class="card-text">CATALOG</h6>
-                                <h3 class="card-title" style="font-weight: 800">Bekas Bergaransi</h3>
-                            </div>
-                            <a href="{{ route('retur.bergaransi.index') }}" class="btn btn-primary" style="align-self: flex-end;">See Details</a>
-                        </div>
-                    </div>
 
-                    <div class="card p-0" style="background-color: transparent; border: none; ">
-                        <img src="{{ Vite::asset('../resources/assets/Boxbekas.png') }}" class="rounded" alt="Autumn Logo" 
-                            style="object-fit: cover; width: 100%; height: 50vh;">
-                        <div class="card-img-overlay d-flex justify-content-between flex-column">
-                            <div style="align-self: flex-start; color:rgb(255, 255, 255)">
-                                <h6 class="card-text">CATALOG</h6>
-                                <h3 class="card-title" style="font-weight: 800">Bekas Handal</h3>
-                            </div>
-                            <a href="{{ route('retur.handal.index') }}" class="btn btn-primary" style="align-self: flex-end;">See Details</a>
+                <div class="container-fluid pt-2 px-2">
+                    <div class="bg-white justify-content-between rounded shadow p-4">
+                        <div class="col-lg-12 mt-lg-0 d-flex align-items-stretch mx-auto" data-aos="fade-up"
+                            data-aos-delay="200">
+                            <!-- Update table in resources/views/barang_rusak.blade.php -->
+                            <table class="table text-center align-middle table-bordered table-hover mb-0 datatable"
+                                id="ProductTable" style="90%">
+                                <thead style=" background-color: rgb(1, 1, 95);">
+                                    <tr style="color: white">
+                                        <th scope="col" style="width: 150px; color:white">No</th>
+                                        <th scope="col" style="width: 150px; color:white">Pemohon</th>
+                                        <th scope="col" style="width: 200px; color:white">Kode Barang</th>
+                                        <th scope="col" style="width: 150px; color:white">Nama Barang</th>
+                                        <th scope="col" style="width: 150px; color:white">Jumlah Barang</th>
+                                        <th scope="col" style="width: 150px; color:white">Kategori</th>
+                                        <th scope="col" style="width: 150px; color:white">Deskripsi</th>
+                                        <th scope="col" style="width: 250px; color:white">Tanggal Retur</th>
+                                        <th scope="col" style="width: 150px; color:white">Status</th>
+                                        <th scope="col" style="width: 150px; color:white">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($returBarangData as $key => $item)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $item['Pihak_Pemohon'] }}</td>
+                                            <td>{{ $item['Kode_Barang'] }}</td>
+                                            <td>{{ $item['Nama_Barang'] }}</td>
+                                            <td>{{ $item['Jumlah_Barang'] }}</td>
+                                            <td>{{ $item['Kategori_Barang'] }}</td>
+                                            <td>{{ $item['Deskripsi'] }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($item['Tanggal_Retur'])->format('d-m-Y') }}</td>
+                                            <td>{{ $item['status'] }}</td>
+                                            <td>
+                                                <a href="#" class="btn btn-info btn-sm">Kelola</a>
+                                                <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

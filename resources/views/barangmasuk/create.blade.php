@@ -236,16 +236,11 @@
                                     </div>
 
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="Status">Status Barang</label>
-                                        <select name="Status[]" id="Status" class="form-control">
-                                            <option value="Accept">Accept</option>
-                                            <option value="Reject">Reject</option>
-                                            <option value="Pending">Pending</option>
-                                        </select>
-                                    </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="Status" name="Status[]"
+                                        value="Pending" hidden>
                                 </div>
+
                             </div>
                         </div>
 
