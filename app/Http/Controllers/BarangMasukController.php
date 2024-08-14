@@ -35,28 +35,36 @@ class BarangMasukController extends Controller
         $barangMasuksSnapshot = $this->database->getReference('barang_masuk')->getSnapshot();
         $barangMasuksData = $barangMasuksSnapshot->getValue();
 
-        // Convert data menjadi koleksi Laravel
         $barangMasuks = collect($barangMasuksData)->map(function ($item) {
-            return (object) $item; // Convert array to object
+            // Convert arrays to objects
+            $item['barang'] = collect($item['barang'])->map(function ($barang) {
+                return (object) $barang; // Convert each barang to object
+            });
+            return (object) $item; // Convert main item to object
         });
 
-        // Kelompokkan barang masuk berdasarkan nomor surat
-        $groupedBarangMasuks = $barangMasuks->groupBy('No_Surat');
+        // Kelompokkan barang keluar berdasarkan tanggal peminjaman
+        $groupedBarangMasuks = $barangMasuks->groupBy('id');
 
         // Hitung total barang untuk setiap grup
-        $groupedBarangMasuks = $groupedBarangMasuks->map(function ($items) {
-            $items->Jumlah_barang = $items->sum('JumlahBarang_Masuk');
-            return $items;
+        $groupedBarangMasuks = $barangMasuks->groupBy('id')->map(function ($items) {
+            return collect([
+                'items' => $items->flatMap(fn($item) => $item->barang),
+                'Jumlah_barang' => $items->flatMap(fn($item) => $item->barang)->count(),
+                'File_SuratJalan' => $items->first()->File_SuratJalan ?? null,
+                'File_BeritaAcara' => $items->first()->File_BeritaAcara ?? null,
+                'NamaPerusahaan_Pengirim' => $items->first()->NamaPerusahaan_Pengirim ?? null,
+                'Jumlah_BarangMasuk' => $items->first()->Jumlah_BarangMasuk ?? null,
+                'No_Surat' => $items->first()->No_Surat ?? null,
+                'TanggalPengiriman_Barang' => $items->first()->TanggalPengiriman_Barang ?? null,
+                'id' => $items->first()->id ?? null
+            ]);
         });
-
-        // Ambil data status barang dari database lokal jika tidak ada di Firebase
-        $statusBarangs = StatusBarang::all();
-
         $Id_role = Auth::user()->Id_Role;
 
-        confirmDelete();
 
-        return view('barangmasuk.index', compact('groupedBarangMasuks', 'statusBarangs', 'Id_role'));
+
+        return view('barangmasuk.index', ['groupedBarangMasuks' => $groupedBarangMasuks]);
     }
 
 
@@ -69,72 +77,6 @@ class BarangMasukController extends Controller
         return view('barangmasuk.create', compact('staffGudangs', 'kategoriBarangs', 'statusBarangs'));
     }
 
-    // public function store(Request $request)
-    // {
-    //     $request->validate([]);
-
-    //     $fileSuratJalanPath = null;
-    //     if ($request->hasFile('File_SuratJalan')) {
-    //         $file = $request->file('File_SuratJalan');
-    //         $fileName = time() . '_' . $file->getClientOriginalName();
-    //         $filePath = 'file_surat_jalan/' . $fileName;
-
-    //         // Upload ke Firebase Storage
-    //         $bucket = $this->storage->getBucket();
-    //         $bucket->upload(
-    //             fopen($file->getPathname(), 'r'),
-    //             [
-    //                 'name' => $filePath,
-    //             ]
-    //         );
-    //         $fileSuratJalanPath = $filePath;
-    //     }
-
-    //     foreach ($request->JumlahBarang_Masuk as $i => $jumlah) {
-    //         $gambarBarangPath = null;
-    //         if ($request->hasFile("Gambar_Barang.$i")) {
-    //             $file = $request->file("Gambar_Barang.$i");
-    //             $fileName = time() . '_' . $file->getClientOriginalName();
-    //             $filePath = 'gambar_barang/' . $fileName;
-
-    //             // Upload ke Firebase Storage
-    //             $bucket = $this->storage->getBucket();
-    //             $bucket->upload(
-    //                 fopen($file->getPathname(), 'r'),
-    //                 [
-    //                     'name' => $filePath,
-    //                 ]
-    //             );
-    //             $gambarBarangPath = $filePath;
-    //         }
-
-    //         $data = [
-    //             'Id_Petugas' => $request->Id_Petugas,
-    //             'No_Surat' => $request->No_Surat,
-    //             'NamaPerusahaan_Pengirim' => $request->NamaPerusahaan_Pengirim,
-    //             'TanggalPengiriman_Barang' => $request->TanggalPengiriman_Barang,
-    //             'Jumlah_barang' => $request->Jumlah_barang,
-    //             'Kode_Barang' => $request->Kode_Barang[$i],
-    //             'Nama_Barang' => $request->Nama_Barang[$i],
-    //             'Jenis_Barang' => $request->Jenis_Barang[$i],
-    //             'Kategori_Barang' => $request->Kategori_Barang[$i],
-    //             'JumlahBarang_Masuk' => $request->JumlahBarang_Masuk[$i],
-    //             'Garansi_Barang' => $request->Garansi_Barang[$i],
-    //             'Kondisi_Barang' => $request->Kondisi_Barang[$i],
-    //             'Tanggal_Masuk' => $request->Tanggal_Masuk[$i],
-    //             'Gambar_Barang' => $gambarBarangPath,
-    //             'File_SuratJalan' => $fileSuratJalanPath, // Update path gambar
-    //             'Status' => $request->Status[$i],
-    //         ];
-
-    //         // Menyimpan data ke Firebase
-    //         $this->database->getReference('barang_masuk')->push($data);
-    //     }
-
-    //     Alert::success('Berhasil', 'Barang Berhasil Ditambahkan.');
-
-    //     return redirect()->route('barangmasuk.index')->with('success', 'Barang Masuk berhasil ditambahkan.');
-    // }
 
     public function store(Request $request)
     {
@@ -157,6 +99,17 @@ class BarangMasukController extends Controller
             $fileSuratJalanPath = $filePath;
         }
 
+        // Initialize the data for the main entry
+        $data = [
+            'Id_Petugas' => $request->Id_Petugas,
+            'No_Surat' => $request->No_Surat,
+            'NamaPerusahaan_Pengirim' => $request->NamaPerusahaan_Pengirim,
+            'TanggalPengiriman_Barang' => $request->TanggalPengiriman_Barang,
+            'Jumlah_BarangMasuk' => $request->jumlah_barangmasuk,
+            'File_SuratJalan' => $fileSuratJalanPath,
+            'barang' => [],
+        ];
+
         foreach ($request->JumlahBarang_Masuk as $i => $jumlah) {
             $gambarBarangPath = null;
             if ($request->hasFile("Gambar_Barang.$i")) {
@@ -175,37 +128,33 @@ class BarangMasukController extends Controller
                 $gambarBarangPath = $filePath;
             }
 
-            $data = [
-                'Id_Petugas' => $request->Id_Petugas,
-                'No_Surat' => $request->No_Surat,
-                'NamaPerusahaan_Pengirim' => $request->NamaPerusahaan_Pengirim,
-                'TanggalPengiriman_Barang' => $request->TanggalPengiriman_Barang,
-                'Jumlah_barang' => $request->jumlah_barang,
-                'Kode_Barang' => $request->Kode_Barang[$i],
-                'Nama_Barang' => $request->Nama_Barang[$i],
-                'Jenis_Barang' => $request->Jenis_Barang[$i],
-                'Kategori_Barang' => $request->Kategori_Barang[$i],
-                'JumlahBarang_Masuk' => $request->JumlahBarang_Masuk[$i],
-                'Garansi_Barang' => $request->Garansi_Barang[$i],
-                'Kondisi_Barang' => $request->Kondisi_Barang[$i],
-                'Tanggal_Masuk' => $request->Tanggal_Masuk[$i],
-                'Gambar_Barang' => $gambarBarangPath,
-                'File_SuratJalan' => $fileSuratJalanPath, // Update path gambar
+            // Add the item's data including the specific image path
+            $data['barang'][] = [
+                'id' => uniqid(),
+                'nama_barang' => $request->Nama_Barang[$i],
+                'kode_barang' => $request->Kode_Barang[$i],
+                'kategori_barang' => $request->Kategori_Barang[$i],
+                'jumlah_barang' => $request->JumlahBarang_Masuk[$i],
+                'jenis_barang' => $request->Jenis_Barang[$i],
+                'garansi_barang' => $request->Garansi_Barang[$i],
+                'tanggal_masuk' => $request->Tanggal_Masuk[$i],
                 'Status' => $request->Status[$i],
+                'gambar_barang' => $gambarBarangPath,
             ];
-
-            // Menyimpan data ke Firebase dengan ID yang dihasilkan otomatis
-            $newItemRef = $this->database->getReference('barang_masuk')->push($data);
-            $itemId = $newItemRef->getKey(); // Mendapatkan ID dari Firebase
-
-            // Opsional: Update data dengan ID unik jika Anda ingin menyimpan ID di Firebase
-            $newItemRef->update(['id' => $itemId]);
         }
+
+        // Save the entire entry to Firebase
+        $newItemRef = $this->database->getReference('barang_masuk')->push($data);
+        $itemId = $newItemRef->getKey(); // Mendapatkan ID dari Firebase
+
+        // Optionally update the entry with the ID
+        $newItemRef->update(['id' => $itemId]);
 
         Alert::success('Berhasil', 'Barang Berhasil Ditambahkan.');
 
         return redirect()->route('barangmasuk.index')->with('success', 'Barang Masuk berhasil ditambahkan.');
     }
+
 
     public function edit($noSurat)
     {

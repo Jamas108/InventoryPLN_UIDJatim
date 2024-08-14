@@ -83,7 +83,7 @@
                                         <label for="Jumlah_barang">Jumlah Barang</label>
                                         <input type="text"
                                             class="form-control @error('Jumlah_barang') is-invalid @enderror"
-                                            id="Jumlah_barang" name="Jumlah_barang" value="{{ old('Jumlah_barang') }}"
+                                            id="Jumlah_barang" name="jumlah_barangmasuk" value="{{ old('jumlah_barangmasuk') }}"
                                             readonly>
                                         @error('Jumlah_barang')
                                             <span class="invalid-feedback" role="alert">
@@ -120,7 +120,7 @@
                                         <label for="Kode_Barang">Kode Barang</label>
                                         <input type="text"
                                             class="form-control @error('Kode_Barang') is-invalid @enderror" id="Kode_Barang"
-                                            name="Kode_Barang[]" value="{{ old('Kode_Barang') }}">
+                                            name="Kode_Barang[]" value="{{ old('Kode_Barang.0') }}">
                                         @error('Kode_Barang')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>

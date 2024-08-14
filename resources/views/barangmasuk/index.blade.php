@@ -100,19 +100,19 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($groupedBarangMasuks as $noSurat => $barangMasuks)
+                                    @forelse ($groupedBarangMasuks as $barangMasuks)
                                         <tr>
-                                            <td>{{ str_replace('\\', '/', $noSurat) }}</td>
-                                            <td>{{ $barangMasuks->first()->NamaPerusahaan_Pengirim }}</td>
-                                            <td>{{ $barangMasuks->Jumlah_barang }}</td>
+                                            <td>{{ $barangMasuks['No_Surat'] }}</td>
+                                            <td>{{ $barangMasuks['NamaPerusahaan_Pengirim'] }}</td>
+                                            <td>{{ $barangMasuks['Jumlah_BarangMasuk'] }}</td>
                                             <td>Approved</td>
                                             <td>
                                                 <button class="btn btn-primary btn-sm" type="button"
-                                                    data-bs-toggle="collapse" data-bs-target="#collapse-{{ $noSurat }}"
-                                                    aria-expanded="false" aria-controls="collapse-{{ $noSurat }}">
+                                                    data-bs-toggle="collapse" data-bs-target="#collapse-{{ $barangMasuks['TanggalPengiriman_Barang'] }}"
+                                                    aria-expanded="false" aria-controls="collapse-{{ $barangMasuks['TanggalPengiriman_Barang'] }}">
                                                     +
                                                 </button>
-                                                <a href="{{ route('barangmasuk.edit', ['noSurat' => $noSurat]) }}"
+                                                <a href=""
                                                     class="btn btn-primary btn-sm">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
@@ -127,7 +127,7 @@
                                             </td>
                                         </tr>
 
-                                        <tr id="collapse-{{ $noSurat }}" class="collapse"
+                                        <tr id="collapse-{{ $barangMasuks['TanggalPengiriman_Barang'] }}" class="collapse"
                                             data-bs-parent="#ProductTable">
                                             <td colspan="5">
                                                 <div class="accordion-body">
@@ -142,14 +142,14 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @foreach ($barangMasuks as $barangMasuk)
+                                                            @foreach ($barangMasuks['items'] as $barangMasuk)
                                                                 <tr>
-                                                                    <td>{{ $barangMasuk->Kode_Barang }}</td>
-                                                                    <td>{{ $barangMasuk->Nama_Barang }}</td>
-                                                                    <td>{{ $barangMasuk->JumlahBarang_Masuk }}</td>
-                                                                    <td>{{ $barangMasuk->Kategori_Barang }}
+                                                                    <td>{{ $barangMasuk->kode_barang }}</td>
+                                                                    <td>{{ $barangMasuk->nama_barang }}</td>
+                                                                    <td>{{ $barangMasuk->jumlah_barang }}</td>
+                                                                    <td>{{ $barangMasuk->kategori_barang }}
                                                                     </td>
-                                                                    <td class="text-center">
+                                                                    {{-- <td class="text-center">
                                                                         <form
                                                                             action="{{ route('barangmasuk.updateStatus', $barangMasuk->id) }}"
                                                                             method="POST">
@@ -195,7 +195,7 @@
                                                                             @endif
                                                                         </form>
 
-                                                                    </td>
+                                                                    </td> --}}
                                                                 </tr>
                                                             @endforeach
                                                         </tbody>
