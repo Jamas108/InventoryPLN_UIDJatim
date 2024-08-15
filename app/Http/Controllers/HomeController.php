@@ -36,19 +36,19 @@ class HomeController extends Controller
 
         // Filter data by year and group by month
         $barangMasuk = collect($barangMasukData)->filter(function ($item) use ($startDate, $endDate) {
-            $date = Carbon::parse($item['Tanggal_Masuk']);
+            $date = Carbon::parse($item['TanggalPengiriman_Barang']);
             return $date->between($startDate, $endDate);
         })->groupBy(function ($item) {
-            return Carbon::parse($item['Tanggal_Masuk'])->format('Y-m'); // Group by month
+            return Carbon::parse($item['TanggalPengiriman_Barang'])->format('Y-m'); // Group by month
         })->map(function ($items) {
             return $items->count(); // Count items per month
         });
 
         $barangKeluar = collect($barangKeluarData)->filter(function ($item) use ($startDate, $endDate) {
-            $date = Carbon::parse($item['Tanggal_Keluar']);
+            $date = Carbon::parse($item['Tanggal_PengembalianBarang']);
             return $date->between($startDate, $endDate);
         })->groupBy(function ($item) {
-            return Carbon::parse($item['Tanggal_Keluar'])->format('Y-m'); // Group by month
+            return Carbon::parse($item['Tanggal_PengembalianBarangy'])->format('Y-m'); // Group by month
         })->map(function ($items) {
             return $items->count(); // Count items per month
         });

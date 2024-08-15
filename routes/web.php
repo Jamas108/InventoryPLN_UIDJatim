@@ -108,11 +108,11 @@ Route::put('retur/{id}', [ReturController::class, 'update'])->name('retur.update
 // Resource route untuk reports
 Route::resource('/reports', ReportsController::class);
 
-// Rute untuk berbagai laporan
-Route::get('/reports/barangkeluar/index', [ReportsController::class, 'indexBarangKeluar'])->name('indexbarangkeluar');
-Route::get('/reports/barangmasuk/index', [ReportsController::class, 'indexBarangMasuk'])->name('indexbarangmasuk');
-Route::get('/reports/barangrusak/index', [ReportsController::class, 'indexBarangRusak'])->name('reports.barangrusak.index');
-Route::get('/reports/requesteditem/index', [ReportsController::class, 'indexRequestedItem'])->name('reports.requesteditem.index');
+// // Rute untuk berbagai laporan
+// Route::get('/reports/barangkeluar/index', [ReportsController::class, 'indexBarangKeluar'])->name('indexbarangkeluar');
+// Route::get('/reports/barangmasuk/index', [ReportsController::class, 'indexBarangMasuk'])->name('indexbarangmasuk');
+// Route::get('/reports/barangrusak/index', [ReportsController::class, 'indexBarangRusak'])->name('reports.barangrusak.index');
+// Route::get('/reports/requesteditem/index', [ReportsController::class, 'indexRequestedItem'])->name('reports.requesteditem.index');
 
 // Rute untuk mengekspor laporan ke PDF
 Route::get('/reports/barangmasuk/pdf', [ReportsController::class, 'exportPdfBarangMasuk'])->name('reports.barangmasuk.pdf');
