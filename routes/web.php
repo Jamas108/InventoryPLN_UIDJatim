@@ -91,12 +91,12 @@ Route::resource('/suratjalan', SuratJalanController::class);
 // Resource route untuk reports
 Route::resource('/reports', ReportsController::class);
 
-
 // Rute untuk mengekspor laporan ke PDF
-Route::get('/reports/barangmasuk/pdf', [ReportsController::class, 'exportPdfBarangMasuk'])->name('reports.barangmasuk.pdf');
-Route::get('/reports/barangkeluar/pdf', [ReportsController::class, 'exportPdfBarangKeluar'])->name('reports.barangkeluar.pdf');
-Route::get('/reports/barangrusak/pdf', [ReportsController::class, 'exportPdfBarangRusak'])->name('reports.exportPdfBarangRusak');
-Route::get('/reports/requesteditem/pdf', [ReportsController::class, 'exportPdfRequestedItem'])->name('reports.exportPdfRequestedItem');
+Route::get('/reports/stokbarang/pdf', [ReportsController::class, 'downloadStokBarangPdf'])->name('reports.stokbarang.pdf');
+Route::get('/reports/barangmasuk/pdf', [ReportsController::class, 'downloadBarangMasukPdf'])->name('reports.barangmasuk.pdf');
+Route::get('/reports/barangkeluar/pdf', [ReportsController::class, 'downloadBarangKeluarPdf'])->name('reports.barangkeluar.pdf');
+Route::get('/reports/returbarang/pdf', [ReportsController::class, 'downloadReturBarangPdf'])->name('reports.returbarang.pdf');
+
 
 
 
