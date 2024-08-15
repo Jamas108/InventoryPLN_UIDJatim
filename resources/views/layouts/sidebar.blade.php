@@ -3,7 +3,8 @@
     $unreadNotificationsCount = \App\Models\Notification::unread()->count();
 @endphp
 
-<ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar" style="background-color: rgb(1, 1, 95); position: sticky; top: 0; height: 100vh; overflow-y: auto; cursor: grab; flex-shrink: 0; scrollbar-width: none; width: 200px;">
+<ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar"
+    style="background-color: rgb(1, 1, 95); position: sticky; top: 0; height: 100vh; overflow-y: auto; cursor: grab; flex-shrink: 0; scrollbar-width: none; width: 200px;">
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('home') }}">
         <div class="sidebar-brand-icon" id="logopln">
@@ -56,12 +57,7 @@
     </li>
 
     <!-- Nav Item - Barang Rusak -->
-    <li class="nav-item {{ $currentRouteName == 'barangrusak' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('barangrusak.index') }}">
-            <i class="fas fa-house-damage"></i>
-            <span>Barang Rusak</span>
-        </a>
-    </li>
+
 
     <!-- Nav Item - Stok Barang -->
     <li class="nav-item {{ $currentRouteName == 'stokbarang' ? 'active' : '' }}">
@@ -76,16 +72,9 @@
 
     <!-- Heading -->
     <div class="sidebar-heading" style="color: white">
-        Operasional
+        Retur
     </div>
 
-    <!-- Nav Item - Surat Jalan -->
-    <li class="nav-item {{ $currentRouteName == 'suratjalan' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('suratjalan.index') }}">
-            <i class="fas fa-envelope-open-text"></i>
-            <span>Surat Jalan</span>
-        </a>
-    </li>
 
     <!-- Nav Item - Retur -->
     <li class="nav-item {{ $currentRouteName == 'retur' ? 'active' : '' }}">
@@ -94,14 +83,28 @@
             <span>Retur</span>
         </a>
     </li>
-
-    <!-- Nav Item - Reports -->
-    <li class="nav-item {{ $currentRouteName == 'reports' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('reports.index') }}">
-            <i class="fas fa-chart-bar"></i>
-            <span>Reports</span>
+    <li class="nav-item {{ $currentRouteName == 'retur' ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('returhandal.index') }}">
+            <i class="fas fa-recycle"></i>
+            <span>Bekas Handal</span>
         </a>
     </li>
+    <li class="nav-item {{ $currentRouteName == 'retur' ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('returbergaransi.index') }}">
+            <i class="fas fa-calendar-check"></i>
+            <span>Bekas Bergaransi</span>
+        </a>
+    </li>
+
+    <li class="nav-item {{ $currentRouteName == 'barangrusak' ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('returrusak.index') }}">
+            <i class="fas fa-trash-alt"></i>
+            <span>Barang Rusak</span>
+        </a>
+    </li>
+
+    <!-- Nav Item - Reports -->
+
 
     <!-- Divider -->
     <hr class="sidebar-divider" color="white">
@@ -110,6 +113,19 @@
     <div class="sidebar-heading" style="color: white">
         Lainya
     </div>
+    <li class="nav-item {{ $currentRouteName == 'reports' ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('reports.index') }}">
+            <i class="fas fa-chart-bar"></i>
+            <span>Reports</span>
+        </a>
+    </li>
+    <li class="nav-item {{ $currentRouteName == 'suratjalan' ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('suratjalan.index') }}">
+            <i class="fas fa-envelope-open-text"></i>
+            <span>Surat Jalan</span>
+        </a>
+    </li>
+
 
     <!-- Nav Item - Notifikasi -->
     <li class="nav-item {{ $currentRouteName == 'notifications' ? 'active' : '' }}">

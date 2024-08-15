@@ -108,21 +108,39 @@ class ReturController extends Controller
         $returBarangSnapshot = $this->database->getReference('Retur_Barang/' . $id)->getSnapshot();
         $returBarang = $returBarangSnapshot->getValue();
 
+        // Pastikan $returBarang tidak null
+        if (!$returBarang) {
+            // Handle case when no data is found, e.g., redirect or show an error
+            return redirect()->route('retur.index')->withErrors('Data tidak ditemukan.');
+        }
+
+        // Menghitung sisa waktu garansi
+        $garansiBarangAkhir = new \DateTime($returBarang['Garansi_Barang_Akhir']);
+        $garansiBarangAwal = new \DateTime($returBarang['Garansi_Barang_Awal']);
+        $now = new \DateTime();
+
+        // Jika tanggal saat ini berada di antara tanggal awal dan akhir garansi
+        if ($now > $garansiBarangAwal && $now <= $garansiBarangAkhir) {
+            $interval = $now->diff($garansiBarangAkhir);
+            $sisaGaransi = $interval->format('%m bulan, %d hari');
+        } else {
+            $sisaGaransi = 'Garansi sudah habis';
+        }
+
         // Kirim data ke view
-        return view('retur.edit', ['returBarang' => $returBarang]);
+        return view('retur.edit', [
+            'returBarang' => $returBarang,
+            'sisaGaransi' => $sisaGaransi,
+        ]);
     }
+
 
     public function update(Request $request, string $id)
     {
         $validatedData = $request->validate([
-            'Pihak_Pemohon' => 'required|string|max:255',
-            'Nama_Barang' => 'required|string|max:255',
-            'Kode_Barang' => 'required|string|max:255',
-            'Kategori_Barang' => 'required|string|max:255',
             'Kategori_Retur' => 'nullable|string|in:Bekas Handal,Barang Rusak,Bekas Bergaransi',
-            'Jumlah_Barang' => 'required|integer|min:1',
-            'Deskripsi' => 'nullable|string',
-            'Tanggal_Retur' => 'required|date',
+            'status' => 'nullable|string|',
+            'Jumlah_Barang' => 'nullable|integer|',
         ]);
 
         // Update data di Firebase
@@ -144,5 +162,94 @@ class ReturController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function showImage($id)
+    {
+        $returBarang = $this->database->getReference('Retur_Barang/' . $id)->getValue();
+
+        if (isset($returBarang['Gambar_Retur'])) {
+            return response()->redirectTo($returBarang['Gambar_Retur']);
+        }
+
+        return redirect()->back()->with('error', 'Gambar tidak ditemukan.');
+    }
+
+    public function showSuratJalan($id)
+    {
+        $returBarang = $this->database->getReference('Retur_Barang/' . $id)->getValue();
+
+        if (isset($returBarang['Surat_Retur'])) {
+            return response()->redirectTo($returBarang['Surat_Retur']);
+        }
+
+        return redirect()->back()->with('error', 'Surat Jalan tidak ditemukan.');
+    }
+
+
+    // KONFIGURASI CONTROLER BEKAS HANDAL
+
+    public function indexHandal()
+    {
+        // Ambil data dari Firebase
+        $returBarangSnapshot = $this->database->getReference('Retur_Barang')->getSnapshot();
+        $returBarangData = $returBarangSnapshot->getValue();
+
+        // Filter data berdasarkan Kategori_Retur "Bekas Handal"
+        $bekasHandals = [];
+        if ($returBarangData) {
+            foreach ($returBarangData as $key => $value) {
+                if (isset($value['Kategori_Retur']) && $value['Kategori_Retur'] === 'Bekas Handal') {
+                    $bekasHandals[$key] = $value;
+                }
+            }
+        }
+
+        // Kirim data yang sudah difilter ke view
+        return view('retur.bekashandal.index', ['bekasHandals' => $bekasHandals]);
+    }
+
+    // KONFIGURASI CONTROLER BEKAS  BERGARANSI
+    public function indexBergaransi()
+    {
+        // Ambil data dari Firebase
+        $returBarangSnapshot = $this->database->getReference('Retur_Barang')->getSnapshot();
+        $returBarangData = $returBarangSnapshot->getValue();
+
+        // Filter data berdasarkan Kategori_Retur "Bekas Handal"
+        $bekasBergaransi = [];
+        if ($returBarangData) {
+            foreach ($returBarangData as $key => $value) {
+                if (isset($value['Kategori_Retur']) && $value['Kategori_Retur'] === 'Bekas Bergaransi') {
+                    $bekasBergaransi[$key] = $value;
+                }
+            }
+        }
+
+        // Kirim data yang sudah difilter ke view
+        return view('retur.bekasbergaransi.index', ['bekasBergaransi' => $bekasBergaransi]);
+    }
+
+
+    // KONFIGURASI CONTROLER BARANG RUSAK
+
+    public function indexRusak()
+    {
+        // Ambil data dari Firebase
+        $returBarangSnapshot = $this->database->getReference('Retur_Barang')->getSnapshot();
+        $returBarangData = $returBarangSnapshot->getValue();
+
+        // Filter data berdasarkan Kategori_Retur "Bekas Handal"
+        $barangRusak = [];
+        if ($returBarangData) {
+            foreach ($returBarangData as $key => $value) {
+                if (isset($value['Kategori_Retur']) && $value['Kategori_Retur'] === 'Barang Rusak') {
+                    $barangRusak[$key] = $value;
+                }
+            }
+        }
+
+        // Kirim data yang sudah difilter ke view
+        return view('retur.barangrusak.index', ['barangRusak' => $barangRusak]);
     }
 }

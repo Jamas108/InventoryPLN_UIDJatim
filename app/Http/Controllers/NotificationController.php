@@ -2,66 +2,117 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Notification;
 use Illuminate\Http\Request;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Database;
 
 class NotificationController extends Controller
 {
+    protected $database;
+
     public function __construct()
     {
+        $firebase = (new Factory)
+            ->withServiceAccount(base_path(env('FIREBASE_CREDENTIALS')))
+            ->withDatabaseUri(env("FIREBASE_DATABASE_URL"));
+
+        $this->database = $firebase->createDatabase();
         $this->middleware('auth');
     }
 
     // Display a listing of the notifications
     public function index()
     {
-        $notifications = Notification::orderBy('created_at', 'desc')->get();
-        return view('notifications.index', compact('notifications'));
+        // Ambil semua notifikasi
+        $notifications = $this->database->getReference('notifications')->getValue();
+        $notifications = $notifications ? array_reverse($notifications) : []; // Urutkan dari yang terbaru
+
+        // Hitung jumlah notifikasi yang belum dibaca
+        $unreadNotificationsCount = 0;
+        foreach ($notifications as $notification) {
+            if ($notification['status'] === 'unread') {
+                $unreadNotificationsCount++;
+            }
+        }
+
+        // Kirim data ke tampilan
+        return view('notifications.index', compact('notifications', 'unreadNotificationsCount'));
     }
 
+
+    // Mark all notifications as read
     public function markAllAsRead()
     {
-        Notification::where('status', 'unread')->update(['status' => 'read']);
+        $reference = $this->database->getReference('notifications');
+        $notifications = $reference->getValue();
+
+        if ($notifications) {
+            foreach ($notifications as $id => $notification) {
+                if ($notification['status'] === 'unread') {
+                    $reference->getChild($id)->update(['status' => 'read']);
+                }
+            }
+        }
+
         return redirect()->back()->with('success', 'All notifications marked as read.');
     }
 
+    // Mark a specific notification as read
     public function markAsRead($id)
     {
-        $notification = Notification::find($id);
-        if ($notification && $notification->status == 'unread') {
-            $notification->status = 'read';
-            $notification->save();
+        $reference = $this->database->getReference('notifications/' . $id);
+        $notification = $reference->getValue();
+
+        if ($notification && $notification['status'] === 'unread') {
+            $reference->update(['status' => 'read']);
         }
+
         return redirect()->back()->with('success', 'Notification marked as read.');
     }
 
-    // Delete a notification
+    // Delete a specific notification
     public function destroy($id)
     {
-        $notification = Notification::findOrFail($id);
-        $notification->delete();
+        $reference = $this->database->getReference('notifications/' . $id);
+        $reference->remove();
 
         return redirect()->back()->with('success', 'Notification deleted successfully.');
     }
 
+    // Delete all notifications
     public function destroyAll()
     {
-        Notification::truncate(); // Menghapus semua data notifikasi
+        $reference = $this->database->getReference('notifications');
+        $reference->remove(); // Remove all notifications
+
         return redirect()->route('notifications.index')->with('success', 'All notifications have been deleted.');
     }
 
+    // Bulk mark notifications as read
     public function bulkMarkAsRead(Request $request)
     {
         $notificationIds = explode(',', $request->input('notification_ids'));
-        Notification::whereIn('id', $notificationIds)->update(['status' => 'read']);
+        $reference = $this->database->getReference('notifications');
+
+        foreach ($notificationIds as $id) {
+            $notification = $reference->getChild($id)->getValue();
+            if ($notification && $notification['status'] === 'unread') {
+                $reference->getChild($id)->update(['status' => 'read']);
+            }
+        }
 
         return redirect()->back()->with('success', 'Selected notifications marked as read.');
     }
 
+    // Bulk delete notifications
     public function bulkDelete(Request $request)
     {
         $notificationIds = explode(',', $request->input('notification_ids'));
-        Notification::whereIn('id', $notificationIds)->delete();
+        $reference = $this->database->getReference('notifications');
+
+        foreach ($notificationIds as $id) {
+            $reference->getChild($id)->remove();
+        }
 
         return redirect()->back()->with('success', 'Selected notifications deleted.');
     }

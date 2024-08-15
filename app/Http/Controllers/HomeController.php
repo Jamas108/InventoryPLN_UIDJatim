@@ -48,7 +48,7 @@ class HomeController extends Controller
             $date = Carbon::parse($item['Tanggal_PengembalianBarang']);
             return $date->between($startDate, $endDate);
         })->groupBy(function ($item) {
-            return Carbon::parse($item['Tanggal_PengembalianBarangy'])->format('Y-m'); // Group by month
+            return Carbon::parse($item['Tanggal_PengembalianBarang'])->format('Y-m'); // Group by month
         })->map(function ($items) {
             return $items->count(); // Count items per month
         });

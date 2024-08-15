@@ -7,7 +7,7 @@
 
             <div class="container-fluid">
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Bekas Bergaransi</h1>
+                    <h1 class="h3 mb-0 text-gray-800">Barang Rusak</h1>
 
                 </div>
 
@@ -27,7 +27,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($bekasBergaransi as $item)
+                                    @forelse($barangRusak as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item['Nama_Barang'] }}</td>
@@ -40,7 +40,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="7">Tidak ada barang bekas bergaransi.</td>
+                                            <td colspan="7">Tidak ada barang rusak.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>

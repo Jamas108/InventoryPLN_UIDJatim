@@ -7,15 +7,8 @@
 
             <div class="container-fluid">
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Retur</h1>
-                    <ul class="list-inline mb-0 float-end">
-                        <li class="list-inline-item">
-                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><i
-                                    class="fas fa-download fa-sm text-white-50"></i> Download PDF</a>
-                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
-                                    class="fas fa-download fa-sm text-white-50"></i> Download Excel</a>
-                        </li>
-                    </ul>
+                    <h1 class="h3 mb-0 text-gray-800">Bekas Handal</h1>
+
                 </div>
 
                 <div class="container-fluid pt-2 px-2">
@@ -25,27 +18,31 @@
                                 id="ProductTable" style="90%">
                                 <thead style=" background-color: rgb(1, 1, 95);">
                                     <tr style="color: white">
+                                        <th scope="col" style="width: 150px; color:white">No</th>
                                         <th scope="col" style="width: 150px; color:white">Nama Barang</th>
                                         <th scope="col" style="width: 200px; color:white">Kode Barang</th>
-                                        <th scope="col" style="width: 150px; color:white">Pihak Yang Mengajukan</th>
+                                        <th scope="col" style="width: 150px; color:white">Jumlah Barang</th>
                                         <th scope="col" style="width: 150px; color:white">Kategori Barang</th>
-                                        <th scope="col" style="width: 250px; color:white">Jumlah Barang</th>
-                                        <th scope="col" style="width: 150px; color:white">Detail</th>
+                                        <th scope="col" style="width: 150px; color:white">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($bekasHandals as $bekashandal)
+                                    @forelse($bekasHandals as $item)
                                         <tr>
-                                            <td>{{ $bekashandal->Nama_Barang }}</td>
-                                            <td>{{ $bekashandal->Kode_Barang }}</td>
-                                            <td>{{ $bekashandal->Pihak_Pemohon }}</td>
-                                            <td>{{ $bekashandal->Kategori_Barang }}</td>
-                                            <td>{{ $bekashandal->Jumlah_Barang }}</td>
-                                            <td><a href=""
-                                                    class="btn btn-info">See
-                                                    Details</a></td>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $item['Nama_Barang'] }}</td>
+                                            <td>{{ $item['Kode_Barang'] }}</td>
+                                            <td>{{ $item['Jumlah_Barang'] }}</td>
+                                            <td>{{ $item['Kategori_Barang'] }}</td>
+
+                                            <td></td>
+
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="7">Tidak ada barang retur dengan kategori Bekas Handal.</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>

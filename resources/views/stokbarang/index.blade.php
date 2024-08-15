@@ -40,9 +40,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($groupedBarangMasuks as $index => $barang)
+                                    @foreach ($groupedBarangMasuks as $barang)
                                         <tr>
-                                            <td>{{ $index + 1 }}</td>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>
                                                 @if ($barang['gambar_barang'])
                                                     <img src="{{ $barang['gambar_barang'] }}" alt="Gambar Barang"

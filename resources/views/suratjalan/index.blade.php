@@ -27,14 +27,14 @@
                                             <td>{{ $barangMasuk->NamaPerusahaan_Pengirim }}</td>
                                             <td>{{ $barangMasuk->No_Surat }}</td>
                                             <td>
-                                                <a href="{{ Vite::asset('storage/app/' . $barangMasuk->File_SuratJalan) }}"
-                                                    target="_blank" class="btn btn-primary">
-                                                    Lihat Detail
-                                                </a>
-                                                <a href="{{asset('storage/app/' . $barangMasuk->File_SuratJalan) }}"
-                                                    download class="btn btn-secondary">
-                                                    Download
-                                                </a>
+                                                @if ($barangMasuk->File_SuratJalan_URL)
+                                                    <a href="{{ $barangMasuk->File_SuratJalan_URL }}" target="_blank"
+                                                        class="btn btn-primary">
+                                                        Lihat Detail
+                                                    </a>
+                                                @else
+                                                    <span class="text-danger">File tidak ditemukan</span>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach

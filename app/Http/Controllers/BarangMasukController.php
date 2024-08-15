@@ -80,7 +80,7 @@ class BarangMasukController extends Controller
                 'NamaPerusahaan_Pengirim' => $items->first()->NamaPerusahaan_Pengirim ?? null,
                 'Jumlah_BarangMasuk' => $items->first()->Jumlah_BarangMasuk ?? null,
                 'No_Surat' => $items->first()->No_Surat ?? null,
-                'TanggalPengiriman_Barang' => $items->first()->TanggalPengiriman_Barang ?? null,
+                'TanggalPengiriman_Barang' => $items->first()->TanggalPengiriman_Barang,
                 'id' => $items->first()->id ?? null,
 
             ]);

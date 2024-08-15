@@ -1,7 +1,7 @@
 @php
     $currentRouteName = Route::currentRouteName();
-    $unreadNotificationsCount = \App\Models\Notification::unread()->count();
 @endphp
+
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
@@ -31,9 +31,8 @@
 
         <div class="topbar-divider d-none d-sm-block"></div>
 
-
         <!-- Nav Item - Notifikasi -->
-        <li class="nav-item {{ $currentRouteName == 'notifications' ? 'active' : '' }}">
+        <li class="nav-item {{ $currentRouteName == 'notifications.index' ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('notifications.index') }}">
                 <i class="fas fa-bell" style="color: #0075FF"></i>
                 @if ($unreadNotificationsCount > 0)
@@ -74,26 +73,3 @@
         </li>
     </ul>
 </nav>
-
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-danger">Logout</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>

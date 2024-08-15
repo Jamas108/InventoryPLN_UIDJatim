@@ -33,45 +33,41 @@ Route::post('/login', [LoginController::class, 'authenticate']);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+//USER ROUTE
+Route::get('/create-user', [UserController::class, 'viewCreateUser'])->name('viewcreate.user');
+Route::post('/create-user', [UserController::class, 'createUser'])->name('create.user');
+
+//BARANG MASUK ROUTE
 Route::resource('barangmasuk', BarangMasukController::class);
-// Route::put('/barangmasuk/updateStatus/{id}', [BarangMasukController::class, 'updateStatus'])->name('barangmasuk.updateStatus');
 Route::get('/barangmasuk/edit/{noSurat}', [BarangMasukController::class, 'edit'])->name('barangmasuk.edit');
 Route::put('/barangmasuk/update/{noSurat}', [BarangMasukController::class, 'update'])->name('barangmasuk.update');
 Route::post('/barangmasuk/{id}/updateStatus', [BarangMasukController::class, 'updateStatus'])->name('barangmasuk.updateStatus');
 Route::put('/barangmasuk/update-status-ajax', [BarangMasukController::class, 'updateStatusAjax'])->name('barangmasuk.updateStatusAjax');
 
-//USER
-Route::get('/create-user', [UserController::class, 'viewCreateUser'])->name('viewcreate.user');
-Route::post('/create-user', [UserController::class, 'createUser'])->name('create.user');
-
-
-
 //BARANG KELUAR ROUTE
 Route::resource('/barangkeluar', BarangKeluarController::class);
-Route::get('/barangkeluar/all/index', [BarangKeluarController::class, 'allIndex'])->name('barangkeluar.all.index');
-//BARANG KELUAR REGULER
-Route::get('/barangkeluar/reguler/index', [BarangKeluarController::class, 'regulerIndex'])->name('barangkeluar.reguler.index');
-Route::get('/barangkeluar/reguler/create', [BarangKeluarController::class, 'createReguler'])->name('barangkeluar.reguler.create');
-Route::post('/barangkeluar/reguler/store', [BarangKeluarController::class, 'storeReguler'])->name('barangkeluar.reguler.store');
-Route::get('/barangkeluar/{Kode_BarangKeluar}/buat-berita-acara-reguler', [BarangKeluarController::class, 'buatBeritaAcaraReguler'])->name('barangkeluar.buat-berita-acara-reguler');
-Route::post('barangkeluar/store-berita-acara-reguler', [BarangKeluarController::class, 'storeBeritaAcaraReguler'])->name('barangkeluar.storeBeritaAcaraReguler');
-//BARANG KELUAR INSIDENTIL
-// Route::get('/barangkeluar/insidentil/index', [BarangKeluarController::class, 'insidentilIndex'])->name('barangkeluar.insidentil.index');
-// Route::get('/barangkeluar/insidentil/create', [BarangKeluarController::class, 'createInsidentil'])->name('barangkeluar.insidentil.create');
-// Route::post('/barangkeluar/insidentil/store', [BarangKeluarController::class, 'storeInsidentil'])->name('barangkeluar.insidentil.store');
-// Route::get('/barangkeluar/{Kode_BarangKeluar}/buat-berita-acara-insidentil', [BarangKeluarController::class, 'buatBeritaAcaraInsidentil'])->name('barangkeluar.buat-berita-acara-insidentil');
 Route::post('barangkeluar/store-berita-acara', [BarangKeluarController::class, 'storeBeritaAcara'])->name('barangkeluar.storeBeritaAcara');
-// Route::get('barangkeluar/buat-berita-acara-insidentil/{id}', [BarangKeluarController::class, 'storeBeritaAcara'])->name('barangkeluar.buat-berita-acara-insidentil');
-// web.php
-// Route::get('/barangkeluar/createba/{id}', [BarangKeluarController::class, 'buatBeritaAcara'])->name('barangkeluar.createba');
-
 Route::get('/barangkeluar/berita-acara/{id}', [BarangKeluarController::class, 'buatBeritaAcara'])->name('barangkeluar.createBeritaAcara');
-
-// Route for storing Berita Acara
 Route::post('/barangkeluar/berita-acara/{id}', [BarangKeluarController::class, 'storeBeritaAcara'])->name('barangkeluar.storeBeritaAcara');
 
+//STOK BARANG ROUTE
+Route::resource('/stokbarang', StokBarangController::class);
+Route::get('/stokbarang/hardware/index', [StokBarangController::class, 'hardwareIndex'])->name('stokbarang.hardware.index');
+Route::get('/stokbarang/networking/index', [StokBarangController::class, 'networkingIndex'])->name('stokbarang.networking.index');
 
-
+//RETUR ROUTE
+//RETUR UTAMA (PENGAJUAN)
+Route::resource('/retur', ReturController::class);
+Route::get('retur/{id}/edit', [ReturController::class, 'edit'])->name('retur.edit');
+Route::put('retur/{id}', [ReturController::class, 'update'])->name('retur.update');
+Route::get('/retur/{id}/showImage', [ReturController::class, 'showImage'])->name('retur.showImage');
+Route::get('/retur/{id}/showSuratJalan', [ReturController::class, 'showSuratJalan'])->name('retur.showSuratJalan');
+//RETUR KATEGORI HANDAL
+Route::get('/retur/handal/index', [ReturController::class, 'indexHandal'])->name('returhandal.index');
+//RETUR KATEGORI RUSAK
+Route::get('/retur/rusak/index', [ReturController::class, 'indexRusak'])->name('returrusak.index');
+//RETUR KATEGORI BERGARANSI
+Route::get('/retur/bergaransi/index', [ReturController::class, 'indexBergaransi'])->name('returbergaransi.index');
 
 
 
@@ -79,13 +75,6 @@ Route::post('/barangkeluar/berita-acara/{id}', [BarangKeluarController::class, '
 
 Route::resource('/barangrusak', BarangRusakController::class);
 Route::get('/barangrusak/{id}', [BarangRusakController::class, 'show'])->name('barangrusak.show');
-
-
-//Route Stok Barang
-Route::resource('/stokbarang', StokBarangController::class);
-Route::get('/stokbarang/hardware/index', [StokBarangController::class, 'hardwareIndex'])->name('stokbarang.hardware.index');
-Route::get('/stokbarang/networking/index', [StokBarangController::class, 'networkingIndex'])->name('stokbarang.networking.index');
-
 
 Route::resource('/masterdata', MasterDataController::class);
 Route::get('/masterdata/{id}', [MasterDataController::class, 'show'])->name('masterdata.show');
@@ -96,23 +85,12 @@ Route::get('/master-data', [MasterDataController::class, 'index'])->name('master
 
 Route::resource('/suratjalan', SuratJalanController::class);
 
-//RUTE UNTUK RETUR
-Route::resource('/retur', ReturController::class);
-Route::get('/retur/bergaransi/index', [ReturController::class, 'bergaransiIndex'])->name('retur.bergaransi.index');
-Route::get('/retur/handal/index', [ReturController::class, 'handalIndex'])->name('retur.handal.index');
-Route::get('retur/{id}/edit', [ReturController::class, 'edit'])->name('retur.edit');
-Route::put('retur/{id}', [ReturController::class, 'update'])->name('retur.update');
 
 
 // Rute untuk reports
 // Resource route untuk reports
 Route::resource('/reports', ReportsController::class);
 
-// // Rute untuk berbagai laporan
-// Route::get('/reports/barangkeluar/index', [ReportsController::class, 'indexBarangKeluar'])->name('indexbarangkeluar');
-// Route::get('/reports/barangmasuk/index', [ReportsController::class, 'indexBarangMasuk'])->name('indexbarangmasuk');
-// Route::get('/reports/barangrusak/index', [ReportsController::class, 'indexBarangRusak'])->name('reports.barangrusak.index');
-// Route::get('/reports/requesteditem/index', [ReportsController::class, 'indexRequestedItem'])->name('reports.requesteditem.index');
 
 // Rute untuk mengekspor laporan ke PDF
 Route::get('/reports/barangmasuk/pdf', [ReportsController::class, 'exportPdfBarangMasuk'])->name('reports.barangmasuk.pdf');

@@ -75,13 +75,13 @@
                     <h1 class="h3 mb-0 text-gray-800">Barang Masuk</h1>
                     <ul class="list-inline mb-0 float-end">
                         <li class="list-inline-item">
-                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><i
-                                    class="fas fa-download fa-sm text-white-50"></i> Download PDF</a>
-                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
-                                    class="fas fa-download fa-sm text-white-50"></i> Download Excel</a>
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
+                                <i class="fas fa-download fa-sm text-white-50"></i> Download PDF</a>
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">
+                                <i class="fas fa-download fa-sm text-white-50"></i> Download Excel</a>
                             <a href="{{ route('barangmasuk.create') }}"
-                                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                    class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Barang </a>
+                                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                                <i class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Barang </a>
                         </li>
                     </ul>
                 </div>
@@ -93,10 +93,10 @@
                                 <thead>
                                     <tr>
                                         <th scope="col" style="width: 300px; color:white">No. Surat Jalan</th>
-                                        <th scope="col" style="width: 300px;  color:white">Nama PT</th>
-                                        <th scope="col" style="width: 300px;  color:white">Total Barang</th>
-                                        <th scope="col" style="width: 300px;  color:white">Approval Status</th>
-                                        <th scope="col" style="width: 250px;  color:white">Detail</th>
+                                        <th scope="col" style="width: 300px; color:white">Nama PT</th>
+                                        <th scope="col" style="width: 300px; color:white">Total Barang</th>
+                                        <th scope="col" style="width: 300px; color:white">Approval Status</th>
+                                        <th scope="col" style="width: 250px; color:white">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -109,16 +109,17 @@
                                             <td>
                                                 <button class="btn btn-primary btn-sm" type="button"
                                                     data-bs-toggle="collapse"
-                                                    data-bs-target="#collapse-{{ $barangMasuks['TanggalPengiriman_Barang'] }}"
+                                                    data-bs-target="#collapse-{{ $barangMasuks['id'] }}"
                                                     aria-expanded="false"
-                                                    aria-controls="collapse-{{ $barangMasuks['TanggalPengiriman_Barang'] }}">
+                                                    aria-controls="collapse-{{ $barangMasuks['id'] }}">
                                                     +
                                                 </button>
-                                                <a href="" class="btn btn-primary btn-sm">
+                                                <a href="{{ route('barangmasuk.edit', $barangMasuks['id']) }}"
+                                                    class="btn btn-primary btn-sm">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-
-                                                <form action="" method="POST" style="display:inline;">
+                                                <form action="{{ route('barangmasuk.destroy', $barangMasuks['id']) }}"
+                                                    method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm btn-delete">
@@ -128,7 +129,7 @@
                                             </td>
                                         </tr>
 
-                                        <tr id="collapse-{{ $barangMasuks['TanggalPengiriman_Barang'] }}" class="collapse"
+                                        <tr id="collapse-{{ $barangMasuks['id'] }}" class="collapse"
                                             data-bs-parent="#ProductTable">
                                             <td colspan="5">
                                                 <div class="accordion-body">
@@ -140,7 +141,7 @@
                                                                 <th>Kuantitas</th>
                                                                 <th>Kategori Barang</th>
                                                                 <th>Garansi Barang</th>
-                                                                <th>Status Barang</th>
+                                                                <th>Status</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -149,7 +150,6 @@
                                                                     <td>{{ $barangMasuk->kode_barang }}</td>
                                                                     <td>{{ $barangMasuk->nama_barang }}</td>
                                                                     <td>{{ $barangMasuk->jumlah_barang }}</td>
-
                                                                     <td>{{ $barangMasuk->kategori_barang }}</td>
                                                                     <td>
                                                                         @if ($barangMasuk->sisa_hari_garansi == 'Garansi tidak tersedia')
@@ -162,8 +162,7 @@
                                                                             {{ $barangMasuk->sisa_hari_garansi }}
                                                                         @endif
                                                                     </td>
-
-                                                                    {{-- <td class="text-center">
+                                                                    <td class="text-center">
                                                                         <form
                                                                             action="{{ route('barangmasuk.updateStatus', $barangMasuk->id) }}"
                                                                             method="POST">
@@ -209,7 +208,7 @@
                                                                             @endif
                                                                         </form>
 
-                                                                    </td> --}}
+                                                                    </td>
                                                                 </tr>
                                                             @endforeach
                                                         </tbody>

@@ -37,8 +37,28 @@ class StokBarangController extends Controller
             });
         });
 
-        // Filter out repeated items based on 'kode_barang'
-        $groupedBarangMasuks = $barangMasuks->groupBy('kode_barang')->map(function ($items, $kode_barang) {
+        // Fetch data from retur_barang
+        $returBarangSnapshot = $this->database->getReference('Retur_Barang')->getSnapshot();
+        $returBarangData = $returBarangSnapshot->getValue();
+
+        // Convert data to collection of objects
+        $returBarangs = collect($returBarangData)->filter(function ($item) {
+            return $item['Kategori_Retur'] === 'Bekas Handal' && $item['status'] === 'Accepted';
+        })->map(function ($item) {
+            return (object) $item;
+        });
+
+        // Merge barang masuk and retur barang
+        $combinedData = $barangMasuks->map(function ($barang) use ($returBarangs) {
+            $retur = $returBarangs->firstWhere('Kode_Barang', $barang->kode_barang);
+            if ($retur) {
+                $barang->retur_barang = $retur;
+            }
+            return $barang;
+        });
+
+        // Group by kode_barang
+        $groupedBarangMasuks = $combinedData->groupBy('kode_barang')->map(function ($items, $kode_barang) {
             // Generate URL for the image
             $gambarUrl = null;
             if (isset($items->first()->gambar_barang)) {
@@ -55,12 +75,12 @@ class StokBarangController extends Controller
                 'garansi_barang_awal' => $items->first()->garansi_barang_awal ?? null,
                 'garansi_barang_akhir' => $items->first()->garansi_barang_akhir ?? null,
                 'sisa_hari_garansi' => $this->calculateSisaHariGaransi($items->first()),
+                'retur_barang' => $items->first()->retur_barang ?? null
             ];
         });
 
         return view('stokbarang.index', ['groupedBarangMasuks' => $groupedBarangMasuks]);
     }
-
 
     private function calculateSisaHariGaransi($barang)
     {
