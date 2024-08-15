@@ -202,7 +202,7 @@
                                                                                         <option value="Reject"
                                                                                             {{ $barangMasuk->Status == 'Reject' ? 'selected' : '' }}>
                                                                                             Reject</option>
-                                                                                        <!-- Tambahkan pilihan status lainnya sesuai kebutuhan -->
+                                                                                        
                                                                                     </select>
                                                                                 </div>
                                                                             @endif
