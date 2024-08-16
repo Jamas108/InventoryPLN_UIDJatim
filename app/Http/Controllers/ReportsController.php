@@ -95,11 +95,11 @@ class ReportsController extends Controller
         // Menambahkan jumlah barang retur berdasarkan kategori
         if (is_array($dataReturBarang)) {
             foreach ($dataReturBarang as $idRetur => $retur) {
-                $kodeBarang = $retur['Kode_Barang'];
+                $kodeBarang = $retur['kode_barang'];
 
                 if (isset($stokBarang[$kodeBarang])) {
                     if ($retur['Kategori_Retur'] == 'Bekas Handal') {
-                        $stokBarang[$kodeBarang]['jumlah_retur_handal'] += $retur['Jumlah_Barang'];
+                        $stokBarang[$kodeBarang]['jumlah_retur_handal'] += $retur['jumlah_barang'];
                     } elseif ($retur['Kategori_Retur'] == 'Bekas Bergaransi') {
                         $stokBarang[$kodeBarang]['jumlah_retur_bergaransi'] += $retur['Jumlah_Barang'];
                     } elseif ($retur['Kategori_Retur'] == 'Rusak') { // Tambahkan kategori rusak
@@ -124,6 +124,48 @@ class ReportsController extends Controller
             'returBarang' => $dataReturBarang,
         ]);
     }
+    
+    public function downloadBarangMasukPdf(Request $request)
+    {
+        // Ambil data Barang Masuk dari Firebase
+        $reference = $this->database->getReference('barang_masuk');
+        $snapshot = $reference->getSnapshot();
+        $dataBarangMasuk = $snapshot->getValue() ?? [];
+    
+        // Generate PDF
+        $pdf = PDF::loadView('pdf.barangmasuk', ['data' => $dataBarangMasuk]);
+    
+        // Unduh PDF
+        return $pdf->download('barang_masuk.pdf');
+    }
+    public function downloadBarangKeluarPdf(Request $request)
+{
+    // Ambil data Barang Keluar dari Firebase
+    $reference = $this->database->getReference('Barang_Keluar');
+    $snapshot = $reference->getSnapshot();
+    $dataBarangKeluar = $snapshot->getValue() ?? [];
+
+    // Generate PDF
+    $pdf = PDF::loadView('pdf.barangkeluar', ['data' => $dataBarangKeluar]);
+
+    // Unduh PDF
+    return $pdf->download('barang_keluar.pdf');
+}
+
+public function downloadReturBarangPdf(Request $request)
+{
+    // Ambil data Barang Keluar dari Firebase
+    $reference = $this->database->getReference('Retur_Barang');
+    $snapshot = $reference->getSnapshot();
+    $dataBarangRetur = $snapshot->getValue() ?? [];
+
+    // Generate PDF
+    $pdf = PDF::loadView('pdf.returbarang', ['data' => $dataBarangRetur]);
+
+    // Unduh PDF
+    return $pdf->download('barang_retur.pdf');
+}
+    
 
     public function downloadStokBarangPdf(Request $request)
     {
@@ -136,6 +178,7 @@ class ReportsController extends Controller
         // Unduh PDF
         return $pdf->download('stok_barang.pdf');
     }
+
 
     // Tambahkan metode untuk mendapatkan data stok barang
     protected function getStokBarangData()
@@ -207,15 +250,15 @@ class ReportsController extends Controller
 
         // Proses data retur barang
         foreach ($dataReturBarang as $idRetur => $retur) {
-            $kodeBarang = $retur['Kode_Barang'];
+            $kodeBarang = $retur['kode_barang'];
 
             if (isset($stokBarang[$kodeBarang])) {
                 if ($retur['Kategori_Retur'] == 'Bekas Handal') {
-                    $stokBarang[$kodeBarang]['jumlah_retur_handal'] += $retur['Jumlah_Barang'];
+                    $stokBarang[$kodeBarang]['jumlah_retur_handal'] += $retur['jumlah_barang'];
                 } elseif ($retur['Kategori_Retur'] == 'Bekas Bergaransi') {
-                    $stokBarang[$kodeBarang]['jumlah_retur_bergaransi'] += $retur['Jumlah_Barang'];
+                    $stokBarang[$kodeBarang]['jumlah_retur_bergaransi'] += $retur['jumlah_Barang'];
                 } elseif ($retur['Kategori_Retur'] == 'Rusak') { 
-                    $stokBarang[$kodeBarang]['jumlah_retur_rusak'] += $retur['Jumlah_Barang'];
+                    $stokBarang[$kodeBarang]['jumlah_retur_rusak'] += $retur['jumlah_Barang'];
                 }
             }
         }
@@ -229,5 +272,7 @@ class ReportsController extends Controller
 
         return $stokBarang;
     }
+    
+    
 }
 

@@ -34,6 +34,7 @@
                         <div class="table-responsive mb-4">
                             <h4>Stok Barang</h4>
                             <br>
+                            
                             <table class="table text-center align-middle table-bordered table-hover mb-0 datatable"
                                 style="width: 100%">
                                 <thead>
@@ -113,6 +114,7 @@
                                         <th scope="col" style="width: 300px; color:white">Nama Barang</th>
                                         <th scope="col" style="width: 300px; color:white">Kondisi</th>
                                         <th scope="col" style="width: 300px; color:white">Jumlah Barang Keluar</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -124,6 +126,7 @@
                                                 <td>{{ $barang['nama_barang'] }}</td>
                                                 <td>{{ $barang['jenis_barang'] ?? 'N/A' }}</td>
                                                 <td>{{ $barang['jumlah_barang'] }}</td>
+                                                
                                             </tr>
                                         @endforeach
                                     @endforeach
@@ -149,11 +152,11 @@
                                     @if (is_array($returBarang) || is_object($returBarang))
                                         @foreach ($returBarang as $id => $data)
                                             <tr>
-                                                <td>{{ $data['Kategori_Barang'] }}</td>
-                                                <td>{{ $data['Kode_Barang'] }}</td>
-                                                <td>{{ $data['Nama_Barang'] }}</td>
+                                                <td>{{ $data['kategori_barang'] }}</td>
+                                                <td>{{ $data['kode_barang'] }}</td>
+                                                <td>{{ $data['nama_barang'] }}</td>
                                                 <td>{{ $data['Kategori_Retur'] }}</td>
-                                                <td>{{ $data['Jumlah_Barang'] }}</td>
+                                                <td>{{ $data['jumlah_barang'] }}</td>
                                             </tr>
                                         @endforeach
                                     @endif
@@ -181,19 +184,19 @@
                     <ul class="list-inline mb-0 float-end">
                         <li class="list-inline-item">
                             <div class="d-flex justify-content-between">
-                                <a href="{{ route('reports.barangmasuk.pdf', ['year' => request('year'), 'condition' => request('condition')]) }}"
+                                <a href="{{ route('reports.barangmasuk.pdf') }}"
                                     class="btn btn-primary w-45 mr-2" id="downloadBarangMasuk">
                                     <i class="fas fa-box-open"></i> Barang Masuk
                                 </a>
-                                <a href="{{ route('reports.barangkeluar.pdf', ['year' => request('year'), 'condition' => request('condition')]) }}"
+                                <a href="{{ route('reports.barangkeluar.pdf') }}"
                                     class="btn btn-secondary w-45 ml-2" id="downloadBarangKeluar">
                                     <i class="fas fa-box"></i> Barang Keluar
                                 </a>
-                                <a href="{{ route('reports.returbarang.pdf', ['year' => request('year'), 'condition' => request('condition')]) }}"
+                                <a href="{{ route('reports.returbarang.pdf') }}"
                                     class="btn btn-info w-45 ml-2" id="downloadReturBarang">
                                     <i class="fas fa-undo-alt"></i> Retur Barang
                                 </a>
-                                <a href="{{ route('reports.stokbarang.pdf', ['year' => request('year'), 'condition' => request('condition')]) }}"
+                                <a href="{{ route('reports.stokbarang.pdf') }}"
                                     class="btn btn-success w-45 ml-2" id="downloadStokBarang">
                                     <i class="fas fa-archive"></i> Stok Barang
                                 </a>
