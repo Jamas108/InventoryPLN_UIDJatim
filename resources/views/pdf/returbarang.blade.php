@@ -30,19 +30,21 @@
     <table>
         <thead>
             <tr>
+                <th>Kategori Barang</th>
                 <th>Kode Barang</th>
                 <th>Nama Barang</th>
-                <th>Kategori Retur</th>
-                <th>Jumlah Retur</th>
+                <th>Kondisi Barang</th>
+                <th>Jumlah Barang</th>
             </tr>
         </thead>
         <tbody>
             @foreach($data as $retur)
                 <tr>
-                    <td>{{ $retur['Kode_Barang'] }}</td>
-                    <td>{{ $retur['Nama_Barang'] }}</td>
+                    <td>{{ $retur['kategori_barang'] }}</td>
+                    <td>{{ $retur['kode_barang'] }}</td>
+                    <td>{{ $retur['nama_barang'] }}</td>
                     <td>{{ $retur['Kategori_Retur'] }}</td>
-                    <td>{{ $retur['Jumlah_Barang'] }}</td>
+                    <td>{{ $retur['jumlah_barang'] }}</td>
                 </tr>
             @endforeach
         </tbody>

@@ -45,15 +45,17 @@
         <tbody>
             @foreach($data as $stok)
                 <tr>
-                    <td>{{ $stok['kode_barang'] }}</td>
-                    <td>{{ $stok['nama_barang'] }}</td>
-                    <td>{{ $stok['kategori_barang'] }}</td>
-                    <td>{{ $stok['jumlah_barang_masuk'] }}</td>
-                    <td>{{ $stok['jumlah_barang_keluar'] }}</td>
-                    <td>{{ $stok['jumlah_retur_handal'] }}</td>
-                    <td>{{ $stok['jumlah_retur_bergaransi'] }}</td>
-                    <td>{{ $stok['jumlah_retur_rusak'] }}</td>
-                    <td>{{ $stok['selisih'] }}</td>
+                    <tr>
+                        <td>{{ $stok['kategori_barang'] }}</td>
+                        <td>{{ $stok['kode_barang'] }}</td>
+                        <td>{{ $stok['nama_barang'] }}</td>
+                        <td>{{ $stok['jumlah_barang_masuk'] }}</td>
+                        <td>{{ $stok['jumlah_barang_keluar'] }}</td>
+                        <td>{{ $stok['jumlah_retur_handal'] ?? 0 }}</td>
+                        <td>{{ $stok['jumlah_retur_bergaransi'] ?? 0 }}</td>
+                        <td>{{ $stok['jumlah_retur_rusak'] ?? 0 }}</td>
+                        <td>{{ $stok['selisih'] }}</td>
+                    </tr>
                     
                 </tr>
             @endforeach

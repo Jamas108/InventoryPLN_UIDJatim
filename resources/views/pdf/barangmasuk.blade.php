@@ -34,7 +34,6 @@
                 <th>Nama Barang</th>
                 <th>Kategori Barang</th>
                 <th>Jumlah Barang Masuk</th>
-                <th>Kondisi</th>
             </tr>
         </thead>
         <tbody>
@@ -46,7 +45,6 @@
                             <td>{{ $item['nama_barang'] }}</td>
                             <td>{{ $item['kategori_barang'] }}</td>
                             <td>{{ $item['jumlah_barang'] }}</td>
-                            <td>{{ $item['jenis_barang'] ?? 'N/A' }}</td>
                         </tr>
                     @endforeach
                 @endif
