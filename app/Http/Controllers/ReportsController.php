@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Kreait\Firebase\Factory;
-use Kreait\Firebase\ServiceAccount;
+use Kreait\Firebase\Storage;
+
 
 class ReportsController extends Controller
 {
     protected $database;
+    protected $storage;
 
     public function __construct()
     {
@@ -18,252 +20,204 @@ class ReportsController extends Controller
             ->withDatabaseUri(env("FIREBASE_DATABASE_URL"));
 
         $this->database = $factory->createDatabase();
+        $this->storage = $factory->createStorage();
     }
+    protected function getStorageImageUrl($filePath)
+    {
+        try {
+            $bucket = $this->storage->getBucket();
+            $object = $bucket->object($filePath);
+
+            if ($object->exists()) {
+                return $object->signedUrl(new \DateTime('tomorrow')); // URL dengan validitas 1 hari
+            }
+
+            return null; // Jika file tidak ditemukan
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
 
     public function index()
     {
-        // Mengambil data barang masuk dari Firebase
-        $reference = $this->database->getReference('barang_masuk');
-        $snapshot = $reference->getSnapshot();
-        $dataBarangMasuk = $snapshot->getValue() ?? [];
+        // Mendapatkan data dari Firebase
+        $dataBarangMasuk = $this->fetchData('barang_masuk');
+        $dataBarangKeluar = $this->fetchData('Barang_Keluar');
+        $dataReturBarang = $this->fetchData('Retur_Barang');
 
-        // Mengambil data barang keluar dari Firebase
-        $reference = $this->database->getReference('Barang_Keluar');
-        $snapshot = $reference->getSnapshot();
-        $dataBarangKeluar = $snapshot->getValue() ?? [];
+        // Status yang diterima
+        $statusAccepted = ['Accept', 'Accepted',];
 
-        // Mengambil data retur barang dari Firebase
-        $reference = $this->database->getReference('Retur_Barang');
-        $snapshot = $reference->getSnapshot();
-        $dataReturBarang = $snapshot->getValue() ?? [];
+        // Filter data Barang Masuk
+        $filteredBarangMasuk = array_filter($dataBarangMasuk, function ($dataMasuk) use ($statusAccepted) {
+            // Pastikan data barang ada dan adalah array
+            if (isset($dataMasuk['barang']) && is_array($dataMasuk['barang'])) {
+                // Filter barang berdasarkan status
+                $filteredBarang = array_filter($dataMasuk['barang'], function ($barang) use ($statusAccepted) {
+                    return isset($barang['Status']) && in_array($barang['Status'], $statusAccepted);
+                });
+
+                // Jika ada barang yang diterima, simpan entri ini
+                if (!empty($filteredBarang)) {
+                    $dataMasuk['barang'] = $filteredBarang;
+                    return $dataMasuk;
+                }
+            }
+            return false;
+        });
+
+        // Hapus entri yang tidak ada barangnya
+        $filteredBarangMasuk = array_filter($filteredBarangMasuk);
+
+        // Filter data Barang Keluar
+        $dataBarangKeluar = array_filter($dataBarangKeluar, function ($dataKeluar) use ($statusAccepted) {
+            return isset($dataKeluar['barang']) && is_array($dataKeluar['barang'])
+                ? array_filter($dataKeluar['barang'], fn($barang) => in_array($dataKeluar['status'], $statusAccepted))
+                : [];
+        });
+
+        // Filter data Retur Barang
+        $dataReturBarang = array_filter($dataReturBarang, function ($retur) use ($statusAccepted) {
+            return in_array($retur['status'] ?? 'N/A', $statusAccepted);
+        });
 
         // Menggabungkan data stok barang
+        $stokBarang = $this->processStokBarang($dataBarangMasuk, $dataBarangKeluar, $dataReturBarang);
+
+        // Memisahkan data berdasarkan kategori
+        $stokBarangNetworking = array_filter($stokBarang, fn($item) => $item['kategori_barang'] === 'Networking');
+        $stokBarangHardware = array_filter($stokBarang, fn($item) => $item['kategori_barang'] === 'Hardware');
+
+        // Menambahkan gambar ke barang masuk
+        foreach ($filteredBarangMasuk as &$dataMasuk) {
+            if (isset($dataMasuk['barang']) && is_array($dataMasuk['barang'])) {
+                foreach ($dataMasuk['barang'] as &$barang) {
+                    // Cari gambar dari stok barang berdasarkan kode barang
+                    $stok = collect($stokBarangNetworking)->firstWhere('kode_barang', $barang['kode_barang']);
+                    if ($stok) {
+                        $barang['gambar_barang'] = $stok['gambar_barang_masuk'];
+                    }
+                    $stokHardware = collect($stokBarangHardware)->firstWhere('kode_barang', $barang['kode_barang']);
+                    if ($stokHardware) {
+                        $barang['gambar_barang'] = $stokHardware['gambar_barang_masuk'];
+                    }
+                }
+            }
+        }
+        // Menambahkan gambar ke barang keluar
+        foreach ($dataBarangKeluar as &$dataKeluar) {
+            if (isset($dataKeluar['barang']) && is_array($dataKeluar['barang'])) {
+                foreach ($dataKeluar['barang'] as &$barang) {
+                    $stok = collect($stokBarangNetworking)->firstWhere('kode_barang', $barang['kode_barang']);
+                    if ($stok) {
+                        $barang['gambar_barang'] = $stok['gambar_barang_masuk'];
+                    }
+                    $stokHardware = collect($stokBarangHardware)->firstWhere('kode_barang', $barang['kode_barang']);
+                    if ($stokHardware) {
+                        $barang['gambar_barang'] = $stokHardware['gambar_barang_masuk'];
+                    }
+                }
+            }
+        }
+        // Mengirim data ke view untuk ditampilkan
+        return view('reports.index', [
+            'stokBarangNetworking' => $stokBarangNetworking,
+            'stokBarangHardware' => $stokBarangHardware,
+            'barangMasuk' => $filteredBarangMasuk,
+            'barangKeluar' => $dataBarangKeluar,
+            'returBarang' => $dataReturBarang,
+        ]);
+    }
+
+    // Metode untuk mendapatkan data dari Firebase
+    protected function fetchData($reference)
+    {
+        $snapshot = $this->database->getReference($reference)->getSnapshot();
+        return $snapshot->getValue() ?? [];
+    }
+
+    // Metode untuk memproses data stok barang
+    protected function processStokBarang($dataBarangMasuk, $dataBarangKeluar, $dataReturBarang)
+    {
         $stokBarang = [];
 
         if (is_array($dataBarangMasuk)) {
-            foreach ($dataBarangMasuk as $idMasuk => $dataMasuk) {
+            foreach ($dataBarangMasuk as $dataMasuk) {
                 if (isset($dataMasuk['barang']) && is_array($dataMasuk['barang'])) {
                     foreach ($dataMasuk['barang'] as $barangMasuk) {
-                        $kodeBarang = $barangMasuk['kode_barang'];
+                        if (isset($barangMasuk['Status']) && in_array($barangMasuk['Status'], ['Accept', 'Accepted'])) {
+                            $kodeBarang = $barangMasuk['kode_barang'];
 
-                        if (!isset($stokBarang[$kodeBarang])) {
-                            $stokBarang[$kodeBarang] = [
-                                'kategori_barang' => $barangMasuk['kategori_barang'],
-                                'kode_barang' => $kodeBarang,
-                                'nama_barang' => $barangMasuk['nama_barang'],
-                                'jumlah_barang_masuk' => 0,
-                                'jumlah_barang_keluar' => 0,
-                                'jumlah_retur_handal' => 0,
-                                'jumlah_retur_bergaransi' => 0,
-                                'jumlah_retur_rusak' => 0, // Tambahkan kategori retur rusak
-                                'kondisi' => $barangMasuk['jenis_barang'] ?? 'N/A',
-                            ];
+                            if (!isset($stokBarang[$kodeBarang])) {
+                                $stokBarang[$kodeBarang] = [
+                                    'kategori_barang' => $barangMasuk['kategori_barang'],
+                                    'kode_barang' => $kodeBarang,
+                                    'nama_barang' => $barangMasuk['nama_barang'],
+                                    'gambar_barang_masuk' => $this->getStorageImageUrl($barangMasuk['gambar_barang'] ?? null), // Mendapatkan URL gambar barang masuk
+                                    'jumlah_barang_masuk' => 0,
+                                    'jumlah_barang_keluar' => 0,
+                                    'jumlah_retur_handal' => 0,
+                                    'jumlah_retur_bergaransi' => 0,
+                                    'jumlah_retur_rusak' => 0,
+                                    'kondisi' => $barangMasuk['jenis_barang'] ?? 'N/A',
+                                    'status' => $barangMasuk['Status'] ?? 'N/A',
+                                ];
+                            }
+
+                            $stokBarang[$kodeBarang]['jumlah_barang_masuk'] += $barangMasuk['jumlah_barang'];
                         }
-
-                        $stokBarang[$kodeBarang]['jumlah_barang_masuk'] += $barangMasuk['jumlah_barang'];
                     }
                 }
             }
         }
 
         if (is_array($dataBarangKeluar)) {
-            foreach ($dataBarangKeluar as $idKeluar => $dataKeluar) {
-                if (isset($dataKeluar['barang']) && is_array($dataKeluar['barang'])) {
-                    foreach ($dataKeluar['barang'] as $barangKeluar) {
-                        $kodeBarang = $barangKeluar['kode_barang'];
+            foreach ($dataBarangKeluar as $dataKeluar) {
+                if (isset($dataKeluar['status']) && in_array($dataKeluar['status'], ['Accept', 'Accepted'])) {
+                    if (isset($dataKeluar['barang']) && is_array($dataKeluar['barang'])) {
+                        foreach ($dataKeluar['barang'] as $barangKeluar) {
+                            $kodeBarang = $barangKeluar['kode_barang'];
 
-                        if (!isset($stokBarang[$kodeBarang])) {
-                            $stokBarang[$kodeBarang] = [
-                                'kategori_barang' => $barangKeluar['kategori_barang'],
-                                'kode_barang' => $kodeBarang,
-                                'nama_barang' => $barangKeluar['nama_barang'],
-                                'jumlah_barang_masuk' => 0,
-                                'jumlah_barang_keluar' => 0,
-                                'jumlah_retur_handal' => 0,
-                                'jumlah_retur_bergaransi' => 0,
-                                'jumlah_retur_rusak' => 0, // Tambahkan kategori retur rusak
-                                'kondisi' => $barangKeluar['jenis_barang'] ?? 'N/A',
-                            ];
+                            if (!isset($stokBarang[$kodeBarang])) {
+                                $stokBarang[$kodeBarang] = [
+                                    'kategori_barang' => $barangKeluar['kategori_barang'],
+                                    'kode_barang' => $kodeBarang,
+                                    'nama_barang' => $barangKeluar['nama_barang'],
+                                    'gambar_barang_masuk' => $this->getStorageImageUrl($barangKeluar['gambar_barang'] ?? null), // Mendapatkan URL gambar barang keluar
+                                    'jumlah_barang_masuk' => 0,
+                                    'jumlah_barang_keluar' => 0,
+                                    'jumlah_retur_handal' => 0,
+                                    'jumlah_retur_bergaransi' => 0,
+                                    'jumlah_retur_rusak' => 0,
+                                    'kondisi' => $barangKeluar['jenis_barang'] ?? 'N/A',
+                                    'status' => $dataKeluar['status'] ?? 'N/A',
+                                ];
+                            }
+
+                            $stokBarang[$kodeBarang]['jumlah_barang_keluar'] += $barangKeluar['jumlah_barang'];
                         }
-
-                        $stokBarang[$kodeBarang]['jumlah_barang_keluar'] += $barangKeluar['jumlah_barang'];
                     }
                 }
             }
         }
 
-        // Menambahkan jumlah barang retur berdasarkan kategori
         if (is_array($dataReturBarang)) {
-            foreach ($dataReturBarang as $idRetur => $retur) {
+            foreach ($dataReturBarang as $retur) {
                 $kodeBarang = $retur['kode_barang'];
 
                 if (isset($stokBarang[$kodeBarang])) {
                     if ($retur['Kategori_Retur'] == 'Bekas Handal') {
                         $stokBarang[$kodeBarang]['jumlah_retur_handal'] += $retur['jumlah_barang'];
                     } elseif ($retur['Kategori_Retur'] == 'Bekas Bergaransi') {
-                        $stokBarang[$kodeBarang]['jumlah_retur_bergaransi'] += $retur['Jumlah_Barang'];
-                    } elseif ($retur['Kategori_Retur'] == 'Rusak') { // Tambahkan kategori rusak
-                        $stokBarang[$kodeBarang]['jumlah_retur_rusak'] += $retur['Jumlah_Barang'];
+                        $stokBarang[$kodeBarang]['jumlah_retur_bergaransi'] += $retur['jumlah_barang'];
+                    } elseif ($retur['Kategori_Retur'] == 'Barang Rusak') {
+                        $stokBarang[$kodeBarang]['jumlah_retur_rusak'] += $retur['jumlah_barang'];
                     }
                 }
             }
         }
 
-        // Menghitung selisih barang masuk dan barang keluar serta jumlah barang retur
-        foreach ($stokBarang as &$stok) {
-            $stok['selisih'] = $stok['jumlah_barang_masuk'] - $stok['jumlah_barang_keluar']
-                + $stok['jumlah_retur_handal'] + $stok['jumlah_retur_bergaransi']
-                - $stok['jumlah_retur_rusak']; // Hitung retur rusak
-        }
-
-        // Mengirim data ke view untuk ditampilkan
-        return view('reports.index', [
-            'stokBarang' => $stokBarang,
-            'barangMasuk' => $dataBarangMasuk,
-            'barangKeluar' => $dataBarangKeluar,
-            'returBarang' => $dataReturBarang,
-        ]);
-    }
-    
-    public function downloadBarangMasukPdf(Request $request)
-    {
-        // Ambil data Barang Masuk dari Firebase
-        $reference = $this->database->getReference('barang_masuk');
-        $snapshot = $reference->getSnapshot();
-        $dataBarangMasuk = $snapshot->getValue() ?? [];
-    
-        // Generate PDF
-        $pdf = PDF::loadView('pdf.barangmasuk', ['data' => $dataBarangMasuk]);
-    
-        // Unduh PDF
-        return $pdf->download('barang_masuk.pdf');
-    }
-    public function downloadBarangKeluarPdf(Request $request)
-{
-    // Ambil data Barang Keluar dari Firebase
-    $reference = $this->database->getReference('Barang_Keluar');
-    $snapshot = $reference->getSnapshot();
-    $dataBarangKeluar = $snapshot->getValue() ?? [];
-
-    // Generate PDF
-    $pdf = PDF::loadView('pdf.barangkeluar', ['data' => $dataBarangKeluar]);
-
-    // Unduh PDF
-    return $pdf->download('barang_keluar.pdf');
-}
-
-public function downloadReturBarangPdf(Request $request)
-{
-    // Ambil data Barang Keluar dari Firebase
-    $reference = $this->database->getReference('Retur_Barang');
-    $snapshot = $reference->getSnapshot();
-    $dataBarangRetur = $snapshot->getValue() ?? [];
-
-    // Generate PDF
-    $pdf = PDF::loadView('pdf.returbarang', ['data' => $dataBarangRetur]);
-
-    // Unduh PDF
-    return $pdf->download('barang_retur.pdf');
-}
-    
-
-    public function downloadStokBarangPdf(Request $request)
-    {
-        // Ambil data Stok Barang
-        $data = $this->getStokBarangData(); // Sesuaikan dengan method Anda
-
-        // Generate PDF
-        $pdf = PDF::loadView('pdf.stokbarang', compact('data'));
-
-        // Unduh PDF
-        return $pdf->download('stok_barang.pdf');
-    }
-
-
-    // Tambahkan metode untuk mendapatkan data stok barang
-    protected function getStokBarangData()
-    {
-        // Ambil data stok barang dari Firebase seperti pada metode index
-        $reference = $this->database->getReference('barang_masuk');
-        $snapshot = $reference->getSnapshot();
-        $dataBarangMasuk = $snapshot->getValue() ?? [];
-
-        $reference = $this->database->getReference('Barang_Keluar');
-        $snapshot = $reference->getSnapshot();
-        $dataBarangKeluar = $snapshot->getValue() ?? [];
-
-        $reference = $this->database->getReference('Retur_Barang');
-        $snapshot = $reference->getSnapshot();
-        $dataReturBarang = $snapshot->getValue() ?? [];
-
-        $stokBarang = [];
-
-        // Proses data barang masuk
-        foreach ($dataBarangMasuk as $idMasuk => $dataMasuk) {
-            if (isset($dataMasuk['barang']) && is_array($dataMasuk['barang'])) {
-                foreach ($dataMasuk['barang'] as $barangMasuk) {
-                    $kodeBarang = $barangMasuk['kode_barang'];
-
-                    if (!isset($stokBarang[$kodeBarang])) {
-                        $stokBarang[$kodeBarang] = [
-                            'kategori_barang' => $barangMasuk['kategori_barang'],
-                            'kode_barang' => $kodeBarang,
-                            'nama_barang' => $barangMasuk['nama_barang'],
-                            'jumlah_barang_masuk' => 0,
-                            'jumlah_barang_keluar' => 0,
-                            'jumlah_retur_handal' => 0,
-                            'jumlah_retur_bergaransi' => 0,
-                            'jumlah_retur_rusak' => 0, // Tambahkan kategori retur rusak
-                            'kondisi' => $barangMasuk['jenis_barang'] ?? 'N/A',
-                        ];
-                    }
-
-                    $stokBarang[$kodeBarang]['jumlah_barang_masuk'] += $barangMasuk['jumlah_barang'];
-                }
-            }
-        }
-
-        // Proses data barang keluar
-        foreach ($dataBarangKeluar as $idKeluar => $dataKeluar) {
-            if (isset($dataKeluar['barang']) && is_array($dataKeluar['barang'])) {
-                foreach ($dataKeluar['barang'] as $barangKeluar) {
-                    $kodeBarang = $barangKeluar['kode_barang'];
-
-                    if (!isset($stokBarang[$kodeBarang])) {
-                        $stokBarang[$kodeBarang] = [
-                            'kategori_barang' => $barangKeluar['kategori_barang'],
-                            'kode_barang' => $kodeBarang,
-                            'nama_barang' => $barangKeluar['nama_barang'],
-                            'jumlah_barang_masuk' => 0,
-                            'jumlah_barang_keluar' => 0,
-                            'jumlah_retur_handal' => 0,
-                            'jumlah_retur_bergaransi' => 0,
-                            'jumlah_retur_rusak' => 0, // Tambahkan kategori retur rusak
-                            'kondisi' => $barangKeluar['jenis_barang'] ?? 'N/A',
-                        ];
-                    }
-
-                    $stokBarang[$kodeBarang]['jumlah_barang_keluar'] += $barangKeluar['jumlah_barang'];
-                }
-            }
-        }
-
-        // Proses data retur barang
-        foreach ($dataReturBarang as $idRetur => $retur) {
-            $kodeBarang = $retur['kode_barang'];
-
-            if (isset($stokBarang[$kodeBarang])) {
-                if ($retur['Kategori_Retur'] == 'Bekas Handal') {
-                    $stokBarang[$kodeBarang]['jumlah_retur_handal'] += $retur['jumlah_barang'];
-                } elseif ($retur['Kategori_Retur'] == 'Bekas Bergaransi') {
-                    $stokBarang[$kodeBarang]['jumlah_retur_bergaransi'] += $retur['jumlah_Barang'];
-                } elseif ($retur['Kategori_Retur'] == 'Rusak') { 
-                    $stokBarang[$kodeBarang]['jumlah_retur_rusak'] += $retur['jumlah_Barang'];
-                }
-            }
-        }
-
-        // Hitung selisih barang masuk dan barang keluar serta jumlah barang retur
         foreach ($stokBarang as &$stok) {
             $stok['selisih'] = $stok['jumlah_barang_masuk'] - $stok['jumlah_barang_keluar']
                 + $stok['jumlah_retur_handal'] + $stok['jumlah_retur_bergaransi']
@@ -272,7 +226,43 @@ public function downloadReturBarangPdf(Request $request)
 
         return $stokBarang;
     }
-    
-    
-}
+    public function downloadBarangMasukPdf(Request $request)
+    {
+        $dataBarangMasuk = $this->fetchData('barang_masuk');
+        $pdf = PDF::loadView('pdf.barangmasuk', ['data' => $dataBarangMasuk]);
+        return $pdf->download('barang_masuk.pdf');
+    }
 
+    public function downloadBarangKeluarPdf(Request $request)
+    {
+        $dataBarangKeluar = $this->fetchData('Barang_Keluar');
+        $pdf = PDF::loadView('pdf.barangkeluar', ['data' => $dataBarangKeluar]);
+        return $pdf->download('barang_keluar.pdf');
+    }
+
+    public function downloadReturBarangPdf(Request $request)
+    {
+        $dataBarangRetur = $this->fetchData('Retur_Barang');
+        $pdf = PDF::loadView('pdf.returbarang', ['data' => $dataBarangRetur]);
+        return $pdf->download('barang_retur.pdf');
+    }
+
+    public function downloadStokBarangPdf(Request $request)
+    {
+        $dataBarangMasuk = $this->fetchData('barang_masuk');
+        $dataBarangKeluar = $this->fetchData('Barang_Keluar');
+        $dataReturBarang = $this->fetchData('Retur_Barang');
+
+        $stokBarang = $this->processStokBarang($dataBarangMasuk, $dataBarangKeluar, $dataReturBarang);
+
+        $stokBarangNetworking = array_filter($stokBarang, fn($item) => $item['kategori_barang'] === 'Networking');
+        $stokBarangHardware = array_filter($stokBarang, fn($item) => $item['kategori_barang'] === 'Hardware');
+
+        $pdf = PDF::loadView('pdf.stokbarang', [
+            'stokBarangNetworking' => $stokBarangNetworking,
+            'stokBarangHardware' => $stokBarangHardware,
+        ]);
+
+        return $pdf->download('stok_barang.pdf');
+    }
+}
