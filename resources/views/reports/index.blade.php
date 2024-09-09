@@ -60,7 +60,7 @@
                                                     <img src="{{ $stok['gambar_barang_masuk'] }}" alt="Gambar Barang"
                                                         style="width: 100px; height: auto;">
                                                 @else
-                                                    <span>Tidak ada gambar</span>
+                                                    <span>Tidak Ada Gambar</span>
                                                 @endif
                                             </td>
                                             <td>{{ $stok['jumlah_barang_masuk'] }}</td>

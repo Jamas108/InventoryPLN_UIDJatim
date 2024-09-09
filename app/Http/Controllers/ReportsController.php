@@ -165,7 +165,7 @@ class ReportsController extends Controller
                                 ];
                             }
 
-                            $stokBarang[$kodeBarang]['jumlah_barang_masuk'] += $barangMasuk['jumlah_barang'];
+                            $stokBarang[$kodeBarang]['jumlah_barang_masuk'] += $barangMasuk['inisiasi_stok'];
                         }
                     }
                 }
