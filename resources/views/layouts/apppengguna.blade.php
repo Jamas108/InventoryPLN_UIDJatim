@@ -37,30 +37,15 @@
 
 
     {{-- CSS --}}
-    @vite(['/resources/css/style.css'])
+    @vite(['/resources/css/pengguna.css'])
     @vite(['/resources/css/app.css'])
-    @vite(['/resources/css/login.css'])
 
     {{-- JAVASCRIPT --}}
     @vite(['js/app.js'])
-    @vite(['/resources/js/collapse.js'])
+    @vite(['resources/js/jsstyle.js'])
     @vite(['/resources/sass/app.scss'])
 
     {{-- Togler Sidebar Script --}}
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            const sidebar = document.getElementById('accordionSidebar');
-
-            sidebarToggle.addEventListener('click', function() {
-                if (sidebar.classList.contains('toggled')) {
-                    sidebar.classList.remove('toggled');
-                } else {
-                    sidebar.classList.add('toggled');
-                }
-            });
-        });
-    </script>
 </head>
 
 <body id="page-top">

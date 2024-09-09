@@ -6,43 +6,6 @@
             $('#employeeTable').DataTable();
         });
 
-        $(".status-select").on("change", function() {
-            var status = $(this).val();
-            var id = $(this).data("id");
-
-            $.ajax({
-                url: "{{ route('barangmasuk.updateStatusAjax') }}",
-                type: 'PUT',
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    id: id,
-                    status: status
-                },
-                success: function(response) {
-                    if (response.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Status berhasil diperbarui',
-                            text: response.message
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal memperbarui status',
-                            text: response.message
-                        });
-                    }
-                },
-                error: function(xhr) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Terjadi kesalahan',
-                        text: 'Status tidak dapat diperbarui'
-                    });
-                }
-            });
-        });
-
         $(".datatable").on("click", ".btn-delete", function(e) {
             e.preventDefault();
 
@@ -163,11 +126,11 @@
                                                                         @endif
                                                                     </td>
                                                                     <td class="text-center">
-                                                                        <form
-                                                                            action="{{ route('barangmasuk.updateStatus', $barangMasuk->id) }}"
-                                                                            method="POST">
+
+
+                                                                        <form action="{{ route('barangmasuk.updateStatus', ['itemId' => $barangMasuks['id'], 'barangId' => $barangMasuk->id]) }}" method="POST">
                                                                             @csrf
-                                                                            @if (Auth::user()->Id_Role == 3)
+                                                                            @if (Auth::user()->Id_Role == 1)
                                                                                 <!-- Cek apakah id role adalah 3 -->
                                                                                 <div
                                                                                     class="d-flex justify-content-center align-items-center">
@@ -202,7 +165,7 @@
                                                                                         <option value="Reject"
                                                                                             {{ $barangMasuk->Status == 'Reject' ? 'selected' : '' }}>
                                                                                             Reject</option>
-                                                                                        
+
                                                                                     </select>
                                                                                 </div>
                                                                             @endif

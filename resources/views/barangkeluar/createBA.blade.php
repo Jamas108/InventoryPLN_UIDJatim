@@ -57,7 +57,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="Tanggal_Keluar" class="form-label">Tanggal Keluar</label>
-                                        <input type="date" class="form-control" id="Tanggal_Keluar" name="Tanggal_Keluar"
+                                        <input type="date" class="form-control" id="Tanggal_Keluar" name="tanggal_peminjamanbarang"
                                             required>
                                     </div>
                                 </div>
@@ -66,7 +66,7 @@
                                     <div class="form-group">
                                         <label for="Tanggal_Kembali" class="form-label">Tanggal Kembali</label>
                                         <input type="date" class="form-control" id="Tanggal_Kembali"
-                                            name="Tanggal_Kembali">
+                                            name="Tanggal_PengembalianBarang">
                                     </div>
                                 </div>
                             </div>
