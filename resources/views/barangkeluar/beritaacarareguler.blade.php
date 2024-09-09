@@ -9,13 +9,13 @@
     PT PLN (Persero)</br>
     Unit Induk Jawa Timur</br>
     DIV STI Ops Jatim</br>
-    Perihal: Pengajuan Peminjaman Barang Insidentil</br>
+    Perihal: Pengajuan Peminjaman Barang Reguler</br>
 
     <h3 style="text-align: center; padding-top:20px; text-decoration: underline">BERITA ACARA SERAH TERIMA BARANG</h3>
     <p style="text-align: center; margin-top: -15px;">Nomor: {{ $No_SuratJalanBK }}</p>
 
     <p>Pada hari ini, Tanggal {{ $Tanggal_Keluar_BeritaAcara }} telah diserahkan dari PT PLN (PERSERO)
-        DIV STI OPS JATIM kepada {{ $Nama_PihakPeminjam }} dengan kategori peminjaman Insidentil. Tanggal peminjaman barang anda mulai berlaku pada tanggal {{ $tanggal_peminjamanbarang }} hingga tanggal {{ $Tanggal_PengembalianBarang }} . Berikut ini merupakan
+        DIV STI OPS JATIM kepada {{ $Nama_PihakPeminjam }} dengan kategori peminjaman Reguler. Tanggal peminjaman barang anda mulai berlaku pada tanggal {{ $tanggal_peminjamanbarang }}. Berikut ini merupakan
         keterangan atau informasi barang yang anda pinjam dari PT PLN (PERSERO) DIV STI OPS JATIM</p>
 
     <table border="1" cellpadding="5" cellspacing="0" style="width: 100%;">

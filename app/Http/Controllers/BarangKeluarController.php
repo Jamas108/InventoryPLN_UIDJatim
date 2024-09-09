@@ -54,7 +54,7 @@ class BarangKeluarController extends Controller
                 'File_Surat' => $items->first()->File_Surat ?? null,
                 'File_BeritaAcara' => $items->first()->File_BeritaAcara ?? null,
                 'Nama_PihakPeminjam' => $items->first()->Nama_PihakPeminjam ?? null,
-                'Tanggal_Keluar' => $items->first()->Tanggal_Keluar ?? null,
+                'Kategori_Peminjaman' => $items->first()->Kategori_Peminjaman ?? null,
                 'Tanggal_PengembalianBarang' => $items->first()->Tanggal_PengembalianBarang ?? null,
                 'id' => $items->first()->id ?? null,
                 'detail_barang' => $items->first()->barang // Menyertakan detail barang
@@ -75,7 +75,7 @@ class BarangKeluarController extends Controller
         // Ambil data barang dari Firebase
         $barangMasuksSnapshot = $this->database->getReference('barang_masuk')->getSnapshot();
         $barangMasuksData = $barangMasuksSnapshot->getValue();
-        
+
         // Mengubah struktur data dan filter barang dengan status 'Accept'
         $allItems = collect($barangMasuksData)->flatMap(function ($item) {
             return collect($item['barang'])->map(function ($barang) {
@@ -84,12 +84,11 @@ class BarangKeluarController extends Controller
         })->filter(function ($barang) {
             return isset($barang->Status) && $barang->Status === 'Accept'; // Filter only items with 'Accept' status
         });
-        
+
         return view('barangkeluar.create', [
             'pageTitle' => $pageTitle,
             'allItems' => $allItems // Mengirimkan data barang yang sudah difilter ke view
         ]);
-        
     }
 
     /**
@@ -118,6 +117,7 @@ class BarangKeluarController extends Controller
             'Tanggal_PengembalianBarang' => $request->input('Tanggal_PengembalianBarang'),
             'Kategori_Peminjaman' => $request->input('Kategori'),
             'No_SuratJalanBK' => '',
+            'no_berita_acara' => '',
             'status' => $request->input('status'),
             'Nama_PihakPeminjam' => $user->Nama,
             'Catatan' => '',
@@ -169,33 +169,156 @@ class BarangKeluarController extends Controller
         return redirect()->route('barangkeluar.index')->with('success', 'Barang Masuk berhasil diperbarui.');
     }
 
-
+    //TODO: Insidentil
     public function buatBeritaAcara($id)
     {
         // Ambil data barang keluar berdasarkan id
         $barangKeluar = $this->database->getReference('Barang_Keluar/' . $id)->getValue();
+
+        // Ambil semua data barang keluar untuk menentukan nomor berita acara tertinggi
+        $allBarangKeluar = $this->database->getReference('Barang_Keluar')->getValue();
+        $maxNumber = '000'; // Default jika belum ada data
+
+        foreach ($allBarangKeluar as $key => $item) {
+            if (isset($item['no_berita_acara'])) {
+                $currentNumber = $item['no_berita_acara'];
+                if (intval($currentNumber) > intval($maxNumber)) {
+                    $maxNumber = $currentNumber;
+                }
+            }
+        }
+
+        // Increment nomor berita acara
+        $nextNumber = str_pad((int)$maxNumber + 1, 3, '0', STR_PAD_LEFT);
 
         // Kirim data ke view
         return view('barangkeluar.createba', [
             'barangKeluar' => $barangKeluar,
             'id' => $id,
             'Nama_PihakPeminjam' => $barangKeluar['Nama_PihakPeminjam'],
-            'Tanggal_Keluar' => $barangKeluar['Tanggal_Keluar'] ?? null,
+            'tanggal_peminjamanbarang' => $barangKeluar['tanggal_peminjamanbarang'],
+            'Tanggal_PengembalianBarang' => $barangKeluar['Tanggal_PengembalianBarang'],
+            'nextNumber' => $nextNumber
         ]);
     }
 
 
 
+
     public function storeBeritaAcara(Request $request, $id)
     {
-        // Log request data
-        \Log::info('Request Data:', $request->all());
 
         // Validate the request
         $request->validate([
             'nomor_beritaacara' => 'nullable|string',
             'Nama_PihakPeminjam' => 'nullable|string',
-            'Tanggal_PengembalianBarang' => 'nullable|date',
+            'Catatan' => 'nullable|string',
+            'no_berita_acara' => 'required|string',
+            'tanggal_peminjamanbarang' => 'required|date',
+            'Tanggal_PengembalianBarang' => 'required|date',
+        ]);
+
+        // Fetch Barang Keluar data from Firebase
+        $barangKeluarRef = $this->database->getReference('Barang_Keluar/' . $id);
+        $barangKeluar = $barangKeluarRef->getValue();
+
+        // Check if barangKeluar exists
+        if (!$barangKeluar) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        }
+
+        // Prepare Barang Keluar data
+        $barangKeluarList = [];
+        if (isset($barangKeluar['barang']) && is_array($barangKeluar['barang'])) {
+            foreach ($barangKeluar['barang'] as $barangData) {
+                $barangKeluarList[] = [
+                    'Kode_Barang' => $barangData['kode_barang'] ?? 'N/A',
+                    'Nama_Barang' => $barangData['nama_barang'] ?? 'N/A',
+                    'Jumlah_Barang' => $barangData['jumlah_barang'] ?? 'N/A',
+                    'Kategori_Barang' => $barangData['kategori_barang'] ?? 'N/A',
+                    'Jenis_Barang' => $barangData['jenis_barang'] ?? 'N/A',
+                ];
+            }
+        }
+
+        // Create No_SuratJalanBK by concatenating the fields
+        $noSuratJalanBK = implode('/', [
+            $request->input('no_berita_acara'),
+            $request->input('pembuat_no_berita_acara'),
+            $request->input('kategori_no_berita_acara'),
+            $request->input('tahun_no_berita_acara'),
+            $request->input('bulan_no_berita_acara'),
+
+        ]);
+
+        // Update data with the request
+        $updateData = [
+            'No_SuratJalanBK' => $noSuratJalanBK,
+            'no_berita_acara' => $request->input('no_berita_acara', $barangKeluar['no_berita_acara'] ?? ''),
+            'Nama_PihakPeminjam' => $request->input('Nama_PihakPeminjam', $barangKeluar['Nama_PihakPeminjam'] ?? ''),
+            'Tanggal_PengembalianBarang' => $request->input('Tanggal_PengembalianBarang', $barangKeluar['Tanggal_PengembalianBarang'] ?? ''),
+            'Catatan' => $request->input('Catatan', $barangKeluar['Catatan'] ?? ''),  // Added Catatan field
+            'tanggal_peminjamanbarang' => $request->input('tanggal_peminjamanbarang', $barangKeluar['tanggal_peminjamanbarang'] ?? ''),
+            'Tanggal_Keluar_BeritaAcara' => date('Y-m-d'),  // Tanggal keluar berita acara saat ini
+            'status' => 'Accepted',  // Ensure status is set to 'Accept'
+        ];
+
+
+        // Generate PDF
+        $pdf = Pdf::loadView('barangkeluar.beritaacara', [
+            'No_SuratJalanBK' => $noSuratJalanBK,
+            'tanggal_peminjamanbarang' => $updateData['tanggal_peminjamanbarang'] ?? null,
+            'Tanggal_PengembalianBarang' => $updateData['Tanggal_PengembalianBarang'] ?? null,
+            'Kategori' => $barangKeluar['Kategori'] ?? null,
+            'Nama_PihakPeminjam' => $updateData['Nama_PihakPeminjam'],
+            'Catatan' => $updateData['Catatan'],
+            'Tanggal_Keluar_BeritaAcara' => date('Y-m-d'),  // Tanggal keluar berita acara saat ini
+            'barangKeluarList' => $barangKeluarList
+        ]);
+
+        // Save PDF to Firebase Storage
+        $pdfFileName = 'berita-acara/' . 'Berita_Acara_' . $id . '.pdf';
+        $pdfContent = $pdf->output();
+        $this->storage->getBucket()->upload(
+            $pdfContent,
+            ['name' => $pdfFileName]
+        );
+        $pdfFileUrl = $this->storage->getBucket()->object($pdfFileName)->signedUrl(new \DateTime('+1 hour'));
+
+        // Update Firebase record with the PDF URL and other fields
+        $barangKeluarRef->update(array_merge($updateData, ['File_BeritaAcara' => $pdfFileUrl]));
+
+        // Update stock in Barang Masuk
+        $this->updateStockBarangMasuk($barangKeluar['barang']);
+
+        return redirect()->route('barangkeluar.index')->with('success', 'Barang Masuk berhasil diperbarui.');
+    }
+
+    //TODO:
+    public function buatBeritaAcaraReguler($id)
+    {
+        // Ambil data barang keluar berdasarkan id
+        $barangKeluar = $this->database->getReference('Barang_Keluar/' . $id)->getValue();
+
+        // Kirim data ke view
+        return view('barangkeluar.createbareguler', [
+            'barangKeluar' => $barangKeluar,
+            'id' => $id,
+            'Nama_PihakPeminjam' => $barangKeluar['Nama_PihakPeminjam'],
+            'tanggal_peminjamanbarang' => $barangKeluar['tanggal_peminjamanbarang'],
+        ]);
+    }
+
+    public function storeBeritaAcaraReguler(Request $request, $id)
+    {
+        // Validate the request
+        $request->validate([
+            'no_berita_acara' => 'nullable|string',
+            'pembuat_no_berita_acara' => 'nullable|string',
+            'kategori_no_berita_acara' => 'nullable|string',
+            'bulan_no_berita_acara' => 'nullable|string',
+            'tahun_no_berita_acara' => 'nullable|string',
+            'Nama_PihakPeminjam' => 'nullable|string',
             'Catatan' => 'nullable|string',
             'tanggal_peminjamanbarang' => 'required|date',
         ]);
@@ -223,23 +346,30 @@ class BarangKeluarController extends Controller
             }
         }
 
+        // Create No_SuratJalanBK by concatenating the fields
+        $noSuratJalanBK = implode('/', [
+            $request->input('no_berita_acara'),
+            $request->input('pembuat_no_berita_acara'),
+            $request->input('kategori_no_berita_acara'),
+            $request->input('bulan_no_berita_acara'),
+            $request->input('tahun_no_berita_acara')
+        ]);
+
         // Update data with the request
         $updateData = [
-            'No_SuratJalanBK' => $request->input('nomor_beritaacara', $barangKeluar['nomor_beritaacara'] ?? ''),
+            'No_SuratJalanBK' => $noSuratJalanBK,
             'Nama_PihakPeminjam' => $request->input('Nama_PihakPeminjam', $barangKeluar['Nama_PihakPeminjam'] ?? ''),
-            'Tanggal_PengembalianBarang' => $request->input('Tanggal_PengembalianBarang', $barangKeluar['Tanggal_PengembalianBarang'] ?? ''),
-            'Catatan' => $request->input('Catatan', $barangKeluar['Catatan'] ?? ''),  // Added Catatan field
+            'Catatan' => $request->input('Catatan', $barangKeluar['Catatan'] ?? ''),
             'tanggal_peminjamanbarang' => $request->input('tanggal_peminjamanbarang', $barangKeluar['tanggal_peminjamanbarang'] ?? ''),
-            'status' => 'Accepted',  // Ensure status is set to 'Accept'
+            'Tanggal_Keluar_BeritaAcara' => date('Y-m-d'),  // Tanggal keluar berita acara saat ini
+            'status' => 'Accepted',
         ];
 
-        // Log the data to be updated
-        \Log::info('Update Data:', $updateData);
-
         // Generate PDF
-        $pdf = Pdf::loadView('barangkeluar.beritaacara', [
+        $pdf = Pdf::loadView('barangkeluar.beritaacarareguler', [
             'No_SuratJalanBK' => $updateData['No_SuratJalanBK'],
             'tanggal_peminjamanbarang' => $updateData['tanggal_peminjamanbarang'] ?? null,
+            'Tanggal_Keluar_BeritaAcara' => $updateData['Tanggal_Keluar_BeritaAcara'] ?? null,
             'Kategori' => $barangKeluar['Kategori'] ?? null,
             'Nama_PihakPeminjam' => $updateData['Nama_PihakPeminjam'],
             'Catatan' => $updateData['Catatan'],
@@ -261,8 +391,9 @@ class BarangKeluarController extends Controller
         // Update stock in Barang Masuk
         $this->updateStockBarangMasuk($barangKeluar['barang']);
 
-        return view('barangkeluar.index');
+        return redirect()->route('barangkeluar.index')->with('success', 'Barang Masuk berhasil diperbarui.');
     }
+
 
     private function updateStockBarangMasuk(array $barangKeluarList)
     {
@@ -333,5 +464,4 @@ class BarangKeluarController extends Controller
     {
         //
     }
-
 }

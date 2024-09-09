@@ -6,7 +6,7 @@
         <div id="content">
             @include('layouts.navbar')
             <div class="container-fluid p-2">
-                <form action="{{ route('barangkeluar.storeBeritaAcara', ['id' => $id]) }}" method="POST"
+                <form action="{{ route('barangkeluar.storeBeritaAcaraReguler', ['id' => $id]) }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
                     <div class="container-fluid">
@@ -26,7 +26,7 @@
                                 <div class="col-md-1">
                                     <div class="form-group">
                                         <input type="text" class="form-control text-center" id="no_berita_acara"
-                                            name="no_berita_acara" value="{{ $nextNumber }}" readonly>
+                                            name="no_berita_acara" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -37,20 +37,20 @@
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <input type="text" class="form-control text-center" id="pembuat_no_berita_acara"
-                                            name="pembuat_no_berita_acara" value="INS" readonly>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control text-center" id="tahun_no_berita_acara"
-                                            name="tahun_no_berita_acara" readonly>
+                                        <input type="text" class="form-control text-center" id="kategori_no_berita_acara"
+                                            name="kategori_no_berita_acara" value="REG" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-1">
                                     <div class="form-group">
                                         <input type="text" class="form-control text-center" id="bulan_no_berita_acara"
                                             name="bulan_no_berita_acara" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control text-center" id="tahun_no_berita_acara"
+                                            name="tahun_no_berita_acara" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -76,27 +76,13 @@
                                 <div class="col-md-9">
                                     <div class="form-group">
                                         <input type="date" class="form-control" id="tanggal_peminjamanbarang"
-                                            name="tanggal_peminjamanbarang" value="{{ $tanggal_peminjamanbarang }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="text_tanggal_pengembalian"
-                                            name="text_tanggal_pengembalian" value="Tanggal Pengembalian"
-                                            style="background-color: rgb(1, 1, 95); color : white" readonly>
-                                    </div>
-                                </div>
-                                <div class="col-md-9">
-                                    <div class="form-group">
-                                        <input type="date" class="form-control" id="Tanggal_PengembalianBarang"
-                                            name="Tanggal_PengembalianBarang" value="{{ $Tanggal_PengembalianBarang }}">
+                                            name="tanggal_peminjamanbarang" value="{{ $tanggal_peminjamanbarang }}">
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <input type="text" class="form-control" id="text_catatan" name="text_catatan"
-                                            value="Catatan" style="background-color: rgb(1, 1, 95); color : white"
-                                            readonly>
+                                            value="Catatan" style="background-color: rgb(1, 1, 95); color : white" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-9">
@@ -131,7 +117,13 @@
                 document.getElementById('tahun_no_berita_acara').value = year;
                 document.getElementById('bulan_no_berita_acara').value = month;
 
-                
+                // Menentukan nomor berita acara
+                let lastBeritaAcaraNumber = 1; // Angka default jika belum ada berita acara, bisa ditarik dari database
+
+                // Format 3 digit untuk nomor berita acara
+                const formattedNumber = ("000" + lastBeritaAcaraNumber).slice(-3);
+
+                document.getElementById('no_berita_acara').value = formattedNumber;
             });
         </script>
     @endpush
