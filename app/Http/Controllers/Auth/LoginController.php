@@ -29,19 +29,44 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    /**
+     * Custom authentication method.
+     */
     public function authenticate(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required',],
+            'email' => ['required'],
             'password' => ['required'],
         ]);
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return redirect()->intended('home');
+            // Check the user's role_id after successful login
+            $user = Auth::user();
+
+            // Redirect if role_id is 3
+            if ($user->Id_Role == 3) {
+                return redirect()->route('pengguna.index');
+            }
+
+            // Otherwise, redirect to the default home
+            return redirect()->intended($this->redirectPath());
         }
 
-        return back();
+        return back()->withErrors([
+            'email' => 'Email atau password salah.',
+        ]);
+    }
+
+    /**
+     * Override default redirect path.
+     *
+     * @return string
+     */
+    public function redirectPath()
+    {
+        // You can change this to a custom route
+        return '/home';
     }
 }

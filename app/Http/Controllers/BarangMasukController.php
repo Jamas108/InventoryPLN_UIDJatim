@@ -107,8 +107,6 @@ class BarangMasukController extends Controller
     {
         $request->validate([]);
 
-
-
         $fileSuratJalanPath = null;
         if ($request->hasFile('File_SuratJalan')) {
             $file = $request->file('File_SuratJalan');
@@ -164,6 +162,7 @@ class BarangMasukController extends Controller
                 'nama_barang' => $request->Nama_Barang[$i],
                 'kode_barang' => $request->Kode_Barang[$i],
                 'kategori_barang' => $request->Kategori_Barang[$i],
+                'inisiasi_stok' => $request->JumlahBarang_Masuk[$i],
                 'jumlah_barang' => $request->JumlahBarang_Masuk[$i],
                 'jenis_barang' => $JenisBarang,
                 'garansi_barang_awal' => $request->Garansi_Barang_Awal[$i],
@@ -262,25 +261,28 @@ class BarangMasukController extends Controller
 
         return redirect()->route('barangmasuk.index')->with('success', 'Barang Masuk berhasil dihapus.');
     }
-    public function updateStatus(Request $request, $id)
+    public function updateStatus(Request $request, $itemId, $barangId)
     {
-        // Validasi inputan
+        // Validasi input status
         $request->validate([
-            'Status' => 'required|string|max:50',
+            'Status' => 'required|string|in:Accept,Pending,Reject',
         ]);
 
-        try {
-            // Mendapatkan referensi ke data barang masuk berdasarkan ID
-            $barangMasukRef = $this->database->getReference('barang_masuk/' . $id);
+        // Path referensi ke barang tertentu
+        $path = 'barang_masuk/' . $itemId . '/barang';
+        $barangRef = $this->database->getReference($path);
 
-            // Memperbarui field Status
-            $barangMasukRef->update([
-                'Status' => $request->input('Status'),
-            ]);
+        // Ambil semua data barang untuk item tertentu
+        $barangItems = $barangRef->getValue();
 
-            Alert::success('Berhasil', 'Status barang berhasil diperbarui.');
-        } catch (\Exception $e) {
-            Alert::error('Gagal', 'Terjadi kesalahan saat memperbarui status barang: ' . $e->getMessage());
+        // Cari barang dengan ID yang sesuai dan perbarui status
+        foreach ($barangItems as $key => $barang) {
+            if ($barang['id'] == $barangId) {
+                $barangRef->getChild($key)->update([
+                    'Status' => $request->input('Status'),
+                ]);
+                break;
+            }
         }
 
         return redirect()->route('barangmasuk.index')->with('success', 'Status barang berhasil diperbarui.');

@@ -115,6 +115,7 @@
                                     style="background-color: rgb(1, 1, 95); height:50px">
                                     <h5 class="h5 mb-0 text-white">Barang 1</h5>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Kode_Barang">Kode Barang</label>
@@ -141,18 +142,6 @@
                                         @enderror
                                     </div>
                                 </div>
-
-                                <div class="form-group">
-                                    <input type="text" class="form-control @error('Jenis_Barang') is-invalid @enderror"
-                                        id="Jenis_Barang" name="Jenis_Barang[]"
-                                        value="{{ old('Jenis_Barang', 'Baru') }}" hidden>
-                                    @error('Jenis_Barang')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-
 
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -206,25 +195,6 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="Kondisi_Barang">Kondisi Barang</label>
-                                        <select class="form-control @error('Kondisi_Barang') is-invalid @enderror"
-                                            id="Kondisi_Barang" name="Kondisi_Barang[]">
-                                            <option value="Baru">Baru</option>
-                                            <option value="Bekas">Bekas</option>
-                                        </select>
-                                        @error('Kondisi_Barang')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" class="form-control" id="Status" name="Status[]"
-                                        value="{{ old('Status', 'Pending') }}" hidden>
-                                </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -254,6 +224,31 @@
                                         @enderror
                                     </div>
 
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="Kondisi_Barang"
+                                            name="Kondisi_Barang[]" value="Baru" hidden>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="Status" name="Status[]"
+                                            value="{{ old('Status', 'Pending') }}" hidden>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <input type="text"
+                                            class="form-control @error('Jenis_Barang') is-invalid @enderror"
+                                            id="Jenis_Barang" name="Jenis_Barang[]"
+                                            value="{{ old('Jenis_Barang', 'Baru') }}" hidden>
+                                        @error('Jenis_Barang')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
                                 </div>
                             </div>
                         </div>

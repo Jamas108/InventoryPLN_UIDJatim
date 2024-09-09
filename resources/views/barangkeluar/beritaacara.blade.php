@@ -12,7 +12,7 @@
 
     <h3 style="text-align: center; padding-top:20px; text-decoration: underline">BERITA ACARA SERAH TERIMA BARANG</h3>
 
-    <p>Pada hari ini, Tanggal {{ $Tanggal_Keluar }} telah diserahkan dari PT PLN (PERSERO)
+    <p>Pada hari ini, Tanggal {{ $tanggal_peminjamanbarang }} telah diserahkan dari PT PLN (PERSERO)
         DIV STI OPS JATIM kepada {{ $Nama_PihakPeminjam }} dengan kategori peminjaman {{$Kategori}}, Berikut ini merupakan keterangan atau informasi barang yang anda pinjam dari PT PLN (PERSERO) DIV STI OPS JATIM</p>
 
     <table border="1" cellpadding="5" cellspacing="0" style="width: 100%;">

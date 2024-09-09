@@ -15,6 +15,7 @@ use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\BarangRusakController;
 use App\Http\Controllers\BarangKeluarController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\UserInventoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,10 @@ use App\Http\Controllers\NotificationController;
 Auth::routes();
 Route::redirect('/', '/login');
 Route::post('/login', [LoginController::class, 'authenticate']);
+Route::post('/logout', function () {
+    Auth::logout(); // Proses logout
+    return redirect('/login'); // Redirect ke halaman login setelah logout
+})->name('logout');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
@@ -41,8 +46,7 @@ Route::post('/create-user', [UserController::class, 'createUser'])->name('create
 Route::resource('barangmasuk', BarangMasukController::class);
 Route::get('/barangmasuk/edit/{noSurat}', [BarangMasukController::class, 'edit'])->name('barangmasuk.edit');
 Route::put('/barangmasuk/update/{noSurat}', [BarangMasukController::class, 'update'])->name('barangmasuk.update');
-Route::post('/barangmasuk/{id}/updateStatus', [BarangMasukController::class, 'updateStatus'])->name('barangmasuk.updateStatus');
-Route::put('/barangmasuk/update-status-ajax', [BarangMasukController::class, 'updateStatusAjax'])->name('barangmasuk.updateStatusAjax');
+Route::post('/barangmasuk/{itemId}/{barangId}/updateStatus', [BarangMasukController::class, 'updateStatus'])->name('barangmasuk.updateStatus');
 
 //BARANG KELUAR ROUTE
 Route::resource('/barangkeluar', BarangKeluarController::class);
@@ -115,3 +119,15 @@ Route::resource('/user', UserController::class);
 Route::get('/users', [UserController::class, 'index']);
 Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
 Route::post('/user/{id}/update', [UserController::class, 'update'])->name('user.update');
+
+
+//ROUTE PENGGUNA
+//Halaman Index
+Route::get('/pengguna/index', [App\Http\Controllers\HomeUserController::class, 'index'])->name('pengguna.index');
+Route::get('/success', [App\Http\Controllers\HomeUserController::class, 'landing'])->name('pengguna.success');
+
+// Halaman Peminjaman
+Route::resource('/userinventory', UserInventoryController::class);
+Route::get('/userinventory/create/reguler', [UserInventoryController::class, 'createReguler'])->name('createreguler.index');
+Route::post('userinventory/storeuserreguler', [UserInventoryController::class, 'storeReguler'])->name('userinventory.storereguler');
+
