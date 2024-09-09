@@ -83,11 +83,10 @@
                                                     <script>
                                                         document.addEventListener('DOMContentLoaded', function() {
                                                             function getRemainingTime(startDate, returnDate) {
-                                                                const now = new Date();
                                                                 const end = new Date(returnDate);
                                                                 const start = new Date(startDate);
-                                                                let timeDiff = end - now;
-                                                                if (now > end) return "Expired";
+                                                                let timeDiff = end - start;
+                                                                if (start > end) return "Expired";
                                                                 const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
                                                                 timeDiff -= days * (1000 * 60 * 60 * 24);
                                                                 const hours = Math.floor(timeDiff / (1000 * 60 * 60));
@@ -127,11 +126,23 @@
                                                         href="{{ route('barangkeluar.show', $group['id']) }}">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
-                                                    <a href="{{ route('barangkeluar.createBeritaAcara', ['id' => $group['id']]) }}"
-                                                        class="btn btn-primary btn-md mr-2 ml-2"><i
-                                                            class="fas fa-file-alt"></i></a>
-                                                    <a href="{{ route('barangkeluar.createBeritaAcara', ['id' => $group['id']]) }}"
-                                                        class="btn btn-danger btn-md"><i class="fas fa-trash"></i></a>
+
+                                                    {{-- Cek apakah kategori reguler --}}
+                                                    @if ($group['Kategori_Peminjaman'] == 'Reguler')
+                                                        <a href="{{ route('barangkeluar.createBeritaAcaraReguler', ['id' => $group['id']]) }}"
+                                                            class="btn btn-primary btn-md mr-2 ml-2">
+                                                            <i class="fas fa-file-alt"></i>
+                                                        </a>
+                                                    @else
+                                                        <a href="{{ route('barangkeluar.createBeritaAcara', ['id' => $group['id']]) }}"
+                                                            class="btn btn-primary btn-md mr-2 ml-2">
+                                                            <i class="fas fa-file-alt"></i>
+                                                        </a>
+                                                    @endif
+                                                    <a href=""
+                                                        class="btn btn-danger btn-md">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -148,6 +159,4 @@
             </div>
         </div>
     </div>
-
-
 @endsection
