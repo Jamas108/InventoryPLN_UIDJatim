@@ -14,6 +14,7 @@ use App\Events\NewNotification;
 use RealRashid\SweetAlert\Facades\Alert;
 use Kreait\Firebase\Factory;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 
 class BarangMasukController extends Controller
@@ -68,10 +69,17 @@ class BarangMasukController extends Controller
             }
         }
 
-
-
-        // Hitung total barang untuk setiap grup
+        // Hitung total barang untuk setiap grup dan calculate approval status
         $groupedBarangMasuks = $barangMasuks->groupBy('id')->map(function ($items) {
+            $approvalStatuses = $items->flatMap(fn($item) => $item->barang->pluck('Status'));
+
+            $overallApprovalStatus = 'Accept'; // Default status
+            if ($approvalStatuses->contains('Pending')) {
+                $overallApprovalStatus = 'Pending';
+            } elseif ($approvalStatuses->contains('Reject')) {
+                $overallApprovalStatus = 'Reject';
+            }
+
             return collect([
                 'items' => $items->flatMap(fn($item) => $item->barang),
                 'Jumlah_barang' => $items->flatMap(fn($item) => $item->barang)->count(),
@@ -82,12 +90,11 @@ class BarangMasukController extends Controller
                 'No_Surat' => $items->first()->No_Surat ?? null,
                 'TanggalPengiriman_Barang' => $items->first()->TanggalPengiriman_Barang,
                 'id' => $items->first()->id ?? null,
-
+                'Status' => $overallApprovalStatus, // Add overall approval status
             ]);
         });
+
         $Id_role = Auth::user()->Id_Role;
-
-
 
         return view('barangmasuk.index', ['groupedBarangMasuks' => $groupedBarangMasuks]);
     }
@@ -105,7 +112,20 @@ class BarangMasukController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([]);
+        // Validasi data
+    $validator = Validator::make($request->all(), [
+        'Id_Petugas' => 'required',
+        'No_Surat' => 'required',
+        'NamaPerusahaan_Pengirim' => 'required',
+        'TanggalPengiriman_Barang' => 'required|date',
+        'jumlah_barangmasuk' => 'required|integer|min:1',
+        'File_SuratJalan' => 'required|file|mimes:pdf,jpg,png,jpeg', // contoh validasi untuk file
+    ]);
+
+    // Cek jika validasi gagal
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+    }
 
         $fileSuratJalanPath = null;
         if ($request->hasFile('File_SuratJalan')) {
@@ -250,6 +270,22 @@ class BarangMasukController extends Controller
 
 
         return redirect()->route('barangmasuk.index')->with('success', 'Barang Masuk berhasil diperbarui.');
+    }
+    public function show($id)
+    {
+        // Ambil data barang keluar berdasarkan id
+        $BarangMasuk = $this->database->getReference('barang_masuk/' . $id)->getValue();
+
+        // Cek apakah barang keluar ditemukan
+        if (!$BarangMasuk) {
+            return redirect()->route('barangmasuk.index')->with('error', 'Data barang keluar tidak ditemukan.');
+        }
+
+        // Kirim data ke view
+        return view('barangmasuk.show', [
+            'BarangMasuk' => $BarangMasuk,
+            'id' => $id,
+        ]);
     }
 
     public function destroy($id)

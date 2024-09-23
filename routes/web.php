@@ -55,6 +55,7 @@ Route::get('/barangkeluar/berita-acara/{id}', [BarangKeluarController::class, 'b
 Route::post('/barangkeluar/berita-acara/{id}', [BarangKeluarController::class, 'storeBeritaAcara'])->name('barangkeluar.storeBeritaAcara');
 Route::get('/barangkeluar/berita-acara-reguler/{id}', [BarangKeluarController::class, 'buatBeritaAcaraReguler'])->name('barangkeluar.createBeritaAcaraReguler');
 Route::post('/barangkeluar/berita-acara-reguler/{id}', [BarangKeluarController::class, 'storeBeritaAcaraReguler'])->name('barangkeluar.storeBeritaAcaraReguler');
+Route::get('/barangkeluar/return/{id}', [BarangKeluarController::class, 'returnBarang'])->name('barangkeluar.return');
 
 //STOK BARANG ROUTE
 Route::resource('/stokbarang', StokBarangController::class);
@@ -63,20 +64,19 @@ Route::get('/stokbarang/networking/index', [StokBarangController::class, 'networ
 
 //RETUR ROUTE
 //RETUR UTAMA (PENGAJUAN)
-Route::resource('/retur', ReturController::class);
-Route::get('retur/{id}/edit', [ReturController::class, 'edit'])->name('retur.edit');
-Route::put('retur/{id}', [ReturController::class, 'update'])->name('retur.update');
-Route::get('/retur/{id}/showImage', [ReturController::class, 'showImage'])->name('retur.showImage');
-Route::get('/retur/{id}/showSuratJalan', [ReturController::class, 'showSuratJalan'])->name('retur.showSuratJalan');
-//RETUR KATEGORI HANDAL
-Route::get('/retur/handal/index', [ReturController::class, 'indexHandal'])->name('returhandal.index');
-//RETUR KATEGORI RUSAK
-Route::get('/retur/rusak/index', [ReturController::class, 'indexRusak'])->name('returrusak.index');
-//RETUR KATEGORI BERGARANSI
-Route::get('/retur/bergaransi/index', [ReturController::class, 'indexBergaransi'])->name('returbergaransi.index');
-
-
-
+    Route::resource('/retur', ReturController::class);
+    // routes/web.php
+    Route::get('/retur/create/{barangKeluarId}/{barangId}', [ReturController::class, 'create'])->name('retur.create');
+    Route::get('retur/{id}/edit', [ReturController::class, 'edit'])->name('retur.edit');
+    Route::put('retur/{id}', [ReturController::class, 'update'])->name('retur.update');
+    Route::get('/retur/{id}/showImage', [ReturController::class, 'showImage'])->name('retur.showImage');
+    Route::get('/retur/{id}/showSuratJalan', [ReturController::class, 'showSuratJalan'])->name('retur.showSuratJalan');
+    //RETUR KATEGORI HANDAL
+    Route::get('/retur/handal/index', [ReturController::class, 'indexHandal'])->name('returhandal.index');
+    //RETUR KATEGORI RUSAK
+    Route::get('/retur/rusak/index', [ReturController::class, 'indexRusak'])->name('returrusak.index');
+    //RETUR KATEGORI BERGARANSI
+    Route::get('/retur/bergaransi/index', [ReturController::class, 'indexBergaransi'])->name('returbergaransi.index');
 
 
 Route::resource('/barangrusak', BarangRusakController::class);
@@ -132,4 +132,3 @@ Route::get('/success', [App\Http\Controllers\HomeUserController::class, 'landing
 Route::resource('/userinventory', UserInventoryController::class);
 Route::get('/userinventory/create/reguler', [UserInventoryController::class, 'createReguler'])->name('createreguler.index');
 Route::post('userinventory/storeuserreguler', [UserInventoryController::class, 'storeReguler'])->name('userinventory.storereguler');
-

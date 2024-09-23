@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Kreait\Firebase\Factory;
+use Illuminate\Support\Facades\Log;
 
 class BarangKeluarController extends Controller
 {
@@ -29,6 +30,7 @@ class BarangKeluarController extends Controller
     }
     public function index()
     {
+        confirmDelete();
         // Ambil data dari Firebase
         $barangKeluarsSnapshot = $this->database->getReference('Barang_Keluar')->getSnapshot();
         $barangKeluarsData = $barangKeluarsSnapshot->getValue();
@@ -55,6 +57,7 @@ class BarangKeluarController extends Controller
                 'File_BeritaAcara' => $items->first()->File_BeritaAcara ?? null,
                 'Nama_PihakPeminjam' => $items->first()->Nama_PihakPeminjam ?? null,
                 'Kategori_Peminjaman' => $items->first()->Kategori_Peminjaman ?? null,
+                'status' => $items->first()->status ?? null,
                 'Tanggal_PengembalianBarang' => $items->first()->Tanggal_PengembalianBarang ?? null,
                 'id' => $items->first()->id ?? null,
                 'detail_barang' => $items->first()->barang // Menyertakan detail barang
@@ -117,7 +120,6 @@ class BarangKeluarController extends Controller
             'Tanggal_PengembalianBarang' => $request->input('Tanggal_PengembalianBarang'),
             'Kategori_Peminjaman' => $request->input('Kategori'),
             'No_SuratJalanBK' => '',
-            'no_berita_acara' => '',
             'status' => $request->input('status'),
             'Nama_PihakPeminjam' => $user->Nama,
             'Catatan' => '',
@@ -180,8 +182,8 @@ class BarangKeluarController extends Controller
         $maxNumber = '000'; // Default jika belum ada data
 
         foreach ($allBarangKeluar as $key => $item) {
-            if (isset($item['no_berita_acara'])) {
-                $currentNumber = $item['no_berita_acara'];
+            if (isset($item['no_berita_acara_insidentil'])) {
+                $currentNumber = $item['no_berita_acara_insidentil'];
                 if (intval($currentNumber) > intval($maxNumber)) {
                     $maxNumber = $currentNumber;
                 }
@@ -201,9 +203,6 @@ class BarangKeluarController extends Controller
             'nextNumber' => $nextNumber
         ]);
     }
-
-
-
 
     public function storeBeritaAcara(Request $request, $id)
     {
@@ -254,7 +253,7 @@ class BarangKeluarController extends Controller
         // Update data with the request
         $updateData = [
             'No_SuratJalanBK' => $noSuratJalanBK,
-            'no_berita_acara' => $request->input('no_berita_acara', $barangKeluar['no_berita_acara'] ?? ''),
+            'no_berita_acara_insidentil' => $request->input('no_berita_acara', $barangKeluar['no_berita_acara'] ?? ''),
             'Nama_PihakPeminjam' => $request->input('Nama_PihakPeminjam', $barangKeluar['Nama_PihakPeminjam'] ?? ''),
             'Tanggal_PengembalianBarang' => $request->input('Tanggal_PengembalianBarang', $barangKeluar['Tanggal_PengembalianBarang'] ?? ''),
             'Catatan' => $request->input('Catatan', $barangKeluar['Catatan'] ?? ''),  // Added Catatan field
@@ -300,12 +299,29 @@ class BarangKeluarController extends Controller
         // Ambil data barang keluar berdasarkan id
         $barangKeluar = $this->database->getReference('Barang_Keluar/' . $id)->getValue();
 
+        // Ambil semua data barang keluar untuk menentukan nomor berita acara tertinggi
+        $allBarangKeluar = $this->database->getReference('Barang_Keluar')->getValue();
+        $maxNumber = '000'; // Default jika belum ada data
+
+        foreach ($allBarangKeluar as $key => $item) {
+            if (isset($item['no_berita_acara_reguler'])) {
+                $currentNumber = $item['no_berita_acara_reguler'];
+                if (intval($currentNumber) > intval($maxNumber)) {
+                    $maxNumber = $currentNumber;
+                }
+            }
+        }
+
+        // Increment nomor berita acara
+        $nextNumber = str_pad((int)$maxNumber + 1, 3, '0', STR_PAD_LEFT);
+
         // Kirim data ke view
         return view('barangkeluar.createbareguler', [
             'barangKeluar' => $barangKeluar,
             'id' => $id,
             'Nama_PihakPeminjam' => $barangKeluar['Nama_PihakPeminjam'],
             'tanggal_peminjamanbarang' => $barangKeluar['tanggal_peminjamanbarang'],
+            'nextNumber' => $nextNumber,
         ]);
     }
 
@@ -351,13 +367,14 @@ class BarangKeluarController extends Controller
             $request->input('no_berita_acara'),
             $request->input('pembuat_no_berita_acara'),
             $request->input('kategori_no_berita_acara'),
+            $request->input('tahun_no_berita_acara'),
             $request->input('bulan_no_berita_acara'),
-            $request->input('tahun_no_berita_acara')
         ]);
 
         // Update data with the request
         $updateData = [
             'No_SuratJalanBK' => $noSuratJalanBK,
+            'no_berita_acara_reguler' => $request->input('no_berita_acara', $barangKeluar['no_berita_acara'] ?? ''),
             'Nama_PihakPeminjam' => $request->input('Nama_PihakPeminjam', $barangKeluar['Nama_PihakPeminjam'] ?? ''),
             'Catatan' => $request->input('Catatan', $barangKeluar['Catatan'] ?? ''),
             'tanggal_peminjamanbarang' => $request->input('tanggal_peminjamanbarang', $barangKeluar['tanggal_peminjamanbarang'] ?? ''),
@@ -395,33 +412,138 @@ class BarangKeluarController extends Controller
     }
 
 
-    private function updateStockBarangMasuk(array $barangKeluarList)
+    public function returnBarang($id)
     {
+        // Ambil data barang keluar berdasarkan ID
+        $barangKeluarRef = $this->database->getReference('Barang_Keluar/' . $id);
+        $barangKeluar = $barangKeluarRef->getValue();
+    
+        if ($barangKeluar && isset($barangKeluar['barang'])) {
+            // Mengembalikan stok barang
+            $this->updateStockBarangMasukReturn($barangKeluar['barang']);
+    
+            // Update status barang menjadi 'dikembalikan'
+            $barangKeluarRef->update(['status' => 'dikembalikan']);
+    
+            Alert::success('Sukses', 'Stok barang berhasil dikembalikan.');
+        } else {
+            Alert::error('Error', 'Data barang tidak ditemukan.');
+        }
+    
+        return redirect()->route('barangkeluar.index');
+    }
+    
+    private function updateStockBarangMasukReturn(array $barangKeluarList)
+    {
+        Log::info("Memulai proses update stok barang masuk.");
+    
         foreach ($barangKeluarList as $barang) {
-            $kodeBarang = $barang['kode_barang'] ?? 'N/A';
-            $jumlahBarang = $barang['jumlah_barang'] ?? 0;
-
-            // Fetch Barang Masuk data from Firebase
-            $barangMasukRef = $this->database->getReference('barang_masuk');
-            $barangMasukSnapshot = $barangMasukRef->getSnapshot();
-            $barangMasukData = $barangMasukSnapshot->getValue();
-
-            foreach ($barangMasukData as $key => $barangMasuk) {
-                foreach ($barangMasuk['barang'] as $index => $barangItem) {
-                    if ($barangItem['kode_barang'] === $kodeBarang) {
-                        // Update stock quantity
-                        $currentStock = $barangItem['jumlah_barang'] ?? 0;
-                        $newStock = $currentStock - $jumlahBarang;
-
-                        // Update Firebase record
-                        $barangMasukRef->getChild($key . '/barang/' . $index)->update([
-                            'jumlah_barang' => $newStock,
-                        ]);
+            $kodeBarangKeluar = $barang['kode_barang'] ?? 'N/A'; // Ambil kode barang keluar
+            $jumlahBarangKeluar = $barang['jumlah_barang'] ?? 0;
+    
+            Log::info("Proses barang keluar: Kode = $kodeBarangKeluar, Jumlah = $jumlahBarangKeluar.");
+    
+            // Ambil data barang masuk dari Firebase
+            $barangMasukRef = $this->database->getReference('barang_masuk')->getSnapshot();
+            $barangMasuk = $barangMasukRef->getValue();
+    
+            Log::info("Data barang masuk: " . json_encode($barangMasuk));
+    
+            $found = false; // Flag untuk menemukan barang
+    
+            // Loop untuk setiap entry di barang_masuk
+            foreach ($barangMasuk as $entryKey => $entry) {
+                // Memastikan bahwa field 'barang' ada dan merupakan array
+                if (isset($entry['barang']) && is_array($entry['barang'])) {
+                    // Loop untuk setiap barang di dalam 'barang'
+                    foreach ($entry['barang'] as $itemKey => $item) {
+                        Log::info("Memeriksa barang dengan Kode: " . ($item['kode_barang'] ?? 'N/A'));
+    
+                        // Periksa apakah kode barang cocok
+                        if (isset($item['kode_barang']) && $item['kode_barang'] === $kodeBarangKeluar) {
+                            $found = true; // Tandai barang ditemukan
+                            $stokLama = $item['jumlah_barang'] ?? 0; // Menggunakan jumlah_barang
+                            Log::info("Stok lama untuk Kode $kodeBarangKeluar: $stokLama");
+    
+                            // Tambahkan jumlah barang yang dikembalikan ke stok
+                            $stokBaru = $stokLama + $jumlahBarangKeluar;
+                            Log::info("Menghitung stok baru untuk Kode $kodeBarangKeluar: $stokBaru");
+    
+                            // Update stok barang masuk di Firebase
+                            $this->database->getReference("barang_masuk/$entryKey/barang/$itemKey")->update(['jumlah_barang' => $stokBaru]);
+                            Log::info("Stok untuk Kode $kodeBarangKeluar telah diperbarui menjadi $stokBaru.");
+                            break 2; // Hentikan semua loop setelah menemukan barang yang cocok
+                        }
                     }
+                } else {
+                    Log::warning("Data barang tidak valid di entry: " . json_encode($entry));
                 }
             }
+    
+            if (!$found) {
+                Log::warning("Barang dengan Kode $kodeBarangKeluar tidak ditemukan dalam data barang masuk.");
+            }
         }
+    
+        Log::info("Proses update stok barang masuk selesai.");
     }
+    
+
+    private function updateStockBarangMasuk(array $barangKeluarList)
+    {
+        Log::info("Memulai proses update stok barang masuk.");
+
+        foreach ($barangKeluarList as $barang) {
+            $kodeBarangKeluar = $barang['kode_barang'] ?? 'N/A'; // Ambil kode barang keluar
+            $jumlahBarangKeluar = $barang['jumlah_barang'] ?? 0;
+
+            Log::info("Proses barang keluar: Kode = $kodeBarangKeluar, Jumlah = $jumlahBarangKeluar.");
+
+            // Ambil data barang masuk dari Firebase
+            $barangMasukRef = $this->database->getReference('barang_masuk')->getSnapshot();
+            $barangMasuk = $barangMasukRef->getValue();
+
+            Log::info("Data barang masuk: " . json_encode($barangMasuk));
+
+            $found = false; // Flag untuk menemukan barang
+
+            // Loop untuk setiap entry di barang_masuk
+            foreach ($barangMasuk as $entryKey => $entry) {
+                // Memastikan bahwa field 'barang' ada dan merupakan array
+                if (isset($entry['barang']) && is_array($entry['barang'])) {
+                    // Loop untuk setiap barang di dalam 'barang'
+                    foreach ($entry['barang'] as $itemKey => $item) {
+                        Log::info("Memeriksa barang dengan Kode: " . ($item['kode_barang'] ?? 'N/A'));
+
+                        // Periksa apakah kode barang cocok
+                        if (isset($item['kode_barang']) && $item['kode_barang'] === $kodeBarangKeluar) {
+                            $found = true; // Tandai barang ditemukan
+                            $stokLama = $item['jumlah_barang'] ?? 0; // Menggunakan jumlah_barang
+                            Log::info("Stok lama untuk Kode $kodeBarangKeluar: $stokLama");
+
+                            $stokBaru = max(0, $stokLama - $jumlahBarangKeluar);
+                            Log::info("Menghitung stok baru untuk Kode $kodeBarangKeluar: $stokBaru");
+
+                            // Update stok barang masuk di Firebase
+                            $this->database->getReference("barang_masuk/$entryKey/barang/$itemKey")->update(['jumlah_barang' => $stokBaru]);
+                            Log::info("Stok untuk Kode $kodeBarangKeluar telah diperbarui menjadi $stokBaru.");
+                            break 2; // Hentikan semua loop setelah menemukan barang yang cocok
+                        }
+                    }
+                } else {
+                    Log::warning("Data barang tidak valid di entry: " . json_encode($entry));
+                }
+            }
+
+            if (!$found) {
+                Log::warning("Barang dengan Kode $kodeBarangKeluar tidak ditemukan dalam data barang masuk.");
+            }
+        }
+
+        Log::info("Proses update stok barang masuk selesai.");
+    }
+
+
     /**
      * Display the specified resource.
      */
@@ -460,8 +582,43 @@ class BarangKeluarController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        // Ambil referensi barang keluar berdasarkan ID
+        $barangKeluarRef = $this->database->getReference('Barang_Keluar/' . $id);
+        $barangKeluar = $barangKeluarRef->getValue();
+
+        // Periksa apakah barang keluar ditemukan
+        if (!$barangKeluar) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        }
+
+        // Hapus file di Firebase Storage jika ada
+        if (isset($barangKeluar['File_Surat'])) {
+            // Mendapatkan nama file dari URL
+            $filePath = 'surat-jalan/' . basename($barangKeluar['File_Surat']);
+
+            // Cek apakah file ada di Storage
+            $object = $this->storage->getBucket()->object($filePath);
+            if ($object->exists()) {
+                // Hapus file dari Firebase Storage
+                $object->delete();
+            }
+        }
+
+        // Hapus semua file terkait Berita Acara
+        if (isset($barangKeluar['File_BeritaAcara'])) {
+            $fileBeritaAcaraPath = 'berita-acara/' . basename($barangKeluar['File_BeritaAcara']);
+            $objectBeritaAcara = $this->storage->getBucket()->object($fileBeritaAcaraPath);
+            if ($objectBeritaAcara->exists()) {
+                // Hapus file dari Firebase Storage
+                $objectBeritaAcara->delete();
+            }
+        }
+
+        // Hapus data dari Firebase Database
+        $barangKeluarRef->remove();
+
+        return redirect()->route('barangkeluar.index')->with('success', 'Barang keluar berhasil dihapus.');
     }
 }

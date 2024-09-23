@@ -134,14 +134,15 @@
             <span>Notifikasi</span>
         </a>
     </li>
-
-    <!-- Nav Item - User -->
-    <li class="nav-item {{ $currentRouteName == 'user' ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('user.index') }}">
-            <i class="fas fa-user"></i>
-            <span>User</span>
-        </a>
-    </li>
+    @if (Auth::user()->Id_Role == 1)
+        <!-- Nav Item - User -->
+        <li class="nav-item {{ $currentRouteName == 'user' ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('user.index') }}">
+                <i class="fas fa-user"></i>
+                <span>User</span>
+            </a>
+        </li>
+    @endif
 
     <!-- Divider -->
     <hr class="sidebar-divider">
