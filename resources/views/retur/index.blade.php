@@ -45,10 +45,10 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item['Pihak_Pemohon'] }}</td>
-                                            <td>{{ $item['Kode_Barang'] }}</td>
-                                            <td>{{ $item['Nama_Barang'] }}</td>
-                                            <td>{{ $item['Jumlah_Barang'] }}</td>
-                                            <td>{{ $item['Kategori_Barang'] }}</td>
+                                            <td>{{ $item['kode_barang'] }}</td>
+                                            <td>{{ $item['nama_barang'] }}</td>
+                                            <td>{{ $item['jumlah_barang'] }}</td>
+                                            <td>{{ $item['kategori_barang'] }}</td>
                                             <td>{{ $item['Deskripsi'] }}</td>
                                             <td>{{ \Carbon\Carbon::parse($item['Tanggal_Retur'])->format('d-m-Y') }}</td>
                                             <td>{{ $item['status'] }}</td>

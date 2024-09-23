@@ -27,23 +27,23 @@
                                 <div class="form-group col-md-2">
                                     <label for="Nama_Barang">Nama Barang</label>
                                     <input type="text" class="form-control" id="Nama_Barang" name="Nama_Barang"
-                                        value="{{ $returBarang['Nama_Barang'] }}" readonly>
+                                        value="{{ $returBarang['nama_barang'] }}" readonly>
                                 </div>
 
                                 <div class="form-group col-md-2">
                                     <label for="Kode_Barang">Kode Barang</label>
                                     <input type="text" class="form-control" id="Kode_Barang" name="Kode_Barang"
-                                        value="{{ $returBarang['Kode_Barang'] }}" readonly>
+                                        value="{{ $returBarang['kode_barang'] }}" readonly>
                                 </div>
                                 <div class="form-group col-md-2">
                                     <label for="Kategori_Barang">Kategori Barang</label>
                                     <input type="text" class="form-control" id="Kategori_Barang" name="Kategori_Barang"
-                                        value="{{ $returBarang['Kategori_Barang'] }}" readonly>
+                                        value="{{ $returBarang['kategori_barang'] }}" readonly>
                                 </div>
                                 <div class="form-group col-md-2">
                                     <label for="Jumlah_Barang">Jumlah Barang</label>
                                     <input type="number" class="form-control" id="Jumlah_Barang" name="Jumlah_Barang"
-                                        value="{{ $returBarang['Jumlah_Barang'] }}" readonly>
+                                        value="{{ $returBarang['jumlah_barang'] }}" readonly>
                                 </div>
                                 <div class="form-group col-md-2">
                                     <label for="Tanggal_Retur">Tanggal Retur</label>
@@ -81,8 +81,8 @@
                             <div class="row">
                                 <div class="form-group col-md-4">
                                     <label for="Jumlah_Barang">Jumlah Barang</label>
-                                    <input type="number" class="form-control" id="Jumlah_Barang" name="Jumlah_Barang"
-                                        value="{{ $returBarang['Jumlah_Barang'] }}">
+                                    <input type="number" class="form-control" id="jumlah_barang" name="jumlah_barang"
+                                        value="{{ $returBarang['jumlah_barang'] }}">
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="Kategori_Retur">Kategori Retur</label>

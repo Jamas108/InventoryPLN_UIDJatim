@@ -60,16 +60,14 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
+                               
                                     <div class="form-group">
                                         <label for="Id_Petugas">Petugas</label>
-                                        <select class="form-control @error('Id_Petugas') is-invalid @enderror"
-                                            id="Id_Petugas" name="Id_Petugas">
-                                            @foreach ($staffGudangs as $staffGudang)
-                                                <option value="{{ $staffGudang->id }}">{{ $staffGudang->Nama }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @error('Id_Petugas')
+                                        <input type="text"
+                                            class="form-control @error('Id_Petugas') is-invalid @enderror"
+                                            id="Id_Petugas"
+                                            name="Id_Petugas" value="{{ auth()->user()->Nama }}" readonly>
+                                        @error('TanggalPengiriman_Barang')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
