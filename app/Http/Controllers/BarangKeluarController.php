@@ -168,7 +168,15 @@ class BarangKeluarController extends Controller
         // Update the data with the Firebase generated ID
         $newRecordRef->update(['id' => $newRecordId]);
 
-        return redirect()->route('barangkeluar.index')->with('success', 'Barang Masuk berhasil diperbarui.');
+        // Setelah menambahkan data barang Keluar
+        $this->database->getReference('notifications')->push([
+            'title' => 'Pending Pengajuan Barang Keluar',
+            'message' => "Pengajuan untuk Barang Keluar dengan nama pemohon '{$user['Nama']}' telah diajukan dan menunggu konfirmasi dari admin.",
+            'status' => 'unread',
+            'created_at' => now()->toDateTimeString(),
+        ]);
+
+        return redirect()->route('barangkeluar.index')->with('success', 'Barang Keluar berhasil diperbarui.');
     }
 
     //TODO: Insidentil

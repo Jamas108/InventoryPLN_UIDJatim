@@ -220,6 +220,27 @@
                             <br>
                             <h4>Barang Keluar - Networking</h4>
                             <br>
+                            @php
+                                // Array untuk mengelompokkan barang berdasarkan kode barang
+                                $groupedBarangNetworking = [];
+                            @endphp
+                            @foreach ($barangKeluar as $id => $data)
+                                @foreach ($data['barang'] as $barang)
+                                    @if ($barang['kategori_barang'] == 'Networking')
+                                        @php
+                                            // Jika kode barang sudah ada, tambahkan jumlah barang
+                                            if (isset($groupedBarangNetworking[$barang['kode_barang']])) {
+                                                $groupedBarangNetworking[$barang['kode_barang']]['jumlah_barang'] +=
+                                                    $barang['jumlah_barang'];
+                                            } else {
+                                                // Jika belum ada, tambahkan data barang ke dalam array
+                                                $groupedBarangNetworking[$barang['kode_barang']] = $barang;
+                                            }
+                                        @endphp
+                                    @endif
+                                @endforeach
+                            @endforeach
+
                             <table class="table text-center align-middle table-bordered table-hover mb-0 datatable"
                                 id="BarangKeluarNetworkingTable" style="width: 100%">
                                 <thead>
@@ -233,32 +254,50 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($barangKeluar as $id => $data)
-                                        @foreach ($data['barang'] as $barang)
-                                            @if ($barang['kategori_barang'] == 'Networking')
-                                                <tr>
-                                                    <td>{{ $barang['kategori_barang'] }}</td>
-                                                    <td>{{ $barang['kode_barang'] }}</td>
-                                                    <td>
-                                                        @if (!empty($barang['gambar_barang']))
-                                                            <img src="{{ $barang['gambar_barang'] }}" alt="Gambar Barang"
-                                                                style="width: 100px; height: auto;">
-                                                        @else
-                                                            N/A
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ $barang['nama_barang'] }}</td>
-                                                    <td>{{ $barang['jenis_barang'] ?? 'N/A' }}</td>
-                                                    <td>{{ $barang['jumlah_barang'] }}</td>
-                                                </tr>
-                                            @endif
-                                        @endforeach
+                                    @foreach ($groupedBarangNetworking as $barang)
+                                        <tr>
+                                            <td>{{ $barang['kategori_barang'] }}</td>
+                                            <td>{{ $barang['kode_barang'] }}</td>
+                                            <td>
+                                                @if (!empty($barang['gambar_barang']))
+                                                    <img src="{{ $barang['gambar_barang'] }}" alt="Gambar Barang"
+                                                        style="width: 100px; height: auto;">
+                                                @else
+                                                    N/A
+                                                @endif
+                                            </td>
+                                            <td>{{ $barang['nama_barang'] }}</td>
+                                            <td>{{ $barang['jenis_barang'] ?? 'N/A' }}</td>
+                                            <td>{{ $barang['jumlah_barang'] }}</td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                             </table>
+
                             <br>
                             <h4>Barang Keluar - Hardware</h4>
                             <br>
+                            @php
+                                // Array untuk mengelompokkan barang berdasarkan kode barang untuk kategori Hardware
+                                $groupedBarangHardware = [];
+                            @endphp
+                            @foreach ($barangKeluar as $id => $data)
+                                @foreach ($data['barang'] as $barang)
+                                    @if ($barang['kategori_barang'] == 'Hardware')
+                                        @php
+                                            // Jika kode barang sudah ada, tambahkan jumlah barang
+                                            if (isset($groupedBarangHardware[$barang['kode_barang']])) {
+                                                $groupedBarangHardware[$barang['kode_barang']]['jumlah_barang'] +=
+                                                    $barang['jumlah_barang'];
+                                            } else {
+                                                // Jika belum ada, tambahkan data barang ke dalam array
+                                                $groupedBarangHardware[$barang['kode_barang']] = $barang;
+                                            }
+                                        @endphp
+                                    @endif
+                                @endforeach
+                            @endforeach
+
                             <table class="table text-center align-middle table-bordered table-hover mb-0 datatable"
                                 id="BarangKeluarHardwareTable" style="width: 100%">
                                 <thead>
@@ -272,26 +311,22 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($barangKeluar as $id => $data)
-                                        @foreach ($data['barang'] as $barang)
-                                            @if ($barang['kategori_barang'] == 'Hardware')
-                                                <tr>
-                                                    <td>{{ $barang['kategori_barang'] }}</td>
-                                                    <td>{{ $barang['kode_barang'] }}</td>
-                                                    <td>
-                                                        @if (!empty($barang['gambar_barang']))
-                                                            <img src="{{ $barang['gambar_barang'] }}" alt="Gambar Barang"
-                                                                style="width: 100px; height: auto;">
-                                                        @else
-                                                            N/A
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ $barang['nama_barang'] }}</td>
-                                                    <td>{{ $barang['jenis_barang'] ?? 'N/A' }}</td>
-                                                    <td>{{ $barang['jumlah_barang'] }}</td>
-                                                </tr>
-                                            @endif
-                                        @endforeach
+                                    @foreach ($groupedBarangHardware as $barang)
+                                        <tr>
+                                            <td>{{ $barang['kategori_barang'] }}</td>
+                                            <td>{{ $barang['kode_barang'] }}</td>
+                                            <td>
+                                                @if (!empty($barang['gambar_barang']))
+                                                    <img src="{{ $barang['gambar_barang'] }}" alt="Gambar Barang"
+                                                        style="width: 100px; height: auto;">
+                                                @else
+                                                    N/A
+                                                @endif
+                                            </td>
+                                            <td>{{ $barang['nama_barang'] }}</td>
+                                            <td>{{ $barang['jenis_barang'] ?? 'N/A' }}</td>
+                                            <td>{{ $barang['jumlah_barang'] }}</td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                             </table>
@@ -301,6 +336,7 @@
                 </div>
 
 
+
                 <!-- Tabel Retur Barang -->
                 <div class="container-fluid pt-2 px-2 mb-2">
                     <div class="bg-white rounded shadow px-4">
@@ -308,72 +344,100 @@
                             <br>
                             <h4>Retur Barang - Networking</h4>
                             <br>
+                            @php
+                                // Array untuk mengelompokkan retur barang berdasarkan kode barang
+                                $groupedReturNetworking = [];
+                            @endphp
+                            @if (is_array($returBarang) || is_object($returBarang))
+                                @foreach ($returBarang as $id => $data)
+                                    @if ($data['kategori_barang'] == 'Networking')
+                                        @php
+                                            // Jika kode barang sudah ada, tambahkan jumlah barang
+                                            if (isset($groupedReturNetworking[$data['kode_barang']])) {
+                                                $groupedReturNetworking[$data['kode_barang']]['jumlah_barang'] += $data['jumlah_barang'];
+                                            } else {
+                                                // Jika belum ada, tambahkan data barang ke dalam array
+                                                $groupedReturNetworking[$data['kode_barang']] = $data;
+                                            }
+                                        @endphp
+                                    @endif
+                                @endforeach
+                            @endif
+                
                             <table class="table text-center align-middle table-bordered table-hover mb-0 datatable"
                                 id="ReturBarangNetworkingTable" style="width: 100%">
                                 <thead>
                                     <tr>
                                         <th scope="col" style="width: 300px; color:white">Kategori Barang</th>
                                         <th scope="col" style="width: 300px; color:white">Kode Barang</th>
-
                                         <th scope="col" style="width: 300px; color:white">Nama Barang</th>
-                                        <th scope="col" style="width: 300px; color:white">Kondisi Barang</th>
+                                        <th scope="col" style="width: 300px; color:white">Kategori Retur Barang</th>
                                         <th scope="col" style="width: 300px; color:white">Jumlah Barang</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (is_array($returBarang) || is_object($returBarang))
-                                        @foreach ($returBarang as $id => $data)
-                                            @if ($data['kategori_barang'] == 'Networking')
-                                                <tr>
-                                                    <td>{{ $data['kategori_barang'] }}</td>
-                                                    <td>{{ $data['kode_barang'] }}</td>
-                                                    <td>{{ $data['nama_barang'] }}</td>
-                                                    <td>{{ $data['Kategori_Retur'] }}</td>
-                                                    <td>{{ $data['jumlah_barang'] }}</td>
-                                                </tr>
-                                            @endif
-                                        @endforeach
-                                    @endif
+                                    @foreach ($groupedReturNetworking as $barang)
+                                        <tr>
+                                            <td>{{ $barang['kategori_barang'] }}</td>
+                                            <td>{{ $barang['kode_barang'] }}</td>
+                                            <td>{{ $barang['nama_barang'] }}</td>
+                                            <td>{{ $barang['Kategori_Retur'] }}</td>
+                                            <td>{{ $barang['jumlah_barang'] }}</td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                             <br>
                             <h4>Retur Barang - Hardware</h4>
                             <br>
+                            @php
+                                // Array untuk mengelompokkan retur barang berdasarkan kode barang untuk kategori Hardware
+                                $groupedReturHardware = [];
+                            @endphp
+                            @if (is_array($returBarang) || is_object($returBarang))
+                                @foreach ($returBarang as $id => $data)
+                                    @if ($data['kategori_barang'] == 'Hardware')
+                                        @php
+                                            // Jika kode barang sudah ada, tambahkan jumlah barang
+                                            if (isset($groupedReturHardware[$data['kode_barang']])) {
+                                                $groupedReturHardware[$data['kode_barang']]['jumlah_barang'] += $data['jumlah_barang'];
+                                            } else {
+                                                // Jika belum ada, tambahkan data barang ke dalam array
+                                                $groupedReturHardware[$data['kode_barang']] = $data;
+                                            }
+                                        @endphp
+                                    @endif
+                                @endforeach
+                            @endif
+                
                             <table class="table text-center align-middle table-bordered table-hover mb-0 datatable"
                                 id="ReturBarangHardwareTable" style="width: 100%">
                                 <thead>
                                     <tr>
                                         <th scope="col" style="width: 300px; color:white">Kategori Barang</th>
                                         <th scope="col" style="width: 300px; color:white">Kode Barang</th>
-
                                         <th scope="col" style="width: 300px; color:white">Nama Barang</th>
-                                        <th scope="col" style="width: 300px; color:white">Kondisi Barang</th>
+                                        <th scope="col" style="width: 300px; color:white">Kategori Retur Barang</th>
                                         <th scope="col" style="width: 300px; color:white">Jumlah Barang</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (is_array($returBarang) || is_object($returBarang))
-                                        @foreach ($returBarang as $id => $data)
-                                            @if ($data['kategori_barang'] == 'Hardware')
-                                                <tr>
-                                                    <td>{{ $data['kategori_barang'] }}</td>
-                                                    <td>{{ $data['kode_barang'] }}</td>
-
-                                                    <td>{{ $data['nama_barang'] }}</td>
-                                                    <td>{{ $data['Kategori_Retur'] }}</td>
-                                                    <td>{{ $data['jumlah_barang'] }}</td>
-                                                </tr>
-                                            @endif
-                                        @endforeach
-                                    @endif
+                                    @foreach ($groupedReturHardware as $barang)
+                                        <tr>
+                                            <td>{{ $barang['kategori_barang'] }}</td>
+                                            <td>{{ $barang['kode_barang'] }}</td>
+                                            <td>{{ $barang['nama_barang'] }}</td>
+                                            <td>{{ $barang['Kategori_Retur'] }}</td>
+                                            <td>{{ $barang['jumlah_barang'] }}</td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                             <br>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+                
     </div>
 
     <!-- Modal -->

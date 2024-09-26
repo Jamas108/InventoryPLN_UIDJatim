@@ -199,6 +199,13 @@ class BarangMasukController extends Controller
 
         // Optionally update the entry with the ID
         $newItemRef->update(['id' => $itemId]);
+        // Setelah menambahkan data barang masuk
+        $this->database->getReference('notifications')->push([
+            'title' => 'Pending Pengajuan Barang Masuk',
+            'message' => "Pengajuan Barang Masuk berhasil dan menunggu konfirmasi dari admin.",
+            'status' => 'unread',
+            'created_at' => now()->toDateTimeString(),
+        ]);
 
         Alert::success('Berhasil', 'Barang Berhasil Ditambahkan.');
 

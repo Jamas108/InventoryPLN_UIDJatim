@@ -120,6 +120,23 @@ class ReportsController extends Controller
                 }
             }
         }
+
+        // Menambahkan URL gambar ke data retur barang
+        foreach ($dataReturBarang as &$dataRetur) {
+            if (isset($dataRetur['barang']) && is_array($dataRetur['barang'])) {
+                foreach ($dataRetur['barang'] as &$barang) {
+                    // Cari gambar dari stok barang berdasarkan kode barang
+                    $stok = collect($stokBarangNetworking)->firstWhere('kode_barang', $barang['kode_barang']);
+                    if ($stok) {
+                        $barang['Gambar_Retur'] = $stok['Gambar_Retur'];
+                    }
+                    $stokHardware = collect($stokBarangHardware)->firstWhere('kode_barang', $barang['kode_barang']);
+                    if ($stokHardware) {
+                        $barang['Gambar_Retur'] = $stokHardware['Gambar_Retur'];
+                    }
+                }
+            }
+        }
         // Mengirim data ke view untuk ditampilkan
         return view('reports.index', [
             'stokBarangNetworking' => $stokBarangNetworking,
@@ -156,6 +173,7 @@ class ReportsController extends Controller
                                     'nama_barang' => $barangMasuk['nama_barang'],
                                     'gambar_barang_masuk' => $this->getStorageImageUrl($barangMasuk['gambar_barang'] ?? null), // Mendapatkan URL gambar barang masuk
                                     'jumlah_barang_masuk' => 0,
+                                    'jumlah_stok' => 0,
                                     'jumlah_barang_keluar' => 0,
                                     'jumlah_retur_handal' => 0,
                                     'jumlah_retur_bergaransi' => 0,
@@ -166,6 +184,7 @@ class ReportsController extends Controller
                             }
 
                             $stokBarang[$kodeBarang]['jumlah_barang_masuk'] += $barangMasuk['inisiasi_stok'];
+                            $stokBarang[$kodeBarang]['jumlah_stok'] += $barangMasuk['jumlah_barang'];
                         }
                     }
                 }
@@ -205,6 +224,7 @@ class ReportsController extends Controller
         if (is_array($dataReturBarang)) {
             foreach ($dataReturBarang as $retur) {
                 $kodeBarang = $retur['kode_barang'];
+                $stokBarang[$kodeBarang]['Gambar_Retur'] = $this->getStorageImageUrl($retur['Gambar_Retur'] ?? null);
 
                 if (isset($stokBarang[$kodeBarang])) {
                     if ($retur['Kategori_Retur'] == 'Bekas Handal') {
@@ -219,9 +239,13 @@ class ReportsController extends Controller
         }
 
         foreach ($stokBarang as &$stok) {
-            $stok['selisih'] = $stok['jumlah_barang_masuk'] - $stok['jumlah_barang_keluar']
-                + $stok['jumlah_retur_handal'] + $stok['jumlah_retur_bergaransi']
+            $stok['selisih'] = $stok['jumlah_barang_masuk'] + $stok['jumlah_retur_handal'] - $stok['jumlah_barang_keluar']
+                - $stok['jumlah_retur_bergaransi']
                 - $stok['jumlah_retur_rusak'];
+            // foreach ($stokBarang as &$stok) {
+            //      $stok['selisih'] = $stok['jumlah_stok'];
+            //         }
+
         }
 
         return $stokBarang;
