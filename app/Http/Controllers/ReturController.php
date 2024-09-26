@@ -161,6 +161,14 @@ class ReturController extends Controller
         // Update stock in Barang Keluar
         $this->updateStockBarangKeluar($validatedData['barangId'], $validatedData['Jumlah_Barang']);
 
+        // Setelah menambahkan data barang Keluar
+        $this->database->getReference('notifications')->push([
+            'title' => 'Pending Pengajuan Retur',
+            'message' => "Pengajuan untuk Retur Barang dengan nama pemohon '{$validatedData['Pihak_Pemohon']}' telah diajukan dan menunggu konfirmasi dari admin.",
+            'status' => 'unread',
+            'created_at' => now()->toDateTimeString(),
+        ]);
+
         // Redirect or return a response
         return redirect()->route('retur.index')->with('success', 'Retur created successfully.');
     }

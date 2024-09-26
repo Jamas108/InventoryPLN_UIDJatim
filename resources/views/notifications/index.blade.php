@@ -1,4 +1,5 @@
 @extends('layouts.app')
+
 @section('content')
     @include('layouts.sidebar')
     <div id="content-wrapper" class="d-flex flex-column">
@@ -18,20 +19,22 @@
                                 @csrf
                                 <input type="hidden" name="notification_ids" id="notificationIdsToMarkAsRead">
                                 <button type="button" class="d-none btn btn-sm btn-primary shadow-sm"
-                                    id="markSelectedAsRead"><i class="fas fa-envelope-open"></i> Mark Selected as
-                                    Read</button>
+                                    id="markSelectedAsRead">
+                                    <i class="fas fa-envelope-open"></i> Mark Selected as Read
+                                </button>
                             </form>
                         </li>
                         <li class="list-inline-item">
                             <form action="{{ route('notifications.bulkDelete') }}" method="POST" id="bulkDeleteForm">
                                 @csrf
                                 <input type="hidden" name="notification_ids" id="notificationIdsToDelete">
-                                <button type="button" class="d-none btn btn-sm btn-danger shadow-sm" id="deleteSelected"><i
-                                        class="fas fa-trash-alt"></i> Delete Selected</button>
+                                <button type="button" class="d-none btn btn-sm btn-danger shadow-sm" id="deleteSelected">
+                                    <i class="fas fa-trash-alt"></i> Delete Selected
+                                </button>
                             </form>
                         </li>
                     </ul>
-                    <h1 class="h3 mb-0 text-gray-800">Notifications</h1>
+                    <h1 class="h3 mb-0 text-gray-800">Notifications ({{ $unreadNotificationsCount }} unread)</h1>
                 </div>
 
                 <div class="container-fluid pt-2 px-2">
@@ -39,40 +42,37 @@
                         @if (empty($notifications) || count($notifications) == 0)
                             <h4 class="text-center mt-5">Tidak ada notifikasi</h4>
                         @else
-                            @foreach ($notifications as $id => $notification)
-                                <div class="notification-item"
-                                    style="background: {{ $notification['status'] == 'unread' ? '#fff' : '#f1f1f1' }}; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 10px; padding: 15px;">
-                                    <div class="notification-header d-flex justify-content-between align-items-center">
-                                        <div class="d-flex align-items-center">
-                                            <input type="checkbox" class="notification-checkbox"
-                                                value="{{ $id }}">
-                                            <i class="fas fa-check-circle ml-2"
-                                                style="font-size: 1.5rem; color: {{ $notification['status'] == 'unread' ? '#007bff' : '#5f5f5f' }};"></i>
-                                            <h5 class="ml-3 mb-0">{{ $notification['title'] }}</h5>
-                                        </div>
-                                        {{-- <span class="date"
-                                            style="font-size: 0.875rem; color: {{ $notification['status'] == 'unread' ? '#007bff' : '#6c757d' }};">{{ \Carbon\Carbon::parse($notification['created_at'])->format('F d, Y') }}</span> --}}
-                                    </div>
-                                    <div class="notification-body mt-3">
-                                        <p>{{ $notification['message'] }}</p>
-                                    </div>
-                                    <div class="notification-footer d-flex justify-content-end mt-3">
-                                        @if ($notification['status'] == 'unread')
-                                            <form action="{{ route('notifications.markAsRead', $id) }}" method="POST"
-                                                class="d-inline">
-                                                @csrf
-                                                <button type="submit" class="btn btn-primary">Mark as Read</button>
-                                            </form>
-                                        @endif
-                                        <form action="{{ route('notifications.destroy', $id) }}" method="POST"
-                                            class="d-inline ml-2">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                        </form>
-                                    </div>
+                        @foreach ($notifications as $id => $notification)
+                        <div class="notification-item"
+                            style="background: {{ $notification['status'] == 'unread' ? '#fff' : '#f1f1f1' }}; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 10px; padding: 15px;">
+                            <div class="notification-header d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <input type="checkbox" class="notification-checkbox" value="{{ $id }}">
+                                    <i class="fas fa-check-circle ml-2"
+                                        style="font-size: 1.5rem; color: {{ $notification['status'] == 'unread' ? '#007bff' : '#5f5f5f' }};"></i>
+                                    <h5 class="ml-3 mb-0">{{ $notification['title'] }}</h5>
                                 </div>
-                            @endforeach
+                                <!-- Pindahkan created_at ke sini -->
+                                <h8 class="ml-6 mb-0 text-muted">{{ $notification['created_at'] ?? 'N/A' }}</h8>
+                            </div>
+                            <div class="notification-body mt-3">
+                                <p>{{ $notification['message'] }}</p>
+                            </div>
+                            <div class="notification-footer d-flex justify-content-end mt-3">
+                                @if ($notification['status'] == 'unread')
+                                    <form action="{{ route('notifications.markAsRead', $id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-primary">Mark as Read</button>
+                                    </form>
+                                @endif
+                                <form action="{{ route('notifications.destroy', $id) }}" method="POST" class="d-inline ml-2">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    @endforeach                    
                         @endif
                     </div>
                 </div>
@@ -111,6 +111,13 @@
                 checkbox.value);
             document.getElementById('notificationIdsToDelete').value = selected.join(',');
             document.getElementById('bulkDeleteForm').submit();
+        });
+
+        // Listener untuk mendengarkan notifikasi baru
+        const dbRef = firebase.database().ref('notifications');
+        dbRef.on('child_added', function(snapshot) {
+            const notification = snapshot.val();
+            alert(`New Notification: ${notification.message}`);
         });
     </script>
 @endsection

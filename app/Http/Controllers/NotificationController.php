@@ -23,22 +23,15 @@ class NotificationController extends Controller
     // Display a listing of the notifications
     public function index()
     {
-        // Ambil semua notifikasi
         $notifications = $this->database->getReference('notifications')->getValue();
         $notifications = $notifications ? array_reverse($notifications) : []; // Urutkan dari yang terbaru
 
-        // Hitung jumlah notifikasi yang belum dibaca
-        $unreadNotificationsCount = 0;
-        foreach ($notifications as $notification) {
-            if ($notification['status'] === 'unread') {
-                $unreadNotificationsCount++;
-            }
-        }
+        $unreadNotificationsCount = array_reduce($notifications, function ($carry, $notification) {
+            return $carry + ($notification['status'] === 'unread' ? 1 : 0);
+        }, 0);
 
-        // Kirim data ke tampilan
         return view('notifications.index', compact('notifications', 'unreadNotificationsCount'));
     }
-
 
     // Mark all notifications as read
     public function markAllAsRead()
@@ -83,7 +76,7 @@ class NotificationController extends Controller
     public function destroyAll()
     {
         $reference = $this->database->getReference('notifications');
-        $reference->remove(); // Remove all notifications
+        $reference->remove();
 
         return redirect()->route('notifications.index')->with('success', 'All notifications have been deleted.');
     }
