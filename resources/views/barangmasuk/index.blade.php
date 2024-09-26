@@ -96,9 +96,6 @@
                                             </td>
                                         </tr>
                                     @empty
-                                        <tr>
-                                            <td colspan="6">Tidak ada barang masuk.</td>
-                                        </tr>
                                     @endforelse
                                 </tbody>
                             </table>

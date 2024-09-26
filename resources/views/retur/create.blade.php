@@ -48,7 +48,7 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="Nama_Barang" class="form-label">Jumlah Barang Dipinjam</label>
-                                    <input type="text" class="form-control" id="Nama_Barang" name="Nama_Barang"
+                                    <input type="text" class="form-control" id="test" name="test"
                                         value="{{ $jumlah_barang }}" readonly>
                                 </div>
                             </div>
