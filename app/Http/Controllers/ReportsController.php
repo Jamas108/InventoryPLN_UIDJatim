@@ -239,12 +239,7 @@ class ReportsController extends Controller
         }
 
         foreach ($stokBarang as &$stok) {
-            $stok['selisih'] = $stok['jumlah_barang_masuk'] + $stok['jumlah_retur_handal'] - $stok['jumlah_barang_keluar']
-                - $stok['jumlah_retur_bergaransi']
-                - $stok['jumlah_retur_rusak'];
-            // foreach ($stokBarang as &$stok) {
-            //      $stok['selisih'] = $stok['jumlah_stok'];
-            //         }
+            $stok['selisih'] = $stok['jumlah_stok'];
 
         }
 
