@@ -37,14 +37,14 @@
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Barang Masuk</h1>
                     @if (Auth::user()->Id_Role == 2)
-                    <ul class="list-inline mb-0 float-end">
-                        <li class="list-inline-item">
-                            <a href="{{ route('barangmasuk.create') }}"
-                                class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                                <i class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Barang
-                            </a>
-                        </li>
-                    </ul>
+                        <ul class="list-inline mb-0 float-end">
+                            <li class="list-inline-item">
+                                <a href="{{ route('barangmasuk.create') }}"
+                                    class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                                    <i class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Barang
+                                </a>
+                            </li>
+                        </ul>
                     @endif
                 </div>
                 <div class="container-fluid pt-2 px-2">
@@ -71,28 +71,35 @@
                                             <td>{{ $barangMasuks['Jumlah_BarangMasuk'] }}</td>
                                             <td>{{ $barangMasuks['Status'] }}</td>
                                             <td>
-                                                <button class="btn btn-info btn-sm" type="button" data-toggle="modal"
+                                                <div class="d-flex justify-content-between">
+                                                    <button class="btn btn-info btn-sm" type="button" data-toggle="modal"
+                                                        data-target="#modal-{{ $barangMasuks['id'] }}" aria-expanded="false"
+                                                        aria-controls="#modal-{{ $barangMasuks['id'] }}">
+                                                        <i class="fas fa-boxes"></i>
+                                                    </button>
+                                                    <button class="btn btn-warning btn-sm" type="button" data-toggle="modal"
                                                     data-target="#modal-{{ $barangMasuks['id'] }}" aria-expanded="false"
                                                     aria-controls="#modal-{{ $barangMasuks['id'] }}">
-                                                    <i class="fas fa-boxes"></i>
+                                                    <i class="fas faa-eye"></i>
                                                 </button>
-                                                <a href="{{ route('barangmasuk.show', $barangMasuks['id']) }}"
-                                                    class="btn btn-warning btn-sm">
-                                                    <i class="fas fa-eye"></i>
-                                                    
-                                                </a>
-                                                <a href="{{ route('barangmasuk.edit', $barangMasuks['id']) }}"
-                                                    class="btn btn-primary btn-sm">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <form action="{{ route('barangmasuk.destroy', $barangMasuks['id']) }}"
-                                                    method="POST" style="display:inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm btn-delete">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </form>
+                                                    {{-- <a href="{{ route('barangmasuk.show', $barangMasuks['id']) }}"
+                                                        class="btn btn-warning btn-sm">
+                                                        <i class="fas fa-eye"></i>
+
+                                                    </a> --}}
+                                                    <a href="{{ route('barangmasuk.edit', $barangMasuks['id']) }}"
+                                                        class="btn btn-primary btn-sm">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <form action="{{ route('barangmasuk.destroy', $barangMasuks['id']) }}"
+                                                        method="POST" style="display:inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm btn-delete">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @empty
@@ -154,9 +161,9 @@
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalLabel-{{ $barangMasuks['id'] }}">List Barang Masuk</h5>
                         @if (Auth::user()->Id_Role == 2)
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
                         @endif
                     </div>
                     <div class="modal-body">
@@ -189,7 +196,7 @@
                                                 {{ $barangMasuk->sisa_hari_garansi }}
                                             @endif
                                         </td>
-                                        <td class="text-center align-middle">
+                                        <td class="text-center align-middle ">
                                             <form
                                                 action="{{ route('barangmasuk.updateStatus', ['itemId' => $barangMasuks['id'], 'barangId' => $barangMasuk->id]) }}"
                                                 method="POST">
