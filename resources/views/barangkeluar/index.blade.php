@@ -160,80 +160,83 @@
                                                     <span class="badge bg-success custom-badge">Reguler</span>
                                                 @endif
                                             </td>
-                                            <td>
+                                            <td class="align-middle">
                                                 <div class="d-flex justify-content-center">
-                                                    <a class="btn btn-warning btn-sm"
-                                                        href="{{ !empty($group['id']) ? route('barangkeluar.show', $group['id']) : '#' }}">
-                                                        <i class="fas fa-eye"></i>
-                                                    </a>
+                                                    @if (!empty($group['id']) && $group['Kategori_Peminjaman'] == 'Reguler')
+                                                        <a class="btn btn-warning btn-sm mx-1"
+                                                            href="{{ !empty($group['id']) ? route('barangkeluar.showReguler', $group['id']) : '#' }}">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                    @else
+                                                        <a class="btn btn-warning btn-sm mx-1"
+                                                            href="{{ !empty($group['id']) ? route('barangkeluar.show', $group['id']) : '#' }}">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                    @endif
                                                     @if (Auth::user()->Id_Role == 2)
                                                         @if (!empty($group['id']) && $group['Kategori_Peminjaman'] == 'Reguler')
-                                                            <a href="{{ route('barangkeluar.createBeritaAcaraReguler', ['id' => $group['id']]) }}"
-                                                                class="btn btn-primary btn-sm mr-2 ml-2">
-                                                                <i class="fas fa-file-alt"></i>
-                                                            </a>
+                                                            @if (empty($group['File_BeritaAcara']))
+                                                                <!-- Periksa jika berita acara belum ada -->
+                                                                <a href="{{ route('barangkeluar.createBeritaAcaraReguler', ['id' => $group['id']]) }}"
+                                                                    class="btn btn-primary btn-sm mx-1">
+                                                                    <i class="fas fa-file-alt"></i>
+                                                                </a>
+                                                            @endif
                                                         @else
-                                                            <a href="{{ route('barangkeluar.createBeritaAcara', ['id' => $group['id']]) }}"
-                                                                class="btn btn-primary btn-sm mr-2 ml-2">
-                                                                <i class="fas fa-file-alt"></i>
-                                                            </a>
-                                                        @endif
-
-
-                                                        @if (!empty($group['id']) && $group['Kategori_Peminjaman'] == 'Reguler')
-                                                            <button class="btn btn-info btn-sm mr-2" type="button"
-                                                                data-toggle="modal"
-                                                                data-target="#modal-{{ $group['id'] }}"
-                                                                aria-expanded="false"
-                                                                aria-controls="#modal-{{ $group['id'] }}">
-                                                                <i class="fas fa-undo"></i>
-                                                            </button>
-                                                        @else
-                                                            <a href="{{ route('barangkeluar.return', $group['id']) }}"
-                                                                class="btn btn-success btn-sm mr-2">
-                                                                <i class="fas fa-check"></i>
-                                                            </a>
+                                                            @if (empty($group['File_BeritaAcara']))
+                                                                <!-- Periksa jika berita acara belum ada -->
+                                                                <a href="{{ route('barangkeluar.createBeritaAcara', ['id' => $group['id']]) }}"
+                                                                    class="btn btn-primary btn-sm mx-1">
+                                                                    <i class="fas fa-file-alt"></i>
+                                                                </a>
+                                                            @endif
+                                                
+                                                            @if (!empty($group['id']) && $group['Kategori_Peminjaman'] == 'Reguler')
+                                                                <button class="btn btn-info btn-sm mx-1" type="button"
+                                                                    data-toggle="modal"
+                                                                    data-target="#modal-{{ $group['id'] }}"
+                                                                    aria-expanded="false"
+                                                                    aria-controls="#modal-{{ $group['id'] }}">
+                                                                    <i class="fas fa-undo"></i>
+                                                                </button>
+                                                            @else
+                                                                <a href="{{ route('barangkeluar.return', $group['id']) }}"
+                                                                    class="btn btn-success btn-sm mx-1">
+                                                                    <i class="fas fa-check"></i>
+                                                                </a>
+                                                            @endif
                                                         @endif
                                                     @endif
-
+                                                
                                                     @if (Auth::user()->Id_Role == 2)
                                                         @if (!empty($group['id']))
-                                                            <form
-                                                                action="{{ route('barangkeluar.destroy', $group['id']) }}"
-                                                                method="POST">
+                                                            <form action="{{ route('barangkeluar.destroy', $group['id']) }}" method="POST" class="mx-1">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <button type="submit"
-                                                                    class="btn btn-danger btn-sm me-2 btn-delete"
+                                                                <button type="submit" class="btn btn-danger btn-sm btn-delete"
                                                                     data-name="{{ $group['Nama_PihakPeminjam'] }}">
                                                                     <i class="fas fa-trash"></i>
                                                                 </button>
-
                                                             </form>
                                                         @else
-                                                            <button disabled class="btn btn-danger btn-sm"><i
-                                                                    class="fas fa-trash"></i></button>
+                                                            <button disabled class="btn btn-danger btn-sm mx-1"><i class="fas fa-trash"></i></button>
                                                         @endif
                                                     @else
                                                         @if (!empty($group['id']))
-                                                            <form
-                                                                action="{{ route('barangkeluar.destroy', $group['id']) }}"
-                                                                method="POST">
+                                                            <form action="{{ route('barangkeluar.destroy', $group['id']) }}" method="POST">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <button type="submit"
-                                                                    class="btn btn-danger btn-sm ml-2 me-2 btn-delete"
+                                                                <button type="submit" class="btn btn-danger btn-sm btn-delete"
                                                                     data-name="{{ $group['Nama_PihakPeminjam'] }}">
                                                                     <i class="fas fa-trash"></i>
                                                                 </button>
-
                                                             </form>
                                                         @else
-                                                            <button disabled class="btn btn-danger btn-sm"><i
-                                                                    class="fas fa-trash"></i></button>
+                                                            <button disabled class="btn btn-danger btn-sm mx-1"><i class="fas fa-trash"></i></button>
                                                         @endif
                                                     @endif
                                                 </div>
+                                                
                                             </td>
                                         </tr>
                                     @empty

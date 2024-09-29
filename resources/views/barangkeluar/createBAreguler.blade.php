@@ -26,7 +26,7 @@
                                 <div class="col-md-1">
                                     <div class="form-group">
                                         <input type="text" class="form-control text-center" id="no_berita_acara"
-                                            name="no_berita_acara" readonly>
+                                            name="no_berita_acara" value="{{ $nextNumber }}" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -117,13 +117,7 @@
                 document.getElementById('tahun_no_berita_acara').value = year;
                 document.getElementById('bulan_no_berita_acara').value = month;
 
-                // Menentukan nomor berita acara
-                let lastBeritaAcaraNumber = 1; // Angka default jika belum ada berita acara, bisa ditarik dari database
-
-                // Format 3 digit untuk nomor berita acara
-                const formattedNumber = ("000" + lastBeritaAcaraNumber).slice(-3);
-
-                document.getElementById('no_berita_acara').value = formattedNumber;
+                
             });
         </script>
     @endpush

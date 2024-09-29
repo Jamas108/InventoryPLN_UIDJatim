@@ -53,6 +53,7 @@ Route::resource('/barangkeluar', BarangKeluarController::class);
 Route::post('barangkeluar/store-berita-acara', [BarangKeluarController::class, 'storeBeritaAcara'])->name('barangkeluar.storeBeritaAcara');
 Route::get('/barangkeluar/berita-acara/{id}', [BarangKeluarController::class, 'buatBeritaAcara'])->name('barangkeluar.createBeritaAcara');
 Route::post('/barangkeluar/berita-acara/{id}', [BarangKeluarController::class, 'storeBeritaAcara'])->name('barangkeluar.storeBeritaAcara');
+Route::get('/barangkeluar/detail-reguler/{id}', [BarangKeluarController::class, 'showReguler'])->name('barangkeluar.showReguler');
 Route::get('/barangkeluar/berita-acara-reguler/{id}', [BarangKeluarController::class, 'buatBeritaAcaraReguler'])->name('barangkeluar.createBeritaAcaraReguler');
 Route::post('/barangkeluar/berita-acara-reguler/{id}', [BarangKeluarController::class, 'storeBeritaAcaraReguler'])->name('barangkeluar.storeBeritaAcaraReguler');
 Route::get('/barangkeluar/return/{id}', [BarangKeluarController::class, 'returnBarang'])->name('barangkeluar.return');

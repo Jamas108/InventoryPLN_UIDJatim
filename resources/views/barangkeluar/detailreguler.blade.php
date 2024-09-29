@@ -1,4 +1,11 @@
 @extends('layouts.app')
+@push('scripts')
+    <script type="module">
+        $(document).ready(function() {
+            $('#detailregulertable').DataTable();
+        });
+    </script>
+@endpush
 
 @section('content')
     @include('layouts.sidebar')
@@ -32,18 +39,15 @@
                             <input type="text" class="form-control"
                                 value="{{ $barangKeluar['tanggal_peminjamanbarang'] }}" readonly>
                         </div>
-                        <div class="col-md-12 mt-2">
-                            <label>Batas Tanggal Pengembalian</label>
-                            <input type="text" class="form-control"
-                                value="{{ $barangKeluar['Tanggal_PengembalianBarang'] }}" readonly>
-                        </div>
                         <div class="col-md-6 mt-4">
                             @if (!empty($barangKeluar['File_Surat']))
                                 <a class="btn btn-primary col-md-12" href="{{ $barangKeluar['File_Surat'] }}"
                                     target="_blank">Lihat Surat
                                     Jalan</a>
                             @else
-                                <span>Tidak Ada</span>
+                                <div class="justify-content-center align-items-center">
+                                    <span>Tidak Ada</span>
+                                </div>
                             @endif
                         </div>
                         <div class="col-md-6 mt-4">
@@ -51,13 +55,15 @@
                                 <a class="btn btn-primary col-md-12" href="{{ $barangKeluar['File_BeritaAcara'] }}"
                                     target="_blank">Lihat Berita Acara</a>
                             @else
-                                <span>Tidak Ada</span>
+                                <div class="text-center mt-2">
+                                        <span>Belum Dibuat</span>
+                                </div>
                             @endif
                         </div>
 
                         <div class="col-md-12 mt-4">
                             <h5>Detail Barang</h5>
-                            <table class="table table-bordered mt-2">
+                            <table class="table table-bordered mt-2" id="detailregulertable">
                                 <thead>
                                     <tr>
                                         <th style="color: white">No</th>

@@ -558,7 +558,23 @@ class BarangKeluarController extends Controller
         }
 
         // Kirim data ke view
-        return view('barangkeluar.detail', [
+        return view('barangkeluar.detailinsidentil', [
+            'barangKeluar' => $barangKeluar,
+            'id' => $id,
+        ]);
+    }
+    public function showReguler($id)
+    {
+        // Ambil data barang keluar berdasarkan id
+        $barangKeluar = $this->database->getReference('Barang_Keluar/' . $id)->getValue();
+
+        // Cek apakah barang keluar ditemukan
+        if (!$barangKeluar) {
+            return redirect()->route('barangkeluar.index')->with('error', 'Data barang keluar tidak ditemukan.');
+        }
+
+        // Kirim data ke view
+        return view('barangkeluar.detailreguler', [
             'barangKeluar' => $barangKeluar,
             'id' => $id,
         ]);

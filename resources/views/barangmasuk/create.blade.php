@@ -278,7 +278,7 @@
                 const container = document.getElementById('items-container');
                 const itemCount = container.getElementsByClassName('barang-item').length;
 
-                if (itemCount < 6) {
+                if (itemCount < 20) {
                     const newItem = container.firstElementChild.cloneNode(true);
                     newItem.querySelector('h5').textContent = 'Barang ' + (itemCount + 1);
                     newItem.querySelectorAll('input').forEach(input => input.value = '');
