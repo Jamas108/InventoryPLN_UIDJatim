@@ -42,7 +42,7 @@ class NotificationData
 
             view()->share('unreadNotificationsCount', $unreadNotificationsCount);
         } else {
-            // Jika pengguna tidak terautentikasi, set jumlah notifikasi tidak terbaca menjadi 1
+            // Jika pengguna tidak terautentikasi, set jumlah notifikasi tidak terbaca menjadi 0
             view()->share('unreadNotificationsCount', 0);
         }
 

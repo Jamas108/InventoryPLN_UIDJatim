@@ -22,25 +22,36 @@ class NotificationController extends Controller
 
     // Display a listing of the notifications
     public function index()
-    {
-        $notifications = $this->database->getReference('notifications')->getValue();
-        $notifications = $notifications ? array_reverse($notifications) : []; // Urutkan dari yang terbaru
+{
+    $notifications = $this->database->getReference('notifications')->getValue();
+    $notifications = $notifications ? array_reverse($notifications) : [];
 
-        // Mendapatkan ID dan role pengguna yang sedang login
-        $userId = auth()->user()->id;
-        $roleId = auth()->user()->Id_Role;
-        $roleKey = $roleId == 1 ? 'admin_' . $userId : 'user_' . $userId;
+    $userId = auth()->user()->id;
+    $roleId = auth()->user()->Id_Role;
+    $roleKey = $roleId == 1 ? 'admin_' . $userId : 'user_' . $userId;
 
-        // Hitung notifikasi yang belum dibaca berdasarkan status dalam `user_status`
-        $unreadNotificationsCount = array_reduce($notifications, function ($carry, $notification) use ($roleKey) {
-            return $carry + (
-                isset($notification['user_status'][$roleKey]['status']) &&
-                $notification['user_status'][$roleKey]['status'] === 'unread' ? 1 : 0
-            );
-        }, 0);
+    // Filter notifikasi: jika staf gudang, sembunyikan notifikasi dengan status 'deleted'
+    $notifications = array_filter($notifications, function ($notification) use ($roleKey, $roleId) {
+        // Admin bisa melihat semua notifikasi, termasuk yang 'deleted'
+        if ($roleId == 1) {
+            return true;
+        }
+        // Staf gudang hanya melihat notifikasi yang tidak berstatus 'deleted'
+        return isset($notification['user_status'][$roleKey]['status']) &&
+               $notification['user_status'][$roleKey]['status'] !== 'deleted';
+    });
 
-        return view('notifications.index', compact('notifications', 'unreadNotificationsCount'));
-    }
+    // Hitung notifikasi yang belum dibaca
+    $unreadNotificationsCount = array_reduce($notifications, function ($carry, $notification) use ($roleKey) {
+        return $carry + (
+            isset($notification['user_status'][$roleKey]['status']) &&
+            $notification['user_status'][$roleKey]['status'] === 'unread' ? 1 : 0
+        );
+    }, 0);
+
+    return view('notifications.index', compact('notifications', 'unreadNotificationsCount'));
+}
+
 
 
     // Mark all notifications as read
@@ -83,35 +94,75 @@ class NotificationController extends Controller
         return redirect()->back()->with('success', 'Notification marked as read.');
     }
 
-
     // Delete a specific notification
-    public function destroy($id)
-    {
+public function destroy($id)
+{
+    $userId = auth()->user()->id;
+    $roleId = auth()->user()->Id_Role;
+    $roleKey = $roleId == 1 ? 'admin_' . $userId : 'user_' . $userId;
+
+    // Jika admin, hapus notifikasi dari Firebase
+    if ($roleId == 1) {
         $reference = $this->database->getReference('notifications/' . $id);
         $reference->remove();
 
         return redirect()->back()->with('success', 'Notification deleted successfully.');
-    }
+    } else {
+        // Jika staf gudang, update status menjadi 'deleted' untuk staf tersebut
+        $reference = $this->database->getReference('notifications/' . $id . '/user_status/' . $roleKey);
+        $userStatus = $reference->getValue();
 
-    // Delete all notifications
-    public function destroyAll()
-    {
-        $reference = $this->database->getReference('notifications');
+        if ($userStatus && isset($userStatus['status']) && $userStatus['status'] !== 'deleted') {
+            $reference->update(['status' => 'deleted']);
+        }
+
+        return redirect()->back()->with('success', 'Notification hidden successfully.');
+    }
+}
+
+// Delete all notifications
+public function destroyAll()
+{
+    $userId = auth()->user()->id;
+    $roleId = auth()->user()->Id_Role;
+    $roleKey = $roleId == 1 ? 'admin_' . $userId : 'user_' . $userId;
+
+    $reference = $this->database->getReference('notifications');
+    $notifications = $reference->getValue();
+
+    if ($roleId == 1) {
+        // Jika admin, hapus semua notifikasi dari Firebase
         $reference->remove();
-
         return redirect()->route('notifications.index')->with('success', 'All notifications have been deleted.');
+    } else {
+        // Jika staf gudang, update status menjadi 'deleted' untuk semua notifikasi
+        if ($notifications) {
+            foreach ($notifications as $id => $notification) {
+                if (isset($notification['user_status'][$roleKey]['status']) && $notification['user_status'][$roleKey]['status'] !== 'deleted') {
+                    $reference->getChild($id . '/user_status/' . $roleKey)->update(['status' => 'deleted']);
+                }
+            }
+        }
+
+        return redirect()->route('notifications.index')->with('success', 'All notifications have been hidden.');
     }
+}
+
+
 
     // Bulk mark notifications as read
     public function bulkMarkAsRead(Request $request)
     {
         $notificationIds = explode(',', $request->input('notification_ids'));
-        $reference = $this->database->getReference('notifications');
+        $userId = auth()->user()->id;
+        $roleId = auth()->user()->Id_Role;
+        $roleKey = $roleId == 1 ? 'admin_' . $userId : 'user_' . $userId;
 
+        $reference = $this->database->getReference('notifications');
         foreach ($notificationIds as $id) {
             $notification = $reference->getChild($id)->getValue();
-            if ($notification && $notification['status'] === 'unread') {
-                $reference->getChild($id)->update(['status' => 'read']);
+            if ($notification && isset($notification['user_status'][$roleKey]['status']) && $notification['user_status'][$roleKey]['status'] === 'unread') {
+                $reference->getChild($id . '/user_status/' . $roleKey)->update(['status' => 'read']);
             }
         }
 
@@ -119,15 +170,34 @@ class NotificationController extends Controller
     }
 
     // Bulk delete notifications
-    public function bulkDelete(Request $request)
-    {
-        $notificationIds = explode(',', $request->input('notification_ids'));
-        $reference = $this->database->getReference('notifications');
+public function bulkDelete(Request $request)
+{
+    $notificationIds = explode(',', $request->input('notification_ids'));
+    $userId = auth()->user()->id;
+    $roleId = auth()->user()->Id_Role;
+    $roleKey = $roleId == 1 ? 'admin_' . $userId : 'user_' . $userId;
 
+    $reference = $this->database->getReference('notifications');
+
+    if ($roleId == 1) {
+        // Jika admin, hapus notifikasi berdasarkan ID yang dipilih
         foreach ($notificationIds as $id) {
             $reference->getChild($id)->remove();
         }
 
         return redirect()->back()->with('success', 'Selected notifications deleted.');
+    } else {
+        // Jika staf gudang, update status menjadi 'deleted' untuk notifikasi yang dipilih
+        foreach ($notificationIds as $id) {
+            $notification = $reference->getChild($id)->getValue();
+            if ($notification && isset($notification['user_status'][$roleKey]['status']) && $notification['user_status'][$roleKey]['status'] !== 'deleted') {
+                $reference->getChild($id . '/user_status/' . $roleKey)->update(['status' => 'deleted']);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Selected notifications hidden.');
     }
+}
+
+
 }
