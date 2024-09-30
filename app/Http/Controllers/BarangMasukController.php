@@ -113,19 +113,19 @@ class BarangMasukController extends Controller
     public function store(Request $request)
     {
         // Validasi data
-    $validator = Validator::make($request->all(), [
-        'Id_Petugas' => 'required',
-        'No_Surat' => 'required',
-        'NamaPerusahaan_Pengirim' => 'required',
-        'TanggalPengiriman_Barang' => 'required|date',
-        'jumlah_barangmasuk' => 'required|integer|min:1',
-        'File_SuratJalan' => 'required|file|mimes:pdf,jpg,png,jpeg', // contoh validasi untuk file
-    ]);
+        $validator = Validator::make($request->all(), [
+            'Id_Petugas' => 'required',
+            'No_Surat' => 'required',
+            'NamaPerusahaan_Pengirim' => 'required',
+            'TanggalPengiriman_Barang' => 'required|date',
+            'jumlah_barangmasuk' => 'required|integer|min:1',
+            'File_SuratJalan' => 'required|file|mimes:pdf,jpg,png,jpeg', // contoh validasi untuk file
+        ]);
 
-    // Cek jika validasi gagal
-    if ($validator->fails()) {
-        return redirect()->back()->withErrors($validator)->withInput();
-    }
+        // Cek jika validasi gagal
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
         $fileSuratJalanPath = null;
         if ($request->hasFile('File_SuratJalan')) {
@@ -199,12 +199,25 @@ class BarangMasukController extends Controller
 
         // Optionally update the entry with the ID
         $newItemRef->update(['id' => $itemId]);
+        // Ambil ID staff gudang dan admin
+        $staffId = Auth::user()->id; // Misal mengambil ID pengguna yang sedang login sebagai staff
+        $admin = User::where('Id_Role', '1')->first(); // Ambil pengguna yang memiliki role admin
+        $adminId = $admin ? $admin->id : null; // Pastikan admin ditemukan, jika tidak null
+
+        // Cek apakah ID admin sudah didefinisikan dengan benar
+        if (!$adminId) {
+            return redirect()->back()->withErrors('Admin tidak ditemukan.');
+        }
+
         // Setelah menambahkan data barang masuk
         $this->database->getReference('notifications')->push([
-            'title' => 'Pending Pengajuan Barang Masuk',
-            'message' => "Pengajuan Barang Masuk berhasil dan menunggu konfirmasi dari admin.",
-            'status' => 'unread',
-            'created_at' => now()->toDateTimeString(),
+            'title' => 'Barang Masuk Diajukan',
+            'message' => 'Pengajuan barang masuk telah dibuat.',
+            'created_at' => now(),
+            'user_status' => [
+                'user_' . $staffId => ['status' => 'unread'],  // Status untuk staff gudang
+                'admin_' . $adminId => ['status' => 'unread']  // Status untuk admin
+            ]
         ]);
 
         Alert::success('Berhasil', 'Barang Berhasil Ditambahkan.');

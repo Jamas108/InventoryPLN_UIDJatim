@@ -26,12 +26,22 @@ class NotificationController extends Controller
         $notifications = $this->database->getReference('notifications')->getValue();
         $notifications = $notifications ? array_reverse($notifications) : []; // Urutkan dari yang terbaru
 
-        $unreadNotificationsCount = array_reduce($notifications, function ($carry, $notification) {
-            return $carry + ($notification['status'] === 'unread' ? 1 : 0);
+        // Mendapatkan ID dan role pengguna yang sedang login
+        $userId = auth()->user()->id;
+        $roleId = auth()->user()->Id_Role;
+        $roleKey = $roleId == 1 ? 'admin_' . $userId : 'user_' . $userId;
+
+        // Hitung notifikasi yang belum dibaca berdasarkan status dalam `user_status`
+        $unreadNotificationsCount = array_reduce($notifications, function ($carry, $notification) use ($roleKey) {
+            return $carry + (
+                isset($notification['user_status'][$roleKey]['status']) &&
+                $notification['user_status'][$roleKey]['status'] === 'unread' ? 1 : 0
+            );
         }, 0);
 
         return view('notifications.index', compact('notifications', 'unreadNotificationsCount'));
     }
+
 
     // Mark all notifications as read
     public function markAllAsRead()
@@ -39,10 +49,14 @@ class NotificationController extends Controller
         $reference = $this->database->getReference('notifications');
         $notifications = $reference->getValue();
 
+        $userId = auth()->user()->id;
+        $roleId = auth()->user()->Id_Role;
+        $roleKey = $roleId == 1 ? 'admin_' . $userId : 'user_' . $userId;
+
         if ($notifications) {
             foreach ($notifications as $id => $notification) {
-                if ($notification['status'] === 'unread') {
-                    $reference->getChild($id)->update(['status' => 'read']);
+                if (isset($notification['user_status'][$roleKey]['status']) && $notification['user_status'][$roleKey]['status'] === 'unread') {
+                    $reference->getChild($id . '/user_status/' . $roleKey)->update(['status' => 'read']);
                 }
             }
         }
@@ -50,18 +64,25 @@ class NotificationController extends Controller
         return redirect()->back()->with('success', 'All notifications marked as read.');
     }
 
-    // Mark a specific notification as read
-    public function markAsRead($id)
-    {
-        $reference = $this->database->getReference('notifications/' . $id);
-        $notification = $reference->getValue();
 
-        if ($notification && $notification['status'] === 'unread') {
+    // Mark a specific notification as read
+    public function markAsRead($notificationId)
+    {
+        $userId = auth()->user()->id;
+        $roleId = auth()->user()->Id_Role;
+        $roleKey = $roleId == 1 ? 'admin_' . $userId : 'user_' . $userId;
+
+        // Update status untuk user yang login
+        $reference = $this->database->getReference('notifications/' . $notificationId . '/user_status/' . $roleKey);
+        $userStatus = $reference->getValue();
+
+        if ($userStatus && isset($userStatus['status']) && $userStatus['status'] === 'unread') {
             $reference->update(['status' => 'read']);
         }
 
         return redirect()->back()->with('success', 'Notification marked as read.');
     }
+
 
     // Delete a specific notification
     public function destroy($id)
