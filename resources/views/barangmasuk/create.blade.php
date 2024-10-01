@@ -60,13 +60,11 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                               
+
                                     <div class="form-group">
                                         <label for="Id_Petugas">Petugas</label>
-                                        <input type="text"
-                                            class="form-control @error('Id_Petugas') is-invalid @enderror"
-                                            id="Id_Petugas"
-                                            name="Id_Petugas" value="{{ auth()->user()->Nama }}" readonly>
+                                        <input type="text" class="form-control @error('Id_Petugas') is-invalid @enderror"
+                                            id="Id_Petugas" name="Id_Petugas" value="{{ auth()->user()->Nama }}" readonly>
                                         @error('TanggalPengiriman_Barang')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -113,14 +111,13 @@
                                     style="background-color: rgb(1, 1, 95); height:50px">
                                     <h5 class="h5 mb-0 text-white">Barang 1</h5>
                                 </div>
-
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Kode_Barang">Kode Barang</label>
                                         <input type="text"
-                                            class="form-control @error('Kode_Barang') is-invalid @enderror" id="Kode_Barang"
-                                            name="Kode_Barang[]" value="{{ old('Kode_Barang.0') }}">
-                                        @error('Kode_Barang')
+                                            class="form-control @error('Kode_Barang.0') is-invalid @enderror" id="Kode_Barang[]"
+                                            name="Kode_Barang[]" value="{{ old('Kode_Barang.0') }}" placeholder="Masukan Kode Barang">
+                                        @error('Kode_Barang.0')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -131,9 +128,9 @@
                                     <div class="form-group">
                                         <label for="Nama_Barang">Nama Barang</label>
                                         <input type="text"
-                                            class="form-control @error('Nama_Barang') is-invalid @enderror" id="Nama_Barang"
-                                            name="Nama_Barang[]" value="{{ old('Nama_Barang') }}">
-                                        @error('Nama_Barang')
+                                            class="form-control @error('Nama_Barang.0') is-invalid @enderror" id="Nama_Barang[]"
+                                            name="Nama_Barang[]" value="{{ old('Nama_Barang.0') }}" placeholder="Masukan Nama Barang">
+                                        @error('Nama_Barang.0')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -144,7 +141,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Id_Kategori_Barang">Kategori Barang</label>
-                                        <select name="Kategori_Barang[]" id="Kategori_Barang" class="form-control">
+                                        <select name="Kategori_Barang[]" id="Kategori_Barang[]" class="form-control">
                                             <option value="Hardware">Hardware</option>
                                             <option value="Networking">Networking</option>
                                         </select>
@@ -154,10 +151,10 @@
                                     <label for="JumlahBarang_Masuk">Jumlah Barang Masuk</label>
                                     <div class="form-group">
                                         <input type="number"
-                                            class="form-control @error('JumlahBarang_Masuk') is-invalid @enderror jumlah-barang-masuk"
-                                            id="JumlahBarang_Masuk" name="JumlahBarang_Masuk[]"
-                                            value="{{ old('JumlahBarang_Masuk') }}">
-                                        @error('JumlahBarang_Masuk')
+                                            class="form-control @error('JumlahBarang_Masuk.0') is-invalid @enderror jumlah-barang-masuk"
+                                            id="JumlahBarang_Masuk[]" name="JumlahBarang_Masuk[]"
+                                            value="{{ old('JumlahBarang_Masuk.0') }}" placeholder="Masukan Jumlah Barang">
+                                        @error('JumlahBarang_Masuk.0')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -169,10 +166,10 @@
                                     <div class="form-group">
                                         <label for="Garansi_Barang">Tanggal Garansi Awal</label>
                                         <input type="date"
-                                            class="form-control @error('Garansi_Barang') is-invalid @enderror"
-                                            id="Garansi_Barang" name="Garansi_Barang_Awal[]"
-                                            value="{{ old('Garansi_Barang_Awal') }}">
-                                        @error('Garansi_Barang')
+                                            class="form-control @error('Garansi_Barang_Awal.0') is-invalid @enderror"
+                                            id="Garansi_Barang_Awal[]" name="Garansi_Barang_Awal[]"
+                                            value="{{ old('Garansi_Barang_Awal.0') }}" placeholder="Masukan Garansi Barang Awal">
+                                        @error('Garansi_Barang_Awal.0')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -183,10 +180,10 @@
                                     <div class="form-group">
                                         <label for="Garansi_Barang">Tanggal Garansi Akhir</label>
                                         <input type="date"
-                                            class="form-control @error('Garansi_Barang') is-invalid @enderror"
-                                            id="Garansi_Barang" name="Garansi_Barang_Akhir[]"
-                                            value="{{ old('Garansi_Barang_Akhir') }}">
-                                        @error('Garansi_Barang')
+                                            class="form-control @error('Garansi_Barang_Akhir.0') is-invalid @enderror"
+                                            id="Garansi_Barang_Akhir[]" name="Garansi_Barang_Akhir[]"
+                                            value="{{ old('Garansi_Barang_Akhir.0') }}" placeholder="Masukan Garansi Barang Akhir">
+                                        @error('Garansi_Barang_Akhir.0')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -198,11 +195,11 @@
                                     <div class="form-group">
                                         <label for="Tanggal_Masuk">Tanggal Masuk</label>
                                         <input type="date"
-                                            class="form-control @error('Tanggal_Masuk') is-invalid @enderror"
-                                            id="Tanggal_Masuk" name="Tanggal_Masuk[]"
-                                            value="{{ old('Tanggal_Masuk') }}">
-                                        @error('Tanggal_Masuk')
-                                            <span class="invalid-feedback" role="alert">
+                                            class="form-control @error('Tanggal_Masuk.0') is-invalid @enderror"
+                                            id="Tanggal_Masuk[]" name="Tanggal_Masuk[]"
+                                            value="{{ old('Tanggal_Masuk.0') }}">
+                                        @error('Tanggal_Masuk.0')
+                                            <span class="invalid-feedback" role="alert" placeholder="Masukan Tanggal Masuk Barang">
                                                 <strong>{{ $message }}</strong>
                                             </span>
                                         @enderror
@@ -213,9 +210,9 @@
                                     <div class="form-group">
                                         <label for="Gambar_Barang">Gambar Barang</label>
                                         <input type="file"
-                                            class="form-control @error('Gambar_Barang') is-invalid @enderror"
-                                            id="Gambar_Barang" name="Gambar_Barang[]">
-                                        @error('Gambar_Barang')
+                                            class="form-control @error('Gambar_Barang.0') is-invalid @enderror"
+                                            id="Gambar_Barang[]" name="Gambar_Barang[]">
+                                        @error('Gambar_Barang.0')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -225,22 +222,22 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="Kondisi_Barang"
+                                        <input type="text" class="form-control" id="Kondisi_Barang[]"
                                             name="Kondisi_Barang[]" value="Baru" hidden>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="Status" name="Status[]"
-                                            value="{{ old('Status', 'Pending') }}" hidden>
+                                        <input type="text" class="form-control" id="Status[]" name="Status[]"
+                                            value="Pending" hidden>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <input type="text"
                                             class="form-control @error('Jenis_Barang') is-invalid @enderror"
-                                            id="Jenis_Barang" name="Jenis_Barang[]"
-                                            value="{{ old('Jenis_Barang', 'Baru') }}" hidden>
+                                            id="Jenis_Barang[]" name="Jenis_Barang[]"
+                                            value="Baru" hidden>
                                         @error('Jenis_Barang')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -271,37 +268,39 @@
     </div>
 
 
-
     @push('scripts')
-        <script>
-            document.getElementById('add-item').addEventListener('click', function() {
-                const container = document.getElementById('items-container');
-                const itemCount = container.getElementsByClassName('barang-item').length;
+    <script>
+        document.getElementById('add-item').addEventListener('click', function() {
+            const container = document.getElementById('items-container');
+            const itemCount = container.getElementsByClassName('barang-item').length;
 
-                if (itemCount < 20) {
-                    const newItem = container.firstElementChild.cloneNode(true);
-                    newItem.querySelector('h5').textContent = 'Barang ' + (itemCount + 1);
-                    newItem.querySelectorAll('input').forEach(input => input.value = '');
-                    newItem.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
-                    container.appendChild(newItem);
-                } else {
-                    alert('Anda hanya dapat menambahkan hingga 6 barang.');
-                }
-            });
-
-            document.addEventListener('input', function(e) {
-                if (e.target.classList.contains('jumlah-barang-masuk')) {
-                    updateJumlahBarang();
-                }
-            });
-
-            function updateJumlahBarang() {
-                let total = 0;
-                document.querySelectorAll('.jumlah-barang-masuk').forEach(input => {
-                    total += parseInt(input.value) || 0;
-                });
-                document.getElementById('Jumlah_barang').value = total;
+            if (itemCount < 20) {
+                const newItem = container.firstElementChild.cloneNode(true);
+                newItem.querySelector('h5').textContent = 'Barang ' + (itemCount + 1);
+                newItem.querySelectorAll('input').forEach(input => input.value = '');
+                newItem.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+                container.appendChild(newItem);
+            } else {
+                alert('Anda hanya dapat menambahkan hingga 20 barang.');
             }
-        </script>
-    @endpush
+        });
+
+        function updateJumlahBarang() {
+            let total = 0;
+            document.querySelectorAll('.jumlah-barang-masuk').forEach(input => {
+                const jumlah = parseInt(input.value);
+                if (!isNaN(jumlah)) {
+                    total += jumlah;
+                }
+            });
+            document.getElementById('Jumlah_barang').value = total;
+        }
+
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('jumlah-barang-masuk')) {
+                updateJumlahBarang();
+            }
+        });
+    </script>
+@endpush
 @endsection

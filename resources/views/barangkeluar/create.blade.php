@@ -48,7 +48,7 @@
                                     <div class="form-group">
                                         <label for="Kategori">Kategori</label>
                                         <select name="Kategori" id="Kategori" class="form-control">
-                                            <option value="Insidentl">Insidentil</option>
+                                            <option value="Insidentil">Insidentil</option>
                                             <option value="Reguler">Reguler</option>
                                         </select>
                                     </div>

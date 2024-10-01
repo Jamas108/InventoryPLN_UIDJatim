@@ -44,8 +44,7 @@ Route::post('/create-user', [UserController::class, 'createUser'])->name('create
 
 //BARANG MASUK ROUTE
 Route::resource('barangmasuk', BarangMasukController::class);
-Route::get('/barangmasuk/edit/{noSurat}', [BarangMasukController::class, 'edit'])->name('barangmasuk.edit');
-Route::put('/barangmasuk/update/{noSurat}', [BarangMasukController::class, 'update'])->name('barangmasuk.update');
+Route::get('/barangmasuk/edit/{itemId}', [BarangMasukController::class, 'edit'])->name('barangmasuk.edit');
 Route::post('/barangmasuk/{itemId}/{barangId}/updateStatus', [BarangMasukController::class, 'updateStatus'])->name('barangmasuk.updateStatus');
 
 //BARANG KELUAR ROUTE
@@ -70,6 +69,7 @@ Route::get('/stokbarang/networking/index', [StokBarangController::class, 'networ
     Route::get('/retur/create/{barangKeluarId}/{barangId}', [ReturController::class, 'create'])->name('retur.create');
     Route::get('retur/{id}/edit', [ReturController::class, 'edit'])->name('retur.edit');
     Route::put('retur/{id}', [ReturController::class, 'update'])->name('retur.update');
+    Route::delete('retur/destroyRetur/{id}', [ReturController::class, 'destroyRetur'])->name('retur.destroyRetur');
     Route::get('/retur/{id}/showImage', [ReturController::class, 'showImage'])->name('retur.showImage');
     Route::get('/retur/{id}/showSuratJalan', [ReturController::class, 'showSuratJalan'])->name('retur.showSuratJalan');
     //RETUR KATEGORI HANDAL

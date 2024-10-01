@@ -68,15 +68,20 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="text_pihak_peminjam"
+                                        <input type="text" class="form-control " id="text_pihk_peminjam"
                                             name="text_pihak_peminjam" value="Tanggal Peminjaman"
                                             style="background-color: rgb(1, 1, 95); color : white" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-9">
                                     <div class="form-group">
-                                        <input type="date" class="form-control" id="tanggal_peminjamanbarang"
+                                        <input type="date" class="form-control @error('tanggal_peminjamanbarang') is-invalid @enderror" id="tanggal_peminjamanbarang"
                                             name="tanggal_peminjamanbarang" value="{{ $tanggal_peminjamanbarang }}">
+                                            @error('tanggal_peminjamanbarang')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-3">

@@ -54,12 +54,19 @@
                                 id="barangmasukTable" style="width: 100%">
                                 <thead>
                                     <tr>
-                                        <th scope="col" style="color:white">No</th>
-                                        <th scope="col" style="width: 300px; color:white">No. Surat Jalan</th>
-                                        <th scope="col" style="width: 300px; color:white">Nama PT</th>
-                                        <th scope="col" style="width: 300px; color:white">Total Barang</th>
-                                        <th scope="col" style="width: 300px; color:white">Approval Status</th>
-                                        <th scope="col" style="width: 250px; color:white">Action</th>
+                                        <th class="align-middle" scope="col" style="color:white">No</th>
+                                        <th class="align-middle" scope="col" style="width: 300px; color:white">No. Surat
+                                            Jalan</th>
+                                        <th class="align-middle" scope="col" style="width: 300px; color:white">Lihat
+                                            Surat Jalan</th>
+                                        <th class="align-middle" scope="col" style="width: 300px; color:white">Nama PT
+                                        </th>
+                                        <th class="align-middle" scope="col" style="width: 300px; color:white">Total
+                                            Barang</th>
+                                        <th class="align-middle" scope="col" style="width: 300px; color:white">Approval
+                                            Status</th>
+                                        <th class="align-middle" scope="col" style="width: 250px; color:white">Action
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -67,6 +74,14 @@
                                         <tr>
                                             <td class="text-center align-middle">{{ $loop->iteration }}</td>
                                             <td>{{ $barangMasuks['No_Surat'] }}</td>
+                                            <td>
+                                                @if (!empty($barangMasuks['File_SuratJalan']))
+                                                    <a style="width: 100%" href="{{ $barangMasuks['File_SuratJalan'] }}"
+                                                        target="_blank" class="btn btn-sm btn-info">Lihat Surat</a>
+                                                @else
+                                                    <span>Belum Dibuat</span>
+                                                @endif
+                                            </td>
                                             <td>{{ $barangMasuks['NamaPerusahaan_Pengirim'] }}</td>
                                             <td>{{ $barangMasuks['Jumlah_BarangMasuk'] }}</td>
                                             <td>{{ $barangMasuks['Status'] }}</td>
@@ -77,16 +92,11 @@
                                                         aria-controls="#modal-{{ $barangMasuks['id'] }}">
                                                         <i class="fas fa-boxes"></i>
                                                     </button>
-                                                    <button class="btn btn-warning btn-sm" type="button" data-toggle="modal"
-                                                    data-target="#modal-{{ $barangMasuks['id'] }}" aria-expanded="false"
-                                                    aria-controls="#modal-{{ $barangMasuks['id'] }}">
-                                                    <i class="fas faa-eye"></i>
-                                                </button>
-                                                    {{-- <a href="{{ route('barangmasuk.show', $barangMasuks['id']) }}"
+                                                    <a href="{{ route('barangmasuk.show', $barangMasuks['id']) }}"
                                                         class="btn btn-warning btn-sm">
                                                         <i class="fas fa-eye"></i>
 
-                                                    </a> --}}
+                                                    </a>
                                                     <a href="{{ route('barangmasuk.edit', $barangMasuks['id']) }}"
                                                         class="btn btn-primary btn-sm">
                                                         <i class="fas fa-edit"></i>
@@ -95,7 +105,8 @@
                                                         method="POST" style="display:inline;">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm btn-delete">
+                                                        <button type="submit" class="btn btn-danger btn-sm btn-delete"
+                                                            data-name="{{ $barangMasuks['NamaPerusahaan_Pengirim'] }}">
                                                             <i class="fas fa-trash-alt"></i>
                                                         </button>
                                                     </form>

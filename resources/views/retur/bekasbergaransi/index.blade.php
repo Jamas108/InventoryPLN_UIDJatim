@@ -1,4 +1,31 @@
 @extends('layouts.app')
+@push('scripts')
+    <script type="module">
+        $(document).ready(function() {
+            $('#bergaransiTable').DataTable();
+        });
+
+        $(".datatable").on("click", ".btn-delete", function(e) {
+            e.preventDefault();
+
+            var form = $(this).closest("form");
+            var name = $(this).data("name");
+
+            Swal.fire({
+                title: "Apakah yakin menghapus barang?",
+                text: "Data yang dihapus tidak dapat kembali!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "bg-primary",
+                confirmButtonText: "Ya, hapus barang",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    </script>
+@endpush
 @section('content')
     @include('layouts.sidebar')
     <div id="content-wrapper" class="d-flex flex-column">
@@ -15,33 +42,50 @@
                     <div class="bg-white justify-content-between rounded shadow p-4">
                         <div class="table-responsive">
                             <table class="table text-center align-middle table-bordered table-hover mb-0 datatable"
-                                id="ProductTable" style="90%">
+                                id="bergaransiTable" style="90%">
                                 <thead style=" background-color: rgb(1, 1, 95);">
                                     <tr style="color: white">
-                                        <th scope="col" style="width: 150px; color:white">No</th>
-                                        <th scope="col" style="width: 150px; color:white">Nama Barang</th>
-                                        <th scope="col" style="width: 200px; color:white">Kode Barang</th>
-                                        <th scope="col" style="width: 150px; color:white">Jumlah Barang</th>
-                                        <th scope="col" style="width: 150px; color:white">Kategori Barang</th>
-                                        <th scope="col" style="width: 150px; color:white">Action</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">No</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Nama
+                                            Barang</th>
+                                        <th class="align-middle" scope="col" style="width: 200px; color:white">Kode
+                                            Barang</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Jumlah
+                                            Barang</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Kategori
+                                            Barang</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Garansi
+                                            Mulai</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Garansi
+                                            Akhir</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Action
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse($bekasBergaransi as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $item['Nama_Barang'] }}</td>
-                                            <td>{{ $item['Kode_Barang'] }}</td>
-                                            <td>{{ $item['Jumlah_Barang'] }}</td>
-                                            <td>{{ $item['Kategori_Barang'] }}</td>
-
-                                            <td></td>
+                                            <td>{{ $item['nama_barang'] }}</td>
+                                            <td>{{ $item['kode_barang'] }}</td>
+                                            <td>{{ $item['jumlah_barang'] }}</td>
+                                            <td>{{ $item['kategori_barang'] }}</td>
+                                            <td>{{ $item['garansi_barang_awal'] }}</td>
+                                            <td>{{ $item['garansi_barang_akhir'] }}</td>
+                                            <td>
+                                                <form action="{{ route('retur.destroyRetur', $item['id']) }}" method="POST"
+                                                    style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm btn-delete"
+                                                        data-name="{{ $item['nama_barang'] }}">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
 
                                         </tr>
                                     @empty
-                                        <tr>
-                                            <td colspan="7">Tidak ada barang bekas bergaransi.</td>
-                                        </tr>
                                     @endforelse
                                 </tbody>
                             </table>
