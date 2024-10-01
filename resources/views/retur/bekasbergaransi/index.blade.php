@@ -58,8 +58,6 @@
                                             Mulai</th>
                                         <th class="align-middle" scope="col" style="width: 150px; color:white">Garansi
                                             Akhir</th>
-                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Action
-                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -72,17 +70,7 @@
                                             <td>{{ $item['kategori_barang'] }}</td>
                                             <td>{{ $item['garansi_barang_awal'] }}</td>
                                             <td>{{ $item['garansi_barang_akhir'] }}</td>
-                                            <td>
-                                                <form action="{{ route('retur.destroyRetur', $item['id']) }}" method="POST"
-                                                    style="display:inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm btn-delete"
-                                                        data-name="{{ $item['nama_barang'] }}">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </form>
-                                            </td>
+                                            
 
                                         </tr>
                                     @empty

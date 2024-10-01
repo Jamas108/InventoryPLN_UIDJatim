@@ -55,7 +55,7 @@
                                             <td>
                                                 <a href="{{ route('retur.edit', ['id' => $item['id']]) }}"
                                                     class="btn btn-info btn-sm">Kelola</a>
-                                                <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                                                {{-- <a href="#" class="btn btn-danger btn-sm">Delete</a> --}}
                                             </td>
                                         </tr>
                                     @endforeach
