@@ -204,6 +204,7 @@ class ReportsController extends Controller
                                     'kode_barang' => $kodeBarang,
                                     'nama_barang' => $barangKeluar['nama_barang'],
                                     'gambar_barang_masuk' => $this->getStorageImageUrl($barangKeluar['gambar_barang'] ?? null), // Mendapatkan URL gambar barang keluar
+                                    'jumlah_stok' => 0,
                                     'jumlah_barang_masuk' => 0,
                                     'jumlah_barang_keluar' => 0,
                                     'jumlah_retur_handal' => 0,
