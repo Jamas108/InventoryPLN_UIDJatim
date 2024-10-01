@@ -1,4 +1,40 @@
 @extends('layouts.app')
+@push('scripts')
+    <script type="module">
+        $(document).ready(function() {
+            $('#suratjalantable').DataTable();
+
+            // Event listener untuk tombol retur
+            $(".datatable").on("click", ".btn-retur", function(e) {
+                e.preventDefault();
+
+                var id = $(this).data("id"); // Ambil ID dari tombol retur
+
+                // Redirect ke rute create retur berdasarkan ID
+                window.location.href = `/retur/create/${id}`;
+            });
+
+            $(".datatable").on("click", ".btn-delete", function(e) {
+                e.preventDefault();
+
+                var form = $(this).closest("form");
+                var name = $(this).data("name");
+
+                Swal.fire({
+                    title: "Apakah Anda Yakin Ingin Menghapus Peminjaman Atas Nama \n" + name + "?",
+                    text: "Data Akan Terhapus Secara Permanen!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "bg-primary",
+                    confirmButtonText: "Ya, Hapus Sekarang!",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
 @section('content')
     @include('layouts.sidebar')
     <div id="content-wrapper" class="d-flex flex-column">
@@ -13,7 +49,7 @@
                     <div class="bg-white rounded shadow p-4 d-flex justify-content-center">
                         <div class="table-responsive" style="width: 100%;">
                             <table class="table text-center align-middle table-bordered table-hover mb-0 datatable"
-                                id="ProductTable">
+                                id="suratjalantable">
                                 <thead>
                                     <tr>
                                         <th scope="col" style="width: 450px; color:white">Nama Perusahaan Pengirim</th>

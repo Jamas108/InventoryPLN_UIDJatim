@@ -54,7 +54,7 @@
             <th>Diterima Oleh</th>
         </tr>
         <tr>
-            <td style="padding-top: 100px;"></td>
+            <td style="text-align: center;"><img src="../resources/assets/qrcode.png" alt="" width="100px" height="100px"></td> 
             <td style="padding-top: 100px;"></td>
         </tr>
         <tr>

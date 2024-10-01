@@ -31,8 +31,8 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <input type="text" class="form-control text-center" id="pembuat_no_berita_acara"
-                                            name="pembuat_no_berita_acara" value="STI-JATIM" readonly>
+                                        <input type="text" class="form-control text-center" id="kategori_no_berita_acara"
+                                            name="kategori_no_berita_acara" value="STI-JATIM" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-2">

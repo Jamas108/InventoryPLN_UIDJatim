@@ -208,7 +208,7 @@
                                                         @endif
                                                     @endif
                                                 
-                                                    @if (Auth::user()->Id_Role == 2)
+                                                    {{-- @if (Auth::user()->Id_Role == 2)
                                                         @if (!empty($group['id']))
                                                             <form action="{{ route('barangkeluar.destroy', $group['id']) }}" method="POST" class="mx-1">
                                                                 @csrf
@@ -234,7 +234,7 @@
                                                         @else
                                                             <button disabled class="btn btn-danger btn-sm mx-1"><i class="fas fa-trash"></i></button>
                                                         @endif
-                                                    @endif
+                                                    @endif --}}
                                                 </div>
                                                 
                                             </td>

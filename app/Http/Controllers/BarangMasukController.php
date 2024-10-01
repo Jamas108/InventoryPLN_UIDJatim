@@ -175,25 +175,13 @@ class BarangMasukController extends Controller
     {
         // Validasi data dengan pesan khusus
         $validator = Validator::make($request->all(), [
-            'No_Surat' => 'required|string|max:255',
-            'NamaPerusahaan_Pengirim' => 'required|string|max:255',
+            'No_Surat' => 'required|max:255',
+            'NamaPerusahaan_Pengirim' => 'required|max:255',
             'TanggalPengiriman_Barang' => 'required|date',
             'Id_Petugas' => 'required|string', // Since this is populated from the logged-in user
             'jumlah_barangmasuk' => 'required|integer|min:1', // Read-only but must have a valid number
             'File_SuratJalan' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048', // Ensure file format and size
 
-            // Validating the dynamic barang fields
-            'Kode_Barang.*' => 'required|string|max:100', // Using the array notation to validate each input in array
-            'Nama_Barang.*' => 'required|string|max:255',
-            'Kategori_Barang.*' => 'required|string|in:Hardware,Networking', // Restrict to defined options
-            'JumlahBarang_Masuk.*' => 'required|integer|min:1',
-            'Garansi_Barang_Awal.*' => 'nullable|date',
-            'Garansi_Barang_Akhir.*' => 'nullable|date|after_or_equal:Garansi_Barang_Awal.*',
-            'Tanggal_Masuk.*' => 'required|date',
-            'Gambar_Barang.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048', // Optional, but ensure valid file type
-            'Kondisi_Barang.*' => 'required|string|in:Baru',
-            'Status.*' => 'required|string|in:Pending',
-            'Jenis_Barang.*' => 'required|string|in:Baru', // Hidden fields but still need validation
         ], [
             'No_Surat.required' => 'Nomor Surat harus diisi.',
             'NamaPerusahaan_Pengirim.required' => 'Nama Perusahaan Pengirim harus diisi.',
@@ -205,28 +193,6 @@ class BarangMasukController extends Controller
             'File_SuratJalan.required' => 'File Surat Jalan harus diunggah.',
             'File_SuratJalan.mimes' => 'File Surat Jalan harus dalam format pdf, jpg, jpeg, atau png.',
             'File_SuratJalan.max' => 'File Surat Jalan tidak boleh lebih dari 2MB.',
-
-            // Dynamic barang fields error messages
-            'Kode_Barang.*.required' => 'Kode Barang harus diisi.',
-            'Nama_Barang.*.required' => 'Nama Barang harus diisi.',
-            'Kategori_Barang.*.required' => 'Kategori Barang harus diisi.',
-            'Kategori_Barang.*.in' => 'Kategori Barang harus salah satu dari: Hardware, Networking.',
-            'JumlahBarang_Masuk.*.required' => 'Jumlah Barang Masuk harus diisi.',
-            'JumlahBarang_Masuk.*.integer' => 'Jumlah Barang Masuk harus berupa angka.',
-            'JumlahBarang_Masuk.*.min' => 'Jumlah Barang Masuk harus minimal 1.',
-            'Garansi_Barang_Awal.*.date' => 'Tanggal Garansi Barang Awal harus berupa tanggal yang valid.',
-            'Garansi_Barang_Akhir.*.date' => 'Tanggal Garansi Barang Akhir harus berupa tanggal yang valid.',
-            'Garansi_Barang_Akhir.*.after_or_equal' => 'Tanggal Garansi Barang Akhir harus setelah atau sama dengan Tanggal Garansi Barang Awal.',
-            'Tanggal_Masuk.*.required' => 'Tanggal Masuk harus diisi.',
-            'Tanggal_Masuk.*.date' => 'Tanggal Masuk harus berupa tanggal yang valid.',
-            'Gambar_Barang.*.mimes' => 'Gambar Barang harus dalam format jpg, jpeg, atau png.',
-            'Gambar_Barang.*.max' => 'Gambar Barang tidak boleh lebih dari 2MB.',
-            'Kondisi_Barang.*.required' => 'Kondisi Barang harus diisi.',
-            'Kondisi_Barang.*.in' => 'Kondisi Barang harus diisi dengan nilai: Baru.',
-            'Status.*.required' => 'Status harus diisi.',
-            'Status.*.in' => 'Status harus diisi dengan nilai: Pending.',
-            'Jenis_Barang.*.required' => 'Jenis Barang harus diisi.',
-            'Jenis_Barang.*.in' => 'Jenis Barang harus diisi dengan nilai: Baru.',
         ]);
 
 
