@@ -8,6 +8,7 @@ use App\Models\StatusReturBarang;
 use Illuminate\Http\Request;
 use Kreait\Firebase\Factory;
 use Illuminate\Support\Facades\Log;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ReturController extends Controller
 {
@@ -37,6 +38,7 @@ class ReturController extends Controller
 
     public function bergaransiIndex()
     {
+        confirmDelete();
         $bekasBergaransis = ReturBarang::where('Id_Jenis_Retur', 2)->get();
         return view('retur.bekasbergaransi.index', compact('bekasBergaransis'));
     }
@@ -349,10 +351,7 @@ class ReturController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
-    }
+
 
     public function showImage($id)
     {
@@ -381,6 +380,7 @@ class ReturController extends Controller
 
     public function indexHandal()
     {
+        confirmDelete();
         // Ambil data dari Firebase
         $returBarangSnapshot = $this->database->getReference('Retur_Barang')->getSnapshot();
         $returBarangData = $returBarangSnapshot->getValue();
@@ -442,4 +442,33 @@ class ReturController extends Controller
         // Kirim data yang sudah difilter ke view
         return view('retur.barangrusak.index', ['barangRusak' => $barangRusak]);
     }
+    
+    public function destroyRetur($id)
+    {
+        // Ambil referensi barang keluar berdasarkan ID
+        $barangReturRef = $this->database->getReference('Retur_Barang/' . $id);
+        $barangRetur = $barangReturRef->getValue();
+    
+        // Periksa apakah barang keluar ditemukan
+        if (!$barangRetur) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        }
+    
+        // Hapus semua file terkait Gambar Retur
+        if (isset($barangRetur['Gambar_Retur'])) {
+            $fileGambarRetur = 'retur_images/' . basename($barangRetur['Gambar_Retur']);
+            $objectGambarRetur = $this->storage->getBucket()->object($fileGambarRetur);
+            if ($objectGambarRetur->exists()) {
+                // Hapus file dari Firebase Storage
+                $objectGambarRetur->delete();
+            }
+        }
+    
+        // Hapus data dari Firebase Database
+        $barangReturRef->remove();  // Memanggil remove() pada referensi
+        Alert::success('Sukses', 'Barang Berhasil Dihapus.');
+    
+        return redirect()->route('retur.index')->with('success', 'Barang keluar berhasil dihapus.');
+    }
+    
 }

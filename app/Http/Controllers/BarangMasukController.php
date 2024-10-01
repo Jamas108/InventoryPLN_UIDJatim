@@ -34,6 +34,7 @@ class BarangMasukController extends Controller
     }
     public function index()
     {
+        confirmDelete();
         // Ambil data dari Firebase
         $barangMasuksSnapshot = $this->database->getReference('barang_masuk')->getSnapshot();
         $barangMasuksData = $barangMasuksSnapshot->getValue();
@@ -99,6 +100,66 @@ class BarangMasukController extends Controller
         return view('barangmasuk.index', ['groupedBarangMasuks' => $groupedBarangMasuks]);
     }
 
+    public function edit($itemId)
+    {
+        // Ambil data berdasarkan itemId dari Firebase
+        $barangMasukSnapshot = $this->database->getReference('barang_masuk/' . $itemId)->getSnapshot();
+        $barangMasukData = $barangMasukSnapshot->getValue();
+
+        // Periksa apakah data ditemukan
+        if (!$barangMasukData) {
+            return redirect()->route('barangmasuk.index')->with('error', 'Data tidak ditemukan');
+        }
+
+        // Ubah array menjadi object (jika diperlukan)
+        $barangMasuk = (object) $barangMasukData;
+
+        // Konversi barang menjadi object
+        if (isset($barangMasuk->barang)) {
+            $barangMasuk->barang = collect($barangMasuk->barang)->map(function ($barang) {
+                $barang = (object) $barang;
+
+                // Jika gambar_barang ada, ambil URL dari Firebase Storage
+                if (isset($barang->gambar_barang)) {
+                    $object = $this->storage->getBucket()->object($barang->gambar_barang);
+                    $barang->url_gambar = $object->signedUrl(new \DateTime('1 hour')); // URL sementara (1 jam)
+                } else {
+                    // Jika tidak ada gambar, berikan nilai default
+                    $barang->url_gambar = 'URL gambar tidak tersedia';
+                }
+
+                return $barang;
+            });
+        }
+
+        // Hitung sisa hari garansi untuk setiap barang (jika ada)
+        foreach ($barangMasuk->barang as $barang) {
+            if (isset($barang->garansi_barang_awal) && isset($barang->garansi_barang_akhir)) {
+                $garansiAwal = Carbon::parse($barang->garansi_barang_awal);
+                $garansiAkhir = Carbon::parse($barang->garansi_barang_akhir);
+                $currentDate = Carbon::now();
+
+                if ($currentDate->lessThan($garansiAwal)) {
+                    $sisaHari = 'Garansi belum mulai';
+                } elseif ($currentDate->greaterThan($garansiAkhir)) {
+                    $sisaHari = 'Garansi telah berakhir';
+                } else {
+                    $sisaHari = $currentDate->diffInDays($garansiAkhir, false) . ' hari tersisa';
+                }
+
+                $barang->sisa_hari_garansi = $sisaHari;
+            } else {
+                $barang->sisa_hari_garansi = 'Informasi garansi tidak lengkap';
+            }
+        }
+
+        // Tampilkan view halaman edit dan kirim data barang
+        return view('barangmasuk.edit', compact('barangMasuk'));
+    }
+
+
+
+
 
     public function create()
     {
@@ -112,36 +173,78 @@ class BarangMasukController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi data
+        // Validasi data dengan pesan khusus
         $validator = Validator::make($request->all(), [
-            'Id_Petugas' => 'required',
-            'No_Surat' => 'required',
-            'NamaPerusahaan_Pengirim' => 'required',
+            'No_Surat' => 'required|string|max:255',
+            'NamaPerusahaan_Pengirim' => 'required|string|max:255',
             'TanggalPengiriman_Barang' => 'required|date',
-            'jumlah_barangmasuk' => 'required|integer|min:1',
-            'File_SuratJalan' => 'required|file|mimes:pdf,jpg,png,jpeg', // contoh validasi untuk file
+            'Id_Petugas' => 'required|string', // Since this is populated from the logged-in user
+            'jumlah_barangmasuk' => 'required|integer|min:1', // Read-only but must have a valid number
+            'File_SuratJalan' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048', // Ensure file format and size
+
+            // Validating the dynamic barang fields
+            'Kode_Barang.*' => 'required|string|max:100', // Using the array notation to validate each input in array
+            'Nama_Barang.*' => 'required|string|max:255',
+            'Kategori_Barang.*' => 'required|string|in:Hardware,Networking', // Restrict to defined options
+            'JumlahBarang_Masuk.*' => 'required|integer|min:1',
+            'Garansi_Barang_Awal.*' => 'nullable|date',
+            'Garansi_Barang_Akhir.*' => 'nullable|date|after_or_equal:Garansi_Barang_Awal.*',
+            'Tanggal_Masuk.*' => 'required|date',
+            'Gambar_Barang.*' => 'nullable|file|mimes:jpg,jpeg,png|max:2048', // Optional, but ensure valid file type
+            'Kondisi_Barang.*' => 'required|string|in:Baru',
+            'Status.*' => 'required|string|in:Pending',
+            'Jenis_Barang.*' => 'required|string|in:Baru', // Hidden fields but still need validation
+        ], [
+            'No_Surat.required' => 'Nomor Surat harus diisi.',
+            'NamaPerusahaan_Pengirim.required' => 'Nama Perusahaan Pengirim harus diisi.',
+            'TanggalPengiriman_Barang.required' => 'Tanggal Pengiriman Barang harus diisi.',
+            'Id_Petugas.required' => 'ID Petugas harus diisi.',
+            'jumlah_barangmasuk.required' => 'Jumlah barang masuk harus diisi.',
+            'jumlah_barangmasuk.integer' => 'Jumlah barang masuk harus berupa angka.',
+            'jumlah_barangmasuk.min' => 'Jumlah barang masuk harus minimal 1.',
+            'File_SuratJalan.required' => 'File Surat Jalan harus diunggah.',
+            'File_SuratJalan.mimes' => 'File Surat Jalan harus dalam format pdf, jpg, jpeg, atau png.',
+            'File_SuratJalan.max' => 'File Surat Jalan tidak boleh lebih dari 2MB.',
+
+            // Dynamic barang fields error messages
+            'Kode_Barang.*.required' => 'Kode Barang harus diisi.',
+            'Nama_Barang.*.required' => 'Nama Barang harus diisi.',
+            'Kategori_Barang.*.required' => 'Kategori Barang harus diisi.',
+            'Kategori_Barang.*.in' => 'Kategori Barang harus salah satu dari: Hardware, Networking.',
+            'JumlahBarang_Masuk.*.required' => 'Jumlah Barang Masuk harus diisi.',
+            'JumlahBarang_Masuk.*.integer' => 'Jumlah Barang Masuk harus berupa angka.',
+            'JumlahBarang_Masuk.*.min' => 'Jumlah Barang Masuk harus minimal 1.',
+            'Garansi_Barang_Awal.*.date' => 'Tanggal Garansi Barang Awal harus berupa tanggal yang valid.',
+            'Garansi_Barang_Akhir.*.date' => 'Tanggal Garansi Barang Akhir harus berupa tanggal yang valid.',
+            'Garansi_Barang_Akhir.*.after_or_equal' => 'Tanggal Garansi Barang Akhir harus setelah atau sama dengan Tanggal Garansi Barang Awal.',
+            'Tanggal_Masuk.*.required' => 'Tanggal Masuk harus diisi.',
+            'Tanggal_Masuk.*.date' => 'Tanggal Masuk harus berupa tanggal yang valid.',
+            'Gambar_Barang.*.mimes' => 'Gambar Barang harus dalam format jpg, jpeg, atau png.',
+            'Gambar_Barang.*.max' => 'Gambar Barang tidak boleh lebih dari 2MB.',
+            'Kondisi_Barang.*.required' => 'Kondisi Barang harus diisi.',
+            'Kondisi_Barang.*.in' => 'Kondisi Barang harus diisi dengan nilai: Baru.',
+            'Status.*.required' => 'Status harus diisi.',
+            'Status.*.in' => 'Status harus diisi dengan nilai: Pending.',
+            'Jenis_Barang.*.required' => 'Jenis Barang harus diisi.',
+            'Jenis_Barang.*.in' => 'Jenis Barang harus diisi dengan nilai: Baru.',
         ]);
+
 
         // Cek jika validasi gagal
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $fileSuratJalanPath = null;
+
         if ($request->hasFile('File_SuratJalan')) {
             $file = $request->file('File_SuratJalan');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            $filePath = 'file_surat_jalan/' . $fileName;
-
-            // Upload ke Firebase Storage
-            $bucket = $this->storage->getBucket();
-            $bucket->upload(
+            $filePath = 'surat-jalan_barangmasuk/' . $file->getClientOriginalName();
+            $this->storage->getBucket()->upload(
                 fopen($file->getPathname(), 'r'),
-                [
-                    'name' => $filePath,
-                ]
+                ['name' => $filePath]
             );
-            $fileSuratJalanPath = $filePath;
+            $fileSuratJalanPath = $this->storage->getBucket()->object($filePath)->signedUrl(new \DateTime('+1 hour'));
+            $data['File_SuratJalan'] = $fileSuratJalanPath;
         }
 
         // Initialize the data for the main entry
@@ -226,71 +329,121 @@ class BarangMasukController extends Controller
     }
 
 
-    public function edit($noSurat)
+    public function update(Request $request, $id)
     {
-
-        // Ambil data barang masuk berdasarkan No_Surat
-        $barangMasuks = BarangMasuk::where('No_Surat', $noSurat)->get();
-
-        // Ambil data lain yang diperlukan
-        $staffGudangs = User::all();
-        $kategoriBarangs = KategoriBarang::all();
-        $statusBarangs = StatusBarang::all();
-
-        return view('barangmasuk.edit', compact('barangMasuks', 'staffGudangs', 'kategoriBarangs', 'statusBarangs'));
-    }
-
-    public function update(Request $request, $noSurat)
-    {
-        $request->validate([
-            'Id_Petugas' => 'required|exists:users,id',
-            'No_Surat' => 'required|string|max:70',
-            'NamaPerusahaan_Pengirim' => 'required|string|max:200',
-            'TanggalPengiriman_Barang' => 'required|date',
-            'Jumlah_barang' => 'required|integer',
-            'File_SuratJalan' => 'nullable|file|max:2048',
-            'Kode_Barang.*' => 'required|string|max:200',
-            'Nama_Barang.*' => 'required|string|max:200',
-            'Jenis_Barang.*' => 'required|string|max:50',
-            'Id_Kategori_Barang.*' => 'required|exists:kategori_barang,id',
-            'JumlahBarang_Masuk.*' => 'required|integer',
-            'Garansi_Barang.*' => 'nullable|integer',
-            'Kondisi_Barang.*' => 'required|string|max:200',
-            'Tanggal_Masuk.*' => 'required|date',
-            'Gambar_Barang.*' => 'nullable|file|image|max:2048',
-            'Id_Status_Barang.*' => 'required|exists:status_barang,id',
+        // Validasi data
+        $validator = Validator::make($request->all(), [
+            'Id_Petugas' => 'required',
+            'no_surat' => 'required',
+            'namaperusahaan_pengirim' => 'required',
+            'tanggal_pengirimanbarang' => 'required|date',
+            'jumlah_barangmasuk' => 'required|integer|min:1',
+            'file_suratjalan' => 'nullable|file|mimes:pdf,jpg,png,jpeg', // file opsional
         ]);
 
-        $barangMasuks = BarangMasuk::where('No_Surat', $noSurat)->get();
-
-        foreach ($barangMasuks as $index => $barangMasuk) {
-            $fileSuratJalanPath = $request->file('File_SuratJalan') ? $request->file('File_SuratJalan')->store('file_surat_jalan') : $barangMasuk->File_SuratJalan;
-
-            $barangMasuk->update([
-                'Id_Petugas' => $request->Id_Petugas,
-                'No_Surat' => $request->No_Surat,
-                'NamaPerusahaan_Pengirim' => $request->NamaPerusahaan_Pengirim,
-                'TanggalPengiriman_Barang' => $request->TanggalPengiriman_Barang,
-                'Jumlah_barang' => $request->Jumlah_barang,
-                'File_SuratJalan' => $fileSuratJalanPath,
-                'Kode_Barang' => $request->Kode_Barang[$index],
-                'Nama_Barang' => $request->Nama_Barang[$index],
-                'Jenis_Barang' => $request->Jenis_Barang[$index],
-                'Id_Kategori_Barang' => $request->Id_Kategori_Barang[$index],
-                'JumlahBarang_Masuk' => $request->JumlahBarang_Masuk[$index],
-                'Garansi_Barang' => $request->Garansi_Barang[$index],
-                'Kondisi_Barang' => $request->Kondisi_Barang[$index],
-                'Tanggal_Masuk' => $request->Tanggal_Masuk[$index],
-                'Gambar_Barang' => $request->file('Gambar_Barang')[$index] ? $request->file('Gambar_Barang')[$index]->store('gambar_barang') : $barangMasuk->Gambar_Barang,
-                'Id_Status_Barang' => $request->Id_Status_Barang[$index],
-            ]);
+        // Cek jika validasi gagal
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        Alert::success('Berhasil Diubah', 'Barang Berhasil Diubah.');
+        // Ambil referensi item yang akan diupdate dari Firebase
+        $itemRef = $this->database->getReference('barang_masuk/' . $id);
+        $currentData = $itemRef->getValue();
 
+        // Jika file surat jalan diupload, lakukan upload
+        if ($request->hasFile('file_suratjalan')) {
+            $file = $request->file('file_suratjalan');
+            $filePath = 'surat-jalan_barangmasuk/' . $file->getClientOriginalName();
+            $this->storage->getBucket()->upload(
+                fopen($file->getPathname(), 'r'),
+                ['name' => $filePath]
+            );
+            $fileSuratJalanPath = $this->storage->getBucket()->object($filePath)->signedUrl(new \DateTime('+1 hour'));
+        } else {
+            $fileSuratJalanPath = $currentData['File_SuratJalan']; // gunakan yang lama jika tidak ada file baru
+        }
+
+        // Update data barang masuk
+        $data = [
+            'Id_Petugas' => $request->Id_Petugas,
+            'No_Surat' => $request->no_surat,
+            'NamaPerusahaan_Pengirim' => $request->namaperusahaan_pengirim,
+            'TanggalPengiriman_Barang' => $request->tanggal_pengirimanbarang,
+            'Jumlah_BarangMasuk' => $request->jumlah_barangmasuk,
+            'File_SuratJalan' => $fileSuratJalanPath,
+            'barang' => [],
+        ];
+
+        // Mengupdate barang yang ada
+        foreach ($request->barang as $i => $barang) {
+            $gambarBarangPath = null;
+            // Check if a new file is uploaded
+            if ($request->hasFile("barang.$i.gambar_barang")) {
+                $file = $request->file("barang.$i.gambar_barang");
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $filePath = 'gambar_barang/' . $fileName;
+
+                // Upload to Firebase Storage
+                $bucket = $this->storage->getBucket();
+                $bucket->upload(
+                    fopen($file->getPathname(), 'r'),
+                    ['name' => $filePath]
+                );
+
+                $gambarBarangPath = $filePath; // Store new image path
+            } else {
+                // Use existing image if no new image uploaded
+                $gambarBarangPath = isset($currentData['barang'][$i]['gambar_barang']) ? $currentData['barang'][$i]['gambar_barang'] : null;
+            }
+
+            $JenisBarang = isset($request->Jenis_Barang[$i]) ? $request->Jenis_Barang[$i] : 'Baru';
+
+            // Update data barang dengan gambar dan status
+            $data['barang'][] = [
+                'id' => $currentData['barang'][$i]['id'] ?? uniqid(), // Gunakan ID yang ada atau buat baru
+                'nama_barang' => $barang['nama_barang'],
+                'kode_barang' => $barang['kode_barang'],
+                'kategori_barang' => $barang['kategori_barang'],
+                'inisiasi_stok' => $barang['inisiasi_stok'],
+                'jumlah_barang' => $barang['jumlah_barang'],
+                'jenis_barang' => $JenisBarang,
+                'garansi_barang_awal' => $barang['garansi_barang_awal'],
+                'garansi_barang_akhir' => $barang['garansi_barang_akhir'],
+                'tanggal_masuk' => $barang['tanggal_masuk'],
+                'Status' => $barang['status'],
+                'gambar_barang' => $gambarBarangPath,
+            ];
+        }
+
+        // Update seluruh entri ke Firebase
+        $itemRef->update($data);
+
+        // Ambil ID staff gudang dan admin
+        $staffId = Auth::user()->id; // Mengambil ID pengguna yang sedang login sebagai staff
+        $admin = User::where('Id_Role', '1')->first(); // Ambil pengguna yang memiliki role admin
+        $adminId = $admin ? $admin->id : null; // Pastikan admin ditemukan, jika tidak null
+
+        // Cek apakah ID admin sudah didefinisikan dengan benar
+        if (!$adminId) {
+            return redirect()->back()->withErrors('Admin tidak ditemukan.');
+        }
+
+        // Kirim notifikasi setelah mengupdate data barang masuk
+        $this->database->getReference('notifications')->push([
+            'title' => 'Barang Masuk Diupdate',
+            'message' => 'Pengajuan barang masuk telah diperbarui.',
+            'created_at' => now(),
+            'user_status' => [
+                'user_' . $staffId => ['status' => 'unread'],  // Status untuk staff gudang
+                'admin_' . $adminId => ['status' => 'unread']  // Status untuk admin
+            ]
+        ]);
+
+        Alert::success('Berhasil', 'Barang Berhasil Diperbarui.');
 
         return redirect()->route('barangmasuk.index')->with('success', 'Barang Masuk berhasil diperbarui.');
     }
+
     public function show($id)
     {
         // Ambil data barang keluar berdasarkan id
@@ -310,13 +463,53 @@ class BarangMasukController extends Controller
 
     public function destroy($id)
     {
-        $barangmasuk = BarangMasuk::findOrFail($id);
-        $barangmasuk->delete();
+        // Reference to the item in the database
+        $itemRef = $this->database->getReference('barang_masuk/' . $id);
 
-        Alert::success('Berhasil Dihapus', 'Barang Berhasil Dihapus.');
+        // Get current data to find associated images
+        $currentData = $itemRef->getValue();
 
-        return redirect()->route('barangmasuk.index')->with('success', 'Barang Masuk berhasil dihapus.');
+        // Check if the item exists
+        if ($currentData) {
+            // Delete images from Firebase Storage if they exist
+            if (isset($currentData['File_SuratJalan'])) {
+                $suratJalanPath = $currentData['File_SuratJalan'];
+                $this->deleteFileFromStorage($suratJalanPath);
+            }
+
+            // Delete barang images
+            foreach ($currentData['barang'] as $barang) {
+                if (isset($barang['gambar_barang'])) {
+                    $gambarBarangPath = $barang['gambar_barang'];
+                    $this->deleteFileFromStorage($gambarBarangPath);
+                }
+            }
+
+            // Delete the item from the database
+            $itemRef->remove();
+
+            Alert::success('Berhasil', 'Barang Berhasil Dihapus.');
+            return redirect()->route('barangmasuk.index')->with('success', 'Barang Masuk berhasil dihapus.');
+        } else {
+            return redirect()->route('barangmasuk.index')->withErrors('Barang Masuk tidak ditemukan.');
+        }
     }
+
+    /**
+     * Function to delete a file from Firebase Storage
+     */
+    private function deleteFileFromStorage($filePath)
+    {
+        // Create a reference to the file
+        $object = $this->storage->getBucket()->object($filePath);
+
+        // Delete the file if it exists
+        if ($object->exists()) {
+            $object->delete();
+        }
+    }
+
+
     public function updateStatus(Request $request, $itemId, $barangId)
     {
         // Validasi input status
