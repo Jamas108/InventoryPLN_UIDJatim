@@ -72,6 +72,7 @@ class StokBarangController extends Controller
                 'nama_barang' => $items->first()->nama_barang ?? null,
                 'jumlah_barang' => $items->sum('jumlah_barang'),
                 'kategori' => $items->first()->kategori_barang ?? null,
+                'inisiasi_stok' => $items->first()->inisiasi_stok ?? null,
                 'garansi_barang_awal' => $items->first()->garansi_barang_awal ?? null,
                 'garansi_barang_akhir' => $items->first()->garansi_barang_akhir ?? null,
                 'sisa_hari_garansi' => $this->calculateSisaHariGaransi($items->first()),

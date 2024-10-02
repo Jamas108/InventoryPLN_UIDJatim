@@ -27,14 +27,18 @@ class ReturController extends Controller
     }
 
     public function index()
-    {
-        // Ambil data dari Firebase menggunakan instance $this->database
-        $returBarangSnapshot = $this->database->getReference('Retur_Barang')->getSnapshot();
-        $returBarangData = $returBarangSnapshot->getValue();
+{
+    // Ambil data dari Firebase menggunakan instance $this->database
+    $returBarangSnapshot = $this->database->getReference('Retur_Barang')->getSnapshot();
+    $returBarangData = $returBarangSnapshot->getValue();
 
-        // Kirim data ke view
-        return view('retur.index', ['returBarangData' => $returBarangData]);
-    }
+    // Pastikan $returBarangData adalah array, jika tidak ada data set sebagai array kosong
+    $returBarangData = $returBarangData ?? [];
+
+    // Kirim data ke view
+    return view('retur.index', ['returBarangData' => $returBarangData]);
+}
+
 
     public function bergaransiIndex()
     {
@@ -212,9 +216,20 @@ class ReturController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $BarangRetur = $this->database->getReference('Retur_Barang/' . $id)->getValue();
+
+        // Cek apakah barang keluar ditemukan
+        if (!$BarangRetur) {
+            return redirect()->route('retur.index')->with('error', 'Data barang keluar tidak ditemukan.');
+        }
+
+        // Kirim data ke view
+        return view('retur.show', [
+            'BarangRetur' => $BarangRetur,
+            'id' => $id,
+        ]);
     }
 
     /**

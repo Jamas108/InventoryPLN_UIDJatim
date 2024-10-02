@@ -1,5 +1,31 @@
 @extends('layouts.app')
+@push('scripts')
+    <script type="module">
+        $(document).ready(function() {
+            $('#stoktable').DataTable();
+        });
 
+        $(".datatable").on("click", ".btn-delete", function(e) {
+            e.preventDefault();
+
+            var form = $(this).closest("form");
+            var name = $(this).data("name");
+
+            Swal.fire({
+                title: "Apakah yakin menghapus barang?",
+                text: "Data yang dihapus tidak dapat kembali!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "bg-primary",
+                confirmButtonText: "Ya, hapus barang",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    </script>
+@endpush
 @section('content')
     @include('layouts.sidebar')
     <div id="content-wrapper" class="d-flex flex-column">
@@ -8,16 +34,6 @@
             <div class="container-fluid">
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Stok Barang</h1>
-                    <ul class="list-inline mb-0 float-end">
-                        <li class="list-inline-item">
-                            {{-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><i
-                                    class="fas fa-download fa-sm text-white-50"></i> Download PDF</a>
-                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
-                                    class="fas fa-download fa-sm text-white-50"></i> Download Excel</a>
-                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                    class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Product</a> --}}
-                        </li>
-                    </ul>
                 </div>
 
                 <div class="container-fluid pt-2 px-2">
@@ -26,24 +42,24 @@
                             data-aos-delay="200">
                             <!-- Update table in resources/views/barang_rusak.blade.php -->
                             <table class="table text-center align-middle table-bordered table-hover mb-0 datatable"
-                                id="ProductTable" style="90%">
+                                id="stoktable" style="90%">
                                 <thead style="background-color: rgb(1, 1, 95);">
                                     <tr style="color: white">
-                                        <th scope="col" style="width: 150px; color:white">No</th>
-                                        <th scope="col" style="width: 150px; color:white">Gambar Barang</th>
-                                        <th scope="col" style="width: 200px; color:white">Kode Barang</th>
-                                        <th scope="col" style="width: 150px; color:white">Nama Barang</th>
-                                        <th scope="col" style="width: 150px; color:white">Jumlah Barang</th>
-                                        <th scope="col" style="width: 150px; color:white">Kategori</th>
-                                        <th scope="col" style="width: 150px; color:white">Garansi</th>
-                                        <th scope="col" style="width: 150px; color:white">Action</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">No</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Gambar Barang</th>
+                                        <th class="align-middle" scope="col" style="width: 200px; color:white">Kode Barang</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Nama Barang</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Stok Awal Barang</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Sisa Stok Barang</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Kategori</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Garansi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($groupedBarangMasuks as $barang)
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>
+                                            <td class="align-middle">{{ $loop->iteration }}</td>
+                                            <td class="align-middle">
                                                 @if ($barang['gambar_barang'])
                                                     <img src="{{ $barang['gambar_barang'] }}" alt="Gambar Barang"
                                                         width="100">
@@ -51,23 +67,13 @@
                                                     N/A
                                                 @endif
                                             </td>
-                                            <td>{{ $barang['kode_barang'] }}</td>
-                                            <td>{{ $barang['nama_barang'] }}</td>
-                                            <td>{{ $barang['jumlah_barang'] }}</td>
-                                            <td>{{ $barang['kategori'] }}</td>
-                                            <td>{{ $barang['sisa_hari_garansi'] }}</td>
-                                            <td>
-                                                <a href="#" class="btn btn-primary btn-sm">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <form action="#" method="POST" style="display:inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm btn-delete">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </form>
-                                            </td>
+                                            <td class="align-middle">{{ $barang['kode_barang'] }}</td>
+                                            <td class="align-middle">{{ $barang['nama_barang'] }}</td>
+                                            <td class="align-middle">{{ $barang['inisiasi_stok'] }}</td>
+                                            <td class="align-middle">{{ $barang['jumlah_barang'] }}</td>
+                                            <td class="align-middle">{{ $barang['kategori'] }}</td>
+                                            <td class="align-middle">{{ $barang['sisa_hari_garansi'] }}</td>
+                                        
                                         </tr>
                                     @endforeach
                                 </tbody>

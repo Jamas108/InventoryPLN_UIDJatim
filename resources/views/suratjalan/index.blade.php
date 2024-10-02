@@ -35,6 +35,7 @@
             });
         });
     </script>
+@endpush
 @section('content')
     @include('layouts.sidebar')
     <div id="content-wrapper" class="d-flex flex-column">
@@ -52,6 +53,7 @@
                                 id="suratjalantable">
                                 <thead>
                                     <tr>
+                                        <th scope="col" style="width: 450px; color:white">No</th>
                                         <th scope="col" style="width: 450px; color:white">Nama Perusahaan Pengirim</th>
                                         <th scope="col" style="width: 450px; color:white">No Surat Jalan</th>
                                         <th scope="col" style="width: 450px; color:white">Action</th>
@@ -60,13 +62,14 @@
                                 <tbody>
                                     @foreach ($barangMasuks as $barangMasuk)
                                         <tr>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ $barangMasuk->NamaPerusahaan_Pengirim }}</td>
                                             <td>{{ $barangMasuk->No_Surat }}</td>
                                             <td>
-                                                @if ($barangMasuk->File_SuratJalan_URL)
-                                                    <a href="{{ $barangMasuk->File_SuratJalan_URL }}" target="_blank"
-                                                        class="btn btn-primary">
-                                                        Lihat Detail
+                                                @if ($barangMasuk->File_SuratJalan)
+                                                    <a href="{{ $barangMasuk->File_SuratJalan }}" target="_blank"
+                                                        class="btn btn-sm btn-primary">
+                                                        Lihat Surat
                                                     </a>
                                                 @else
                                                     <span class="text-danger">File tidak ditemukan</span>

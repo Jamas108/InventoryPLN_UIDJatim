@@ -48,11 +48,11 @@
                     <h1 class="h3 mb-0 text-gray-800">Barang Keluar</h1>
                     {{-- hilangkan bagian ini karena ini nnti dri user --}}
                     <ul class="list-inline mb-0 float-end">
-                        <li class="list-inline-item">
+                        {{-- <li class="list-inline-item">
                             <a href="{{ route('barangkeluar.create') }}"
                                 class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
                                 <i class="fas fa-plus fa-sm text-white-50"></i> Tambahkan Barang Keluar </a>
-                        </li>
+                        </li> --}}
                     </ul>
                 </div>
                 <div class="container-fluid pt-2 px-2">
@@ -207,7 +207,6 @@
                                                             @endif
                                                         @endif
                                                     @endif
-                                                
                                                     {{-- @if (Auth::user()->Id_Role == 2)
                                                         @if (!empty($group['id']))
                                                             <form action="{{ route('barangkeluar.destroy', $group['id']) }}" method="POST" class="mx-1">
@@ -236,7 +235,6 @@
                                                         @endif
                                                     @endif --}}
                                                 </div>
-                                                
                                             </td>
                                         </tr>
                                     @empty

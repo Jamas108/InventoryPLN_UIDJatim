@@ -1,4 +1,31 @@
 @extends('layouts.app')
+@push('scripts')
+    <script type="module">
+        $(document).ready(function() {
+            $('#returtable').DataTable();
+        });
+
+        $(".datatable").on("click", ".btn-delete", function(e) {
+            e.preventDefault();
+
+            var form = $(this).closest("form");
+            var name = $(this).data("name");
+
+            Swal.fire({
+                title: "Apakah yakin menghapus barang?",
+                text: "Data yang dihapus tidak dapat kembali!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "bg-primary",
+                confirmButtonText: "Ya, hapus barang",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    </script>
+@endpush
 @section('content')
     @include('layouts.sidebar')
     <div id="content-wrapper" class="d-flex flex-column">
@@ -25,40 +52,52 @@
                             data-aos-delay="200">
                             <!-- Update table in resources/views/barang_rusak.blade.php -->
                             <table class="table text-center align-middle table-bordered table-hover mb-0 datatable"
-                                id="ProductTable" style="90%">
+                                id="returtable" style="90%">
                                 <thead style=" background-color: rgb(1, 1, 95);">
                                     <tr style="color: white">
-                                        <th scope="col" style="width: 150px; color:white">No</th>
-                                        <th scope="col" style="width: 150px; color:white">Pemohon</th>
-                                        <th scope="col" style="width: 200px; color:white">Kode Barang</th>
-                                        <th scope="col" style="width: 150px; color:white">Nama Barang</th>
-                                        <th scope="col" style="width: 150px; color:white">Jumlah Barang</th>
-                                        <th scope="col" style="width: 150px; color:white">Kategori</th>
-                                        <th scope="col" style="width: 150px; color:white">Deskripsi</th>
-                                        <th scope="col" style="width: 250px; color:white">Tanggal Retur</th>
-                                        <th scope="col" style="width: 150px; color:white">Status</th>
-                                        <th scope="col" style="width: 150px; color:white">Action</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">No</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Pemohon
+                                        </th>
+                                        <th class="align-middle" scope="col" style="width: 200px; color:white">Kode
+                                            Barang</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Nama
+                                            Barang</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Jumlah
+                                            Barang</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Kategori
+                                        </th>
+                                        <th class="align-middle" scope="col" style="width: 250px; color:white">Tanggal
+                                            Retur</th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Status
+                                        </th>
+                                        <th class="align-middle" scope="col" style="width: 150px; color:white">Action
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($returBarangData as $key => $item)
+                                    @forelse ($returBarangData as $key => $item)
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $item['Pihak_Pemohon'] }}</td>
-                                            <td>{{ $item['kode_barang'] }}</td>
-                                            <td>{{ $item['nama_barang'] }}</td>
-                                            <td>{{ $item['jumlah_barang'] }}</td>
-                                            <td>{{ $item['kategori_barang'] }}</td>
-                                            <td>{{ $item['Deskripsi'] }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($item['Tanggal_Retur'])->format('d-m-Y') }}</td>
-                                            <td>{{ $item['status'] }}</td>
-                                            <td>
-                                                <a href="{{ route('retur.edit', ['id' => $item['id']]) }}"
-                                                    class="btn btn-info btn-sm">Kelola</a>
-                                                {{-- <a href="#" class="btn btn-danger btn-sm">Delete</a> --}}
+                                            <td class="align-middle">{{ $loop->iteration }}</td>
+                                            <td class="align-middle">{{ $item['Pihak_Pemohon'] }}</td>
+                                            <td class="align-middle">{{ $item['kode_barang'] }}</td>
+                                            <td class="align-middle">{{ $item['nama_barang'] }}</td>
+                                            <td class="align-middle">{{ $item['jumlah_barang'] }}</td>
+                                            <td class="align-middle">{{ $item['kategori_barang'] }}</td>
+                                            <td class="align-middle">
+                                                {{ \Carbon\Carbon::parse($item['Tanggal_Retur'])->format('d-m-Y') }}
+                                            </td>
+                                            <td class="align-middle">{{ $item['status'] }}</td>
+                                            <td class="align-middle">
+                                                <div class="d-flex">
+                                                    <a href="{{ route('retur.edit', ['id' => $item['id']]) }}"
+                                                        class="btn btn-success btn-sm"><i class="fas fa-user-check"></i></a>
+                                                    <a href="{{ route('retur.show', ['id' => $item['id']]) }}"
+                                                        class="btn btn-warning btn-sm ml-2"><i class="fas fa-eye"></i></a>
+                                                </div>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>

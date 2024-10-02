@@ -68,6 +68,7 @@ Route::get('/stokbarang/networking/index', [StokBarangController::class, 'networ
     // routes/web.php
     Route::get('/retur/create/{barangKeluarId}/{barangId}', [ReturController::class, 'create'])->name('retur.create');
     Route::get('retur/{id}/edit', [ReturController::class, 'edit'])->name('retur.edit');
+    Route::get('retur/{id}/show', [ReturController::class, 'show'])->name('retur.show');
     Route::put('retur/{id}', [ReturController::class, 'update'])->name('retur.update');
     Route::delete('retur/destroyRetur/{id}', [ReturController::class, 'destroyRetur'])->name('retur.destroyRetur');
     Route::get('/retur/{id}/showImage', [ReturController::class, 'showImage'])->name('retur.showImage');
