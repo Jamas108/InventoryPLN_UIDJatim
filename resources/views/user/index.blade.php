@@ -1,4 +1,41 @@
 @extends('layouts.app')
+@push('scripts')
+    <script type="module">
+        $(document).ready(function() {
+            $('#userstable').DataTable();
+
+            // Event listener untuk tombol retur
+            $(".datatable").on("click", ".btn-retur", function(e) {
+                e.preventDefault();
+
+                var id = $(this).data("id"); // Ambil ID dari tombol retur
+
+                // Redirect ke rute create retur berdasarkan ID
+                window.location.href = `/retur/create/${id}`;
+            });
+
+            $(".datatable").on("click", ".btn-delete", function(e) {
+                e.preventDefault();
+
+                var form = $(this).closest("form");
+                var name = $(this).data("name");
+
+                Swal.fire({
+                    title: "Apakah Anda Yakin Ingin Menghapus Peminjaman Atas Nama \n" + name + "?",
+                    text: "Data Akan Terhapus Secara Permanen!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "bg-primary",
+                    confirmButtonText: "Ya, Hapus Sekarang!",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+@endpush
 @section('content')
     @include('layouts.sidebar')
     <div id="content-wrapper" class="d-flex flex-column">
@@ -58,29 +95,30 @@
                 <div class="container-fluid pt-2 px-2">
                     <div class="bg-white justify-content-between rounded shadow p-4">
                         <div class="table-responsive">
-                            <table class="table text-center align-middle table-hover mb-0 datatable" id="UserTable"
+                            <table class="table text-center align-middle table-hover mb-0 datatable" id="userstable"
                                 style="width:100%">
                                 <thead>
                                     <tr>
+                                        <th scope="col" style="width: 200px; color:white; ">No</th>
                                         <th scope="col" style="width: 200px; color:white; ">Role User</th>
                                         <th scope="col" style="width: 200px; color:white; ">Nama</th>
                                         <th scope="col" style="width: 200px; color:white; ">Email</th>
                                         <th scope="col" style="width: 200px; color:white; ">No. Telepon</th>
                                         <th scope="col" style="width: 200px; color:white; ">Instansi</th>
-                                        <th scope="col" style="width: 200px; color:white; ">Log Activity</th>
                                         <th scope="col" style="width: 200px; color:white; ">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($users as $user)
                                         <tr>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ $user->userRole->Nama_Role_Users }}</td>
                                             <td>{{ $user->Nama }}</td>
                                             <td>{{ $user->email }}</td>
                                             <td>{{ $user->No_Telepon }}</td>
                                             <td>{{ $user->Instansi }}</td>
-                                            <td>activity</td>
                                             <td class="text-center">
+                                                <div class="d-flex"></div>
                                                 <a href="{{ route('user.edit', $user->id) }}"
                                                     class="btn btn-warning btn-sm">Edit Role</a>
                                             </td>
